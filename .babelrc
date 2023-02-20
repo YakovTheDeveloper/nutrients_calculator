@@ -1,0 +1,28 @@
+{
+    "presets": [
+        "@babel/preset-env",
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ],
+        "@babel/preset-typescript"
+    ],
+    "plugins": [
+        [
+            "babel-plugin-module-resolver",
+            {
+                "alias": {
+                    "@ui": "./src/components/ui",
+                    "@common": "./src/components/common",
+                    "@data": "./src/data",
+                    "@pages": "./src/pages",
+                    "@hooks": "./src/hooks",
+                    "@constants": "./src/constants",
+                    "@helpers": "./src/helpers"
+                }
+            }
+        ]
+    ]
+}

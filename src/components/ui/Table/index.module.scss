@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  gap: 20px 5px;
+  flex-wrap: wrap;
+
+  max-width: 1000px;
+
+  & table {
+    display: table;
+    text-indent: initial;
+
+    & td,
+    & th {
+      //   min-width: 10ch;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    & th {
+      //   width: 70%;
+      min-width: 10ch;
+    }
+
+    & tr {
+      display: flex;
+      //   flex-wrap: wrap;
+      //   flex-direction: column;
+      padding: 8px;
+    }
+
+    &.mainNutrients {
+      border: 1px solid red;
+      & th {
+        width: 7ch;
+      }
+    }
+
+    &.misc {
+      border: 1px solid blueviolet;
+    }
+
+    &.VitaminsNotB {
+      border: 1px solid green;
+
+      & th {
+        width: 3ch;
+      }
+    }
+
+    &.vitaminsB {
+      border: 1px solid blue;
+
+      & th {
+        width: 4ch;
+      }
+    }
+
+    &.minerals {
+      border: 1px solid orangered;
+
+      & th {
+        width: 11ch;
+      }
+    }
+  }
+}
+
+// .horizontal.container {
+//   flex-direction: row;
+
+//   & table {
+//     & tr {
+//       //   display: inline;
+//       display: flex;
+//       flex-wrap: nowrap;
+//     }
+//   }
+// }

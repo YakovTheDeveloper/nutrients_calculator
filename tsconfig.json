@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "baseUrl": ".",
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es5",
+        "jsx": "react",
+        "allowJs": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "@ui/*": [
+                "src/components/ui/*"
+            ],
+            "@common/*": [
+                "src/components/common/*"
+            ],
+            "@data/*": [
+                "src/data/*"
+            ],
+            "@pages/*": [
+                "src/pages/*"
+            ],
+            "@hooks/*": [
+                "src/hooks/*"
+            ],
+            "@constants/*": [
+                "src/constants/*"
+            ],
+            "@helpers/*": [
+                "src/helpers/*"
+            ],
+        }
+    },
+    "include": [
+        "./src/**/*",
+        "./declaration.d.ts"
+    ]
+}
