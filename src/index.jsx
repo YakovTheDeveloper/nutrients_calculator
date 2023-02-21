@@ -1,9 +1,9 @@
-import { createRoot } from 'react-dom/client';
-import { App } from './App';
+import { createRoot } from 'react-dom/client'
+import { App } from './App'
 
-const domNode = document.getElementById('root');
-const root = createRoot(domNode);
-root.render(<App />);
+const domNode = document.getElementById('root')
+const root = createRoot(domNode)
+root.render(<App />)
 
 // if (module.hot) {
 // 	module.hot.accept('./print.js', function () {
@@ -13,5 +13,5 @@ root.render(<App />);
 // }
 
 if (module.hot) {
-	module.hot.accept();
+    module.hot.accept()
 }
