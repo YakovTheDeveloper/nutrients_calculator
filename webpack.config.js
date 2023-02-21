@@ -40,6 +40,8 @@ module.exports = {
             '@pages': path.resolve(__dirname, 'src/pages/'),
             '@hooks': path.resolve(__dirname, 'src/hooks/'),
             '@constants': path.resolve(__dirname, 'src/constants/'),
+            '@forms': path.resolve(__dirname, 'src/components/forms/'),
+            '@api': path.resolve(__dirname, 'src/api/index.ts'),
         },
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
     },

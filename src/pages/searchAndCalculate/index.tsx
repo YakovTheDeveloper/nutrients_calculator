@@ -1,4 +1,6 @@
+import { get } from '@api'
 import { apiBaseAddress } from '@constants/api'
+import { initNutrients } from '@constants/nutrients'
 import { useProductStore } from '@data/products'
 import Button from '@ui/Button'
 import Search from '@ui/Search'
@@ -13,9 +15,9 @@ const SearchAndCalculate = () => {
     const selectedProducts = useProductStore((state) => state.selectedProducts)
 
     const isCalculateDisabled = Object.keys(selectedProducts).length === 0
-    const [tableData, setTableData] = useState<Nutrients.NamesToItems>()
+    const [tableData, setTableData] = useState<Nutrients.NamesToItems>(initNutrients)
 
-    const get = () => {
+    const getData = () => {
         const idWithQuantityParams = Object
             .entries(selectedProducts)
             .reduce((acc, [productId, { quantity }]) => {
@@ -23,9 +25,17 @@ const SearchAndCalculate = () => {
                 return acc
             }, "?")
         console.log("idWithQuantityParams", idWithQuantityParams)
-        fetch(`${apiBaseAddress}/polls/calculate_nutrients/${idWithQuantityParams}`)
-            .then(res => res.json())
-            .then((res: Api.Response<Nutrients.NamesToItems>) => setTableData(res.result))
+        get(`polls/calculate_nutrients/${idWithQuantityParams}`)
+            .then(res => {
+                if (res.isError) {
+                    return
+                }
+                const x: Nutrients.NamesToItems = res.result
+                setTableData(x)
+            })
+        // fetch(`${apiBaseAddress}/polls/calculate_nutrients/${idWithQuantityParams}`)
+        //     .then(res => res.json())
+        //     .then((res: Api.Response<Nutrients.NamesToItems>) => setTableData(res.result))
     }
 
     return (
@@ -33,7 +43,7 @@ const SearchAndCalculate = () => {
             <Search />
             <SelectedProducts data={selectedProducts} />
             <Button disabled={isCalculateDisabled}
-                onClick={() => get()}
+                onClick={() => getData()}
             >Calculate</Button>
             <span>
                 {" "}{isCalculateDisabled && 'Use search, then select your products'}
