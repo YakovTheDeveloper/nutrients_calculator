@@ -32,7 +32,7 @@ export const useForm = (
 ) => {
     const initialFormValue = initialFormValues[form]
     const [formData, setFormData] = useState<Form.Types>(initialFormValue)
-    const [errors, setErrors] = useState<any>({})
+    const [errors, setErrors] = useState<Record<string, string>>({})
     const [showErrors, setShowErrors] = useState(false)
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,12 +87,17 @@ export const useForm = (
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const atLeastOneError = Object.keys(errors).some((key) => key !== '')
+        const atLeastOneError = Object.values(errors).some((key) => key !== '')
         if (atLeastOneError) return
-        
+
         submitCallback(formData).then((data) => {
+            console.log('to send', formData)
             if (data.isError) {
-                setErrors([data.reason])
+                setShowErrors(true)
+                setErrors((prev) => ({
+                    ...prev,
+                    responseError: data.reason,
+                }))
                 return
             }
             setFormData(initialFormValue)

@@ -28,6 +28,7 @@ const SignupForm = () => {
                     required
                     onChange={onChange}
                     onBlur={validateField}
+                    value={formData['email']}
                 />
             </label>
             <label>
@@ -38,6 +39,7 @@ const SignupForm = () => {
                     required
                     onChange={onChange}
                     onBlur={validateField}
+                    value={formData['password']}
                 />
             </label>
         </Form>

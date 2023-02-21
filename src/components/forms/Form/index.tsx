@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 type FormProps = {
     children: ReactNode
-    errors: string[]
+    errors: Record<string, string>
     heading: string
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     showErrors: boolean

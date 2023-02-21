@@ -9,31 +9,28 @@ import Table from '@ui/Table'
 import React, { useState } from 'react'
 import styles from './index.module.scss'
 
-
-
 const SearchAndCalculate = () => {
-
     const selectedProducts = useProductStore((state) => state.selectedProducts)
 
     const isCalculateDisabled = Object.keys(selectedProducts).length === 0
     const [tableData, setTableData] = useState<Nutrients.NamesToItems>(initNutrients)
 
     const getData = () => {
-        const idWithQuantityParams = Object
-            .entries(selectedProducts)
-            .reduce((acc, [productId, { quantity }]) => {
+        const idWithQuantityParams = Object.entries(selectedProducts).reduce(
+            (acc, [productId, { quantity }]) => {
                 acc += `id${productId}=${quantity}&`
                 return acc
-            }, "?")
-        console.log("idWithQuantityParams", idWithQuantityParams)
-        get(`polls/calculate_nutrients/${idWithQuantityParams}`)
-            .then(res => {
-                if (res.isError) {
-                    return
-                }
-                const x: Nutrients.NamesToItems = res.result
-                setTableData(x)
-            })
+            },
+            '?'
+        )
+        console.log('idWithQuantityParams', idWithQuantityParams)
+        get(`polls/calculate_nutrients/${idWithQuantityParams}`).then((res) => {
+            if (res.isError) {
+                return
+            }
+            const x: Nutrients.NamesToItems = res.result
+            setTableData(x)
+        })
         // fetch(`${apiBaseAddress}/polls/calculate_nutrients/${idWithQuantityParams}`)
         //     .then(res => res.json())
         //     .then((res: Api.Response<Nutrients.NamesToItems>) => setTableData(res.result))
@@ -43,15 +40,14 @@ const SearchAndCalculate = () => {
         <div className={styles.container}>
             <Search />
             <SelectedProducts data={selectedProducts} />
-            <Button 
-            disabled={isCalculateDisabled}
-            className={styles.calculateBtn}
+            <Button
+                disabled={isCalculateDisabled}
+                className={styles.calculateBtn}
                 onClick={() => getData()}
-            >Calculate</Button>
-            <span>
-                {" "}{isCalculateDisabled && 'Use search, then select your products'}
-
-            </span>
+            >
+                Calculate
+            </Button>
+            <span> {isCalculateDisabled && 'Use search, then select your products'}</span>
             <Table data={tableData} />
         </div>
     )
