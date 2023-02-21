@@ -5,6 +5,7 @@ import Search from '@ui/Search'
 import SelectedProducts from '@ui/SelectedProducts'
 import Table from '@ui/Table'
 import React, { useState } from 'react'
+import styles from './index.module.scss'
 
 
 
@@ -29,11 +30,13 @@ const SearchAndCalculate = () => {
     }
 
     return (
-        <div>
+        <div className={styles.container}>
             <Search />
             <SelectedProducts data={selectedProducts} />
-            <Button disabled={isCalculateDisabled}
-                onClick={() => get()}
+            <Button 
+            disabled={isCalculateDisabled}
+            onClick={() => get()}
+            className={styles.calculateBtn}
             >Calculate</Button>
             <span>
                 {" "}{isCalculateDisabled && 'Use search, then select your products'}
