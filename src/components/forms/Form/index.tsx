@@ -12,8 +12,6 @@ const Form = ({ children, errors, onSubmit, heading, showErrors }: FormProps) =>
     const atLeastOneError = Object.values(errors).find(
         (errorMessage) => errorMessage !== ''
     )
-    console.log('atLeastOneError', atLeastOneError)
-    // const reponseError = errors?.responseError
 
     return (
         <div className="login-wrapper">
