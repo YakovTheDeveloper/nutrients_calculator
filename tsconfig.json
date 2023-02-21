@@ -2,13 +2,24 @@
     "compilerOptions": {
         "outDir": "./dist/",
         "baseUrl": ".",
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
         "noImplicitAny": true,
+        "strictNullChecks": true,
         "module": "es6",
         "target": "es5",
         "jsx": "react",
+        "alwaysStrict": true,
         "allowJs": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "lib": [
+            "es2018",
+            "DOM"
+        ],
         "paths": {
             "@ui/*": [
                 "src/components/ui/*"
@@ -31,10 +42,19 @@
             "@helpers/*": [
                 "src/helpers/*"
             ],
+            "@forms/*": [
+                "src/components/forms/*"
+            ],
+            "@api": [
+                "src/api/index.ts"
+            ],
         }
     },
     "include": [
         "./src/**/*",
         "./declaration.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
     ]
 }

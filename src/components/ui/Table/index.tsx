@@ -8,7 +8,7 @@ import React from 'react'
 import styles from './index.module.scss'
 
 type TableProps = {
-    data: Nutrients.NamesToItems | null
+    data: Nutrients.NamesToItems
 }
 // const ITEMS_PER_ROW = 7
 // const arrangeInRows = (data: Nutrients.TableItem[], itemsPerRow: number) => {
@@ -18,7 +18,7 @@ type TableProps = {
 //     }
 //     return rows
 // }
-const Table = ({ data = initNutrients }: TableProps) => {
+const Table = ({ data }: TableProps) => {
 
 
     const getDailyNormPercent = (name: Nutrients.Name, value: number) => {
