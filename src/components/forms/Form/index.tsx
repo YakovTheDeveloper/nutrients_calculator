@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import styles from './index.module.scss'
 
 type FormProps = {
     children: ReactNode
@@ -14,19 +15,17 @@ const Form = ({ children, errors, onSubmit, heading, showErrors }: FormProps) =>
     )
 
     return (
-        <div className="login-wrapper">
-            <br />
-            <br />
-            <h1>{heading}</h1>
+        <div className={styles.loginWrapper}>
+            <span className={styles.formTypeName}>{heading}</span>
             <form onSubmit={onSubmit}>
                 {children}
                 <div>
-                    <button type="submit">Submit</button>
+                    <button type="submit" className={styles.submitBtn}>
+                        Submit
+                    </button>
                 </div>
                 <div>{showErrors && atLeastOneError}</div>
             </form>
-            <br />
-            <br />
         </div>
     )
 }

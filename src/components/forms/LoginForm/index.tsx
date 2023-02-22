@@ -2,6 +2,8 @@ import React from 'react'
 import { login } from '@api'
 import Form from '@forms/Form'
 import { useForm } from '@hooks/useForm'
+import Input from '@ui/Input/Input'
+import styles from './index.module.scss'
 
 const inputNames: Form.InputNames<Form.LoginForm> = {
     email: 'email',
@@ -14,28 +16,32 @@ const LoginForm = () => {
     )
     return (
         <Form errors={errors} heading="Login" onSubmit={onSubmit} showErrors={showErrors}>
-            <label>
-                <p>Email</p>
-                <input
-                    name={inputNames.email}
-                    type="email"
-                    required
-                    onChange={onChange}
-                    onBlur={validateField}
-                    value={formData.email}
-                />
-            </label>
-            <label>
-                <p>Password</p>
-                <input
-                    name={inputNames.password}
-                    type="password"
-                    required
-                    onChange={onChange}
-                    onBlur={validateField}
-                    value={formData.password || ''}
-                />
-            </label>
+            <Input
+                label="Email"
+                name={inputNames.email}
+                type="email"
+                required
+                onChange={onChange}
+                onBlur={validateField}
+                value={formData.email}
+                clear={() => {
+                    return
+                }}
+                className={styles.loginInput}
+            />
+            <Input
+                label="Password"
+                name={inputNames.password}
+                type="password"
+                required
+                onChange={onChange}
+                onBlur={validateField}
+                value={formData.password || ''}
+                clear={() => {
+                    return
+                }}
+                className={styles.loginInput}
+            />
         </Form>
     )
 }
