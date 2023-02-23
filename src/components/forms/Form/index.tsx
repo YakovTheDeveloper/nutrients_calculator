@@ -28,12 +28,16 @@ const Form = ({
     // }
 
     return (
-        <div className={styles.form}>
-            <h1>{heading}</h1>
+        <div className={styles.loginWrapper}>
+            <span className={styles.formTypeName}>{heading}</span>
             <form onSubmit={onSubmit}>
                 {children}
                 <div>
-                    <button type="submit" aria-label="submit-button">
+                    <button
+                        type="submit"
+                        className={styles.submitBtn}
+                        aria-label="submit-button"
+                    >
                         Submit
                     </button>
                 </div>
@@ -49,8 +53,6 @@ const Form = ({
                     <StatusMessage type="error">{errorMessage}</StatusMessage>
                 )}
             </form>
-            <br />
-            <br />
         </div>
     )
 }

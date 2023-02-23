@@ -1,0 +1,11 @@
+.signupInput {
+    font-size: 14px;
+    padding: 7px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+}

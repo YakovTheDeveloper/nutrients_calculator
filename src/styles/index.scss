@@ -9,6 +9,8 @@ html {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 400;
 }
 
 body {
@@ -35,4 +37,8 @@ button {
   border: none;
   background: none;
   outline: none;
+}
+
+ul {
+  list-style: none;
 }

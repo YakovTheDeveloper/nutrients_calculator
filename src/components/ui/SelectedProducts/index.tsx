@@ -18,6 +18,7 @@ const SelectedProducts = ({ data }: SelectedProductsProps) => {
                     <li key={index}>
                         <input
                             type="number"
+                            min="0"
                             value={products[item.id].quantity.toString()}
                             onChange={(e) => {
                                 if (e.target.value.length > 6) return
