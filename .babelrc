@@ -22,7 +22,8 @@
                     "@constants": "./src/constants",
                     "@helpers": "./src/helpers",
                     "@api": "./src/api/index.ts",
-                    "@forms": "./src/components/forms"
+                    "@forms": "./src/components/forms",
+                    "@layout": "./src/components/layout"
                 }
             }
         ]

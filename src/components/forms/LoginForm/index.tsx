@@ -1,19 +1,30 @@
 import React from 'react'
 import { login } from '@api'
 import Form from '@forms/Form'
-import { useForm } from '@hooks/useForm'
+import useForm from '@hooks/useForm'
 
 const inputNames: Form.InputNames<Form.LoginForm> = {
     email: 'email',
     password: 'password',
 }
 const LoginForm = () => {
-    const { errors, formData, validateField, showErrors, onChange, onSubmit } = useForm(
-        'login',
-        login
-    )
+    const {
+        errors,
+        formData,
+        validateField,
+        showErrors,
+        onChange,
+        onSubmit,
+        success,
+    } = useForm('login', login)
     return (
-        <Form errors={errors} heading="Login" onSubmit={onSubmit} showErrors={showErrors}>
+        <Form
+            errors={errors}
+            heading="Log in"
+            onSubmit={onSubmit}
+            showErrors={showErrors}
+            success={success}
+        >
             <label>
                 <p>Email</p>
                 <input

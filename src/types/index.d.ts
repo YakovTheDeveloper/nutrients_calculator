@@ -110,7 +110,7 @@ declare namespace Api {
     }
 
     export type User = {
-        user: {
+        data: {
             email: string
         }
         token: string
@@ -129,6 +129,11 @@ declare namespace Products {
         name: string
         state: string
         category: string
+    }
+
+    export interface Menu {
+        products: Data.SelectedProduct[]
+        nutrients: Nutrients.Groups
     }
 }
 
@@ -167,4 +172,5 @@ declare namespace Form {
     type InputNames<T> = Record<keyof T, keyof T>
 
     type Types = Items[keyof Items]
+    type Names = keyof Items
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { signup } from '@api'
 import Form from '@forms/Form'
-import { useForm } from '@hooks/useForm'
+import useForm from '@hooks/useForm'
 
 const inputNames: Form.InputNames<Form.SignupForm> = {
     email: 'email',
@@ -9,16 +9,22 @@ const inputNames: Form.InputNames<Form.SignupForm> = {
 }
 
 const SignupForm = () => {
-    const { errors, formData, validateField, onChange, onSubmit, showErrors } = useForm(
-        'signup',
-        signup
-    )
+    const {
+        errors,
+        formData,
+        validateField,
+        onChange,
+        onSubmit,
+        showErrors,
+        success,
+    } = useForm('signup', signup)
     return (
         <Form
             errors={errors}
             heading="Sign up"
             onSubmit={onSubmit}
             showErrors={showErrors}
+            success={success}
         >
             <label>
                 <p>Email</p>
@@ -29,6 +35,7 @@ const SignupForm = () => {
                     onChange={onChange}
                     onBlur={validateField}
                     value={formData['email']}
+                    aria-label="email-input"
                 />
             </label>
             <label>
@@ -40,6 +47,7 @@ const SignupForm = () => {
                     onChange={onChange}
                     onBlur={validateField}
                     value={formData['password']}
+                    aria-label="password-input"
                 />
             </label>
         </Form>

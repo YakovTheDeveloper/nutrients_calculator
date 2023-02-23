@@ -45,6 +45,9 @@
             "@forms/*": [
                 "src/components/forms/*"
             ],
+            "@layout/*": [
+                "src/components/layout/*"
+            ],
             "@api": [
                 "src/api/index.ts"
             ],
@@ -55,6 +58,7 @@
         "./declaration.d.ts"
     ],
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "__mocks__"
     ]
 }

@@ -1,0 +1,12 @@
+.statusMessage {
+  &:disabled {
+    opacity: 0.9;
+  }
+}
+
+.success {
+  color: greenyellow;
+}
+.error {
+  color: red;
+}

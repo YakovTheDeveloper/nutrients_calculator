@@ -1,4 +1,6 @@
+import StatusMessage from '@ui/StatusMessage'
 import React, { ReactNode } from 'react'
+import styles from './index.module.scss'
 
 type FormProps = {
     children: ReactNode
@@ -6,24 +8,46 @@ type FormProps = {
     heading: string
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     showErrors: boolean
+    success: boolean
 }
 
-const Form = ({ children, errors, onSubmit, heading, showErrors }: FormProps) => {
-    const atLeastOneError = Object.values(errors).find(
+const Form = ({
+    children,
+    errors,
+    onSubmit,
+    heading,
+    showErrors,
+    success,
+}: FormProps) => {
+    const errorMessage = Object.values(errors).find(
         (errorMessage) => errorMessage !== ''
     )
 
+    // const getStatusMessage = () => {
+    //     if (success) return 'success'
+    // }
+
     return (
-        <div className="login-wrapper">
-            <br />
-            <br />
+        <div className={styles.form}>
             <h1>{heading}</h1>
             <form onSubmit={onSubmit}>
                 {children}
                 <div>
-                    <button type="submit">Submit</button>
+                    <button type="submit" aria-label="submit-button">
+                        Submit
+                    </button>
                 </div>
-                <div>{showErrors && atLeastOneError}</div>
+                {/* {
+                    <StatusMessage type={getStatusMessage()}>j
+                        Success
+                    </StatusMessage>
+                } */}
+                {success && (
+                    <StatusMessage type="success">Success</StatusMessage>
+                )}
+                {showErrors && errorMessage && (
+                    <StatusMessage type="error">{errorMessage}</StatusMessage>
+                )}
             </form>
             <br />
             <br />

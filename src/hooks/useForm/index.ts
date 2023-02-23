@@ -1,56 +1,27 @@
+import { useUser } from '@data/user'
 import { useEffect } from 'react'
 import { debounce } from '@helpers/debounce'
 import { useState } from 'react'
-import { object, string, ObjectSchema, ValidationError } from 'yup'
+import { ValidationError } from 'yup'
+import { formSchemas, initialFormValues } from './data'
 
-type Forms = 'login' | 'signup'
-const formSchemas: Record<Forms, ObjectSchema<any>> = {
-    login: object({
-        email: string().email().required(),
-        password: string().required().max(40),
-    }),
-    signup: object({
-        email: string().email().required(),
-        password: string().min(6).max(20),
-    }),
-}
-
-const initialFormValues: Form.Items = {
-    login: {
-        email: '',
-        password: '',
-    },
-    signup: {
-        email: '',
-        password: '',
-    },
-}
-
-export const useForm = (
-    form: Forms,
+const useForm = (
+    form: Form.Names,
     submitCallback: (payload: Form.Types) => Promise<Api.Result>
 ) => {
     const initialFormValue = initialFormValues[form]
     const [formData, setFormData] = useState<Form.Types>(initialFormValue)
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [showErrors, setShowErrors] = useState(false)
+    const [success, setSuccess] = useState(false)
+    const { setUser } = useUser()
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setShowErrors(false)
+        setSuccess(false)
         const field = e.target.name
         setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     }
-
-    useEffect(() => {
-        console.log('errors', errors)
-        // if (errors.length === 0) {
-        //     setShowErrors(false)
-        //     return
-        // }
-        // const showErrorTimer = setTimeout(() => setShowErrors(true), 1500)
-
-        // return () => clearTimeout(showErrorTimer)
-    }, [errors, formData])
 
     // const showErrorsDelayed = debounce(() => setShowErrors(true), 2000)
     // const setErrorsDelayed = debounce(setErrors, 1000)
@@ -61,28 +32,26 @@ export const useForm = (
         try {
             if (!inputValue) return // prevent validation on untouched fields
             const currentSchema = formSchemas[form]
-            const validated = currentSchema.validateSyncAt(inputName, {
+            const inputValidated = currentSchema.validateSyncAt(inputName, {
                 [inputName]: inputValue,
             })
-            if (validated)
-                setErrors((prev) => ({
-                    ...prev,
-                    [inputName]: '',
-                }))
-        } catch (err: any) {
+            if (inputValidated)
+                setErrors((prev) => ({ ...prev, [inputName]: '' }))
+        } catch (err) {
             setShowErrors(true)
             const validationError = err as ValidationError
-            console.log(validationError.path)
-            console.log(validationError.message)
-            // const inputName = validationError.path
-
             setErrors((prev) => ({
                 ...prev,
                 [inputName]: validationError.message,
             }))
-            // setErrors(validationError.errors)
         }
     }
+
+    useEffect(() => {
+        let timeout: NodeJS.Timeout
+        if (success) timeout = setTimeout(() => setSuccess(false), 2500)
+        return () => clearTimeout(timeout)
+    }, [success])
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -91,7 +60,6 @@ export const useForm = (
         if (atLeastOneError) return
 
         submitCallback(formData).then((data) => {
-            console.log('to send', formData)
             if (data.isError) {
                 setShowErrors(true)
                 setErrors((prev) => ({
@@ -100,7 +68,14 @@ export const useForm = (
                 }))
                 return
             }
+            setUser({
+                data: {
+                    email: data.result?.email,
+                },
+            })
+
             setFormData(initialFormValue)
+            setSuccess(true)
         })
     }
 
@@ -108,8 +83,11 @@ export const useForm = (
         onChange,
         validateField,
         errors,
+        success,
         formData,
         onSubmit,
         showErrors,
     }
 }
+
+export default useForm
