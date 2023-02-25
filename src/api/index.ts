@@ -6,12 +6,25 @@ const SIGN_UP_URL = 'signup/'
 const ME_URL = 'me/'
 const TOKEN = 'token'
 
+
+
+
+
+
+
 export async function get(path: string) {
     return await sendRequest(path, createConfig('GET'))
 }
+export async function getTyped<T>(path: string) {
+    return await sendRequest<T>(path, createConfig('GET'))
+}
 
-export async function post(path: Api.urls, payload: object) {
+export async function post(path: string, payload?: object) {
     return await sendRequest(path, createConfig('POST', payload))
+}
+
+export async function del(path: string) {
+    return await sendRequest(path, createConfig('DELETE'))
 }
 
 export async function login(payload: Api.UserToAuth) {
@@ -33,11 +46,12 @@ export async function signup(payload: Api.UserToAuth) {
 }
 
 // function createConfig(method = 'POST', payload?: any): RequestInit {
-function createConfig(method = 'POST', payload?: any): AxiosRequestConfig {
+function createConfig(
+    method = 'POST',
+    payload?: Record<any, any>
+): AxiosRequestConfig {
     const headers = new AxiosHeaders()
-    console.log('headers', headers)
     headers.set('Content-Type', 'application/json')
-    // headers.append('Content-Type', 'application/json')
     const token = getToken()
     token && headers.set('Authorization', `Token ${token}`)
 
@@ -51,64 +65,49 @@ function createConfig(method = 'POST', payload?: any): AxiosRequestConfig {
 
 export const createDefaultResult = (): Api.Result => ({
     result: null,
-    isError: true,
-    reason: 'Unknown error',
+    hasError: true,
+    detail: 'Unknown error',
 })
 
-async function sendRequest(
+async function sendRequest<T>(
     path: string,
     config: AxiosRequestConfig
-): Promise<Api.Result> {
+): Promise<Api.Result<T>> {
     let result = createDefaultResult()
     const url = `${apiBaseAddress}/${path}`
     try {
-        const response = await axios(url, config)
-        // console.log('url: ' + url)
-        // console.log('response: ' + response)
-        result = await addResponseDataToResult(response, result)
+        const response = await axios<Api.Response<T>>(url, config)
+        result = await addResponseDataToResult<T>(response, result)
     } catch (error) {
         console.error(error)
     }
     return result
 }
 
-async function addResponseDataToResult(
-    response: AxiosResponse<any, any>,
-    data: Api.Result
+async function addResponseDataToResult<T>(
+    response: AxiosResponse<Api.Response<T>, any>,
+    data: Api.Result<T>
 ) {
-    const body = await response.data
-    // const body = await response.json()
-    const ok = response.status === 200 || response.statusText === 'OK'
+    const body = response.data
+    const result: T = body.result
 
-    // const ok = response.ok
-
-    response.status
-    console.info('body,', body)
-    if (!body.result) console.log('No "result" key in response body')
+    if (body.result == null)
+        console.error(
+            'No "result" field in response body: ' + JSON.stringify(body)
+        )
+    console.log('response', response)
+    const isStatusWithinOkRange =
+        response.status >= 200 && response.status < 300
+    const ok = isStatusWithinOkRange || response.statusText === 'OK'
     if (ok) {
-        data.result = body.result
-        data.isError = false
-        data.reason = ''
+        data.result = result
+        data.hasError = false
+        data.detail = ''
         return data
     }
-    data.reason = body.reason?.toString()
+    data.detail = body.detail?.toString()
     return data
 }
-// function fillWithResponseData(isOk: Response, data: Api.Result) {
-//     const body = response.json()
-//     if (isOk) {
-//         data.result = body.result
-//         data.isError = false
-//         return data
-//     }
-//     data.reason = body.reason.toString()
-//     return data
-// }
-
-// export const api = {
-//     get,
-//     post
-// }
 
 export function getToken() {
     return localStorage.getItem(TOKEN)

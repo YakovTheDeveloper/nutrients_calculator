@@ -1,20 +1,29 @@
-import { useUser } from '@data/user'
+import { useUserStore } from '@data/user'
 import { useEffect } from 'react'
 import { debounce } from '@helpers/debounce'
 import { useState } from 'react'
-import { ValidationError } from 'yup'
+import { AnyObject, Maybe, ObjectSchema, ValidationError } from 'yup'
 import { formSchemas, initialFormValues } from './data'
 
-const useForm = (
+const RESPONSE_ERROR_KEY = 'responseError'
+
+const useForm = <Form>(
     form: Form.Names,
-    submitCallback: (payload: Form.Types) => Promise<Api.Result>
+    submitCallback: (payload: Form) => Promise<Api.Result>,
+    init: Form
 ) => {
-    const initialFormValue = initialFormValues[form]
-    const [formData, setFormData] = useState<Form.Types>(initialFormValue)
+    // const initialFormValue = initialFormValues[form]
+    const [formData, setFormData] = useState(init)
     const [errors, setErrors] = useState<Record<string, string>>({})
+    // const [responseErrors, setResponseErrors] = useState<
+    //     Record<string, string>
+    // >({})
     const [showErrors, setShowErrors] = useState(false)
     const [success, setSuccess] = useState(false)
-    const { setUser } = useUser()
+
+    console.log('formData', formData)
+
+    const clearAllErrors = () => setErrors({})
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setShowErrors(false)
@@ -53,30 +62,42 @@ const useForm = (
         return () => clearTimeout(timeout)
     }, [success])
 
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        const atLeastOneError = Object.values(errors).some((key) => key !== '')
-        if (atLeastOneError) return
+        //separate validation errorrs from server errors
 
-        submitCallback(formData).then((data) => {
-            if (data.isError) {
-                setShowErrors(true)
-                setErrors((prev) => ({
-                    ...prev,
-                    responseError: data.reason,
-                }))
-                return
-            }
-            setUser({
-                data: {
-                    email: data.result?.email,
-                },
-            })
+        // const atLeastOneError = Object.values(errors).some((key) => key !== '')
+        const atLeastOneValidationError = Object.entries(errors).some(
+            ([key, value]) => value !== '' && key !== RESPONSE_ERROR_KEY
+        )
 
-            setFormData(initialFormValue)
-            setSuccess(true)
-        })
+        if (atLeastOneValidationError) return
+
+        const response = await submitCallback(formData)
+        if (response.hasError) {
+            console.log('ERROR', response)
+            setShowErrors(true)
+            setErrors((prev) => ({
+                ...prev,
+                [RESPONSE_ERROR_KEY]: response.detail,
+            }))
+            return
+        }
+        setFormData(init)
+        setSuccess(true)
+
+        // const result = submitCallback(formData).then((data) => {
+        //     if (data.hasError) {
+        //         setShowErrors(true)
+        //         setErrors((prev) => ({
+        //             ...prev,
+        //             responseError: data.detail,
+        //         }))
+        //     }
+        //     return data
+
+        // })
     }
 
     return {
@@ -87,6 +108,7 @@ const useForm = (
         formData,
         onSubmit,
         showErrors,
+        clearAllErrors,
     }
 }
 

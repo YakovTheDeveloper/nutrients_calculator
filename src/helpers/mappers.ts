@@ -1,16 +1,19 @@
-export const getNutrientTablesByCategory = (data: Nutrients.NamesToItems): Nutrients.Groups => {
+export const getNutrientTablesByCategory = (
+    data: Nutrients.NamesToItems
+): Nutrients.Groups => {
+    console.log('data', data)
     const mainNutrients = [
         data.protein,
         data.fat,
         data.carbohydrate,
         data.fiber,
-        data.sugar
+        data.sugar,
     ]
     const misc = [
         data.energy,
         data.water,
-        data["alpha carotene"],
-        data["beta carotene"],
+        data['alpha carotene'],
+        data['beta carotene'],
     ]
     const vitaminsB = [
         data['vitamin b1'],
@@ -30,21 +33,21 @@ export const getNutrientTablesByCategory = (data: Nutrients.NamesToItems): Nutri
         data['vitamin d2'],
         data['vitamin d3'],
         data['vitamin e'],
-        data['vitamin k']
+        data['vitamin k'],
     ]
 
     const minerals = [
-        data["calcium"],
-        data["iron"],
-        data["magnesium"],
-        data["phosphorus"],
-        data["potassium"],
-        data["sodium"],
-        data["zinc"],
-        data["copper"],
-        data["manganese"],
-        data["selenium"],
-        data["fluoride"],
+        data['calcium'],
+        data['iron'],
+        data['magnesium'],
+        data['phosphorus'],
+        data['potassium'],
+        data['sodium'],
+        data['zinc'],
+        data['copper'],
+        data['manganese'],
+        data['selenium'],
+        data['fluoride'],
     ]
 
     return {
@@ -52,6 +55,6 @@ export const getNutrientTablesByCategory = (data: Nutrients.NamesToItems): Nutri
         misc: misc,
         VitaminsNotB: VitaminsNotB,
         vitaminsB: vitaminsB,
-        minerals: minerals
+        minerals: minerals,
     }
 }

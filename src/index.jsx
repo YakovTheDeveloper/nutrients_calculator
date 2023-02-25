@@ -26,9 +26,12 @@ const router = createBrowserRouter([
 ])
 
 const domNode = document.getElementById('root')
+
 const root = createRoot(domNode)
 root.render(<RouterProvider router={router} />)
 
 if (module.hot) {
     module.hot.accept()
 }
+
+// root.render()

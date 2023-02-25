@@ -4,13 +4,29 @@ import Form from '@forms/Form'
 import useForm from '@hooks/useForm'
 import Input from '@ui/Input/Input'
 import styles from './index.module.scss'
+import { useUserStore } from '@data/user'
 
 const inputNames: Form.InputNames<Form.SignupForm> = {
     email: 'email',
     password: 'password',
 }
 
+const init: Form.SignupForm = {
+    email: '',
+    password: '',
+}
+
 const SignupForm = () => {
+    const { setUser } = useUserStore()
+
+    const signUpHandler = async (payload: Form.SignupForm) => {
+        const result = await signup(payload)
+        if (result.hasError === false) {
+            setUser({ data: result.result })
+        }
+        return result
+    }
+
     const {
         errors,
         formData,
@@ -19,7 +35,7 @@ const SignupForm = () => {
         onSubmit,
         showErrors,
         success,
-    } = useForm('signup', signup)
+    } = useForm<Form.SignupForm>('signup', signUpHandler, init)
     return (
         <Form
             errors={errors}

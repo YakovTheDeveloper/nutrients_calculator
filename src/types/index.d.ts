@@ -7,7 +7,9 @@ declare namespace Nutrients {
         value: number
     }
 
+    // rename table to nutrient or something
     export type TableItem = Pick<Item, 'name' | 'value' | 'unit'>
+    export type item = Pick<Item, 'name' | 'value' | 'unit'>
     // export type TableItems = Record<string, TableItem>
 
     // export type NameNormalized = Partial<Record<keyof TableItems, string>>
@@ -100,13 +102,14 @@ declare namespace Nutrients {
 declare namespace Api {
     export type Response<T> = {
         result: T
+        detail: string
     }
     export type urls = 'login/'
 
-    export type Result = {
-        result: any
-        isError: boolean
-        reason: string
+    export type Result<T> = {
+        result: T
+        hasError: boolean
+        detail: string
     }
 
     export type User = {
@@ -118,11 +121,30 @@ declare namespace Api {
 
     export type UserToAuth = {
         email: string
-        password: string | null
+        password: string
+    }
+
+    export type AddMenuResponse = Response<{
+        menuId: number
+    }>
+    export type Menu = {
+        id: number
+        name: string
+        description: string
+        products: Data.SelectedProducts
+        nutrients: Nutrients.NamesToItems
     }
 }
 
 declare namespace Products {
+    interface Item {
+        id: number
+        name: string
+        state: string
+        category: string
+        nutrients: Nutrients.NamesToData<Nutrients.Item>
+    }
+
     type Id = number
     export interface Item {
         id: number
@@ -132,8 +154,11 @@ declare namespace Products {
     }
 
     export interface Menu {
-        products: Data.SelectedProduct[]
-        nutrients: Nutrients.Groups
+        id: number
+        name: string
+        description: string
+        products: Data.SelectedProducts
+        nutrients: Nutrients.NamesToItems
     }
 }
 
@@ -150,7 +175,7 @@ declare namespace Data {
     export interface SelectedProduct extends Products.Item {
         quantity: number
     }
-    type Id = number
+    type Id = string
     export type SelectedProducts = Record<Id, SelectedProduct>
 }
 
@@ -158,19 +183,26 @@ declare namespace Form {
     type Items = {
         login: LoginForm
         signup: SignupForm
+        addMenu: AddMenuForm
     }
     type LoginForm = {
-        email: ''
-        password: ''
+        email: string
+        password: string
     }
 
     type SignupForm = {
-        email: ''
-        password: ''
+        email: string
+        password: string
     }
+
+    type AddMenuForm = Record<
+        keyof Pick<Products.Menu, 'name' | 'description'>,
+        string
+    >
 
     type InputNames<T> = Record<keyof T, keyof T>
 
+    // type Types = Items[keyof Items]
     type Types = Items[keyof Items]
     type Names = keyof Items
 }

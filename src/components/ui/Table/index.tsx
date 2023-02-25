@@ -8,7 +8,7 @@ import React from 'react'
 import styles from './index.module.scss'
 
 type TableProps = {
-    data: Nutrients.NamesToItems
+    data: Nutrients.NamesToItems | null
 }
 // const ITEMS_PER_ROW = 7
 // const arrangeInRows = (data: Nutrients.TableItem[], itemsPerRow: number) => {
@@ -19,44 +19,39 @@ type TableProps = {
 //     return rows
 // }
 const Table = ({ data }: TableProps) => {
-
-
     const getDailyNormPercent = (name: Nutrients.Name, value: number) => {
-        console.log(name === "sugar" && value)
+        console.log(name === 'sugar' && value)
         const norm = nutrientDailyNorm[name]
-        return (value / norm * 100).toFixed(1)
+        return ((value / norm) * 100).toFixed(1)
     }
 
+    if (!data) return null
     return (
-        <section className={classNames(
-            styles.container,
-        )}>
-            {
-                Object.entries(getNutrientTablesByCategory(data))
-                    .map(([nutrientGroupName, nutrients]) => (
-                        <table className={styles[nutrientGroupName]}>
-                            <tbody>
-                                {nutrients.map(item => (
-                                    <tr>
-                                        <th>
-                                            {getShortNutrientNameIfHas(item.name)}
-                                        </th>
-                                        <td>
-                                            {getDailyNormPercent(item.name, item.value)}%,{" "}
-                                            {item.value} {item.unit}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ))
-            }
+        <section className={classNames(styles.container)}>
+            {Object.entries(getNutrientTablesByCategory(data)).map(
+                ([nutrientGroupName, nutrients]) => (
+                    <table className={styles[nutrientGroupName]}>
+                        <tbody>
+                            {nutrients.map((item) => (
+                                <tr>
+                                    <th>
+                                        {getShortNutrientNameIfHas(item.name)}
+                                    </th>
+                                    <td>
+                                        {getDailyNormPercent(
+                                            item.name,
+                                            item.value
+                                        )}
+                                        %, {item.value} {item.unit}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                )
+            )}
         </section>
     )
-
-
 }
 
 export default Table
-
-

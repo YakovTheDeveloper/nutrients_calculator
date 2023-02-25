@@ -5,7 +5,7 @@ import styles from './index.module.scss'
 type FormProps = {
     children: ReactNode
     errors: Record<string, string>
-    heading: string
+    heading?: string
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     showErrors: boolean
     success: boolean
@@ -29,7 +29,7 @@ const Form = ({
 
     return (
         <div className={styles.loginWrapper}>
-            <span className={styles.formTypeName}>{heading}</span>
+            {heading && <span className={styles.formTypeName}>{heading}</span>}
             <form onSubmit={onSubmit}>
                 {children}
                 <div>

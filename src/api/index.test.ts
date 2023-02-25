@@ -20,7 +20,7 @@ describe('API', () => {
             result: {
                 email: mockUser.email,
             },
-            reason: '',
+            detail: '',
         })
     })
 })
