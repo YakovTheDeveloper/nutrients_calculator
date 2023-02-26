@@ -1,10 +1,11 @@
 import React from 'react'
-import { login } from '@api'
 import Form from '@forms/Form'
 import useForm from '@hooks/useForm'
 import Input from '@ui/Input/Input'
 import styles from './index.module.scss'
 import { useUserStore } from '@data/user'
+import { fetchLogin } from '@api/methods'
+import { setToken } from '@api/localStorage'
 
 const inputNames: Form.InputNames<Form.LoginForm> = {
     email: 'email',
@@ -20,11 +21,9 @@ const LoginForm = () => {
     const { setUser } = useUserStore()
 
     const loginHandler = async (payload: Form.LoginForm) => {
-        const result = await login(payload)
-        if (result.hasError === false) {
-            setUser({ data: result.result })
-        }
-        return result
+        const response = await fetchLogin(payload)
+        setToken(response.result.token)
+        setUser({ data: response.result })
     }
 
     const {

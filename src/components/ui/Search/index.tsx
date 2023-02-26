@@ -1,3 +1,4 @@
+import { fetchProductList } from '@api/methods'
 import { apiBaseAddress } from '@constants/api'
 import { useProductStore } from '@data/products'
 import { useKeyPressed } from '@hooks/useKeyPress'
@@ -24,7 +25,6 @@ const Search = ({}: SearchProps) => {
         const handler = (e) => {
             const target = e.target as HTMLElement
             if (target?.contains(productList.current)) setShowList(false)
-            console.log('lol')
         }
         document.addEventListener('click', handler)
         return () => {
@@ -37,12 +37,9 @@ const Search = ({}: SearchProps) => {
     }
 
     const get = () => {
-        console.log(`${apiBaseAddress}/polls/get_product/?name=${searchText}`)
-        fetch(`${apiBaseAddress}/polls/get_product/?name=${searchText}`)
-            .then((res) => res.json())
-            .then((res: { result: Products.Item[] }) => {
-                setData(res.result)
-            })
+        fetchProductList({ name: searchText })
+            .then((res) => setData(res.result))
+            .catch((err) => console.log(err))
     }
     useKeyPressed('Enter', get)
 

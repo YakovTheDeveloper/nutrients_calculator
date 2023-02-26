@@ -1,5 +1,7 @@
-import { nutrientNameNormalized } from "@constants/nutrients"
+import { nutrientNameNormalized } from '@constants/nutrients'
 
-export const getShortNutrientNameIfHas = (name: keyof Nutrients.NamesToItems) => {
+export const getShortNutrientNameIfHas = (
+    name: keyof Nutrients.NamesToItems
+) => {
     return nutrientNameNormalized[name] || name
 }

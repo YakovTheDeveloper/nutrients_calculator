@@ -1,4 +1,4 @@
-import { removeToken } from '@api'
+import { removeToken } from '@api/localStorage'
 import { ReactNode } from 'react'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'

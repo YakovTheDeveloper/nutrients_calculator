@@ -1,4 +1,4 @@
-import { getToken, setToken } from '@api'
+import { getToken, setToken } from '@api/localStorage'
 import axios from 'axios'
 
 const mockUser = {

@@ -12,16 +12,12 @@ const useForm = <Form>(
     submitCallback: (payload: Form) => Promise<Api.Result>,
     init: Form
 ) => {
-    // const initialFormValue = initialFormValues[form]
     const [formData, setFormData] = useState(init)
     const [errors, setErrors] = useState<Record<string, string>>({})
-    // const [responseErrors, setResponseErrors] = useState<
-    //     Record<string, string>
-    // >({})
     const [showErrors, setShowErrors] = useState(false)
     const [success, setSuccess] = useState(false)
 
-    console.log('formData', formData)
+    // console.log('formData', formData)
 
     const clearAllErrors = () => setErrors({})
 
@@ -56,49 +52,43 @@ const useForm = <Form>(
         }
     }
 
-    useEffect(() => {
-        let timeout: NodeJS.Timeout
-        if (success) timeout = setTimeout(() => setSuccess(false), 2500)
-        return () => clearTimeout(timeout)
-    }, [success])
-
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-
-        //separate validation errorrs from server errors
-
-        // const atLeastOneError = Object.values(errors).some((key) => key !== '')
         const atLeastOneValidationError = Object.entries(errors).some(
             ([key, value]) => value !== '' && key !== RESPONSE_ERROR_KEY
         )
 
         if (atLeastOneValidationError) return
 
-        const response = await submitCallback(formData)
-        if (response.hasError) {
-            console.log('ERROR', response)
+        try {
+            await submitCallback(formData)
+            setFormData(init)
+            setSuccess(true)
+        } catch (error) {
             setShowErrors(true)
             setErrors((prev) => ({
                 ...prev,
-                [RESPONSE_ERROR_KEY]: response.detail,
+                [RESPONSE_ERROR_KEY]: error as string,
             }))
             return
         }
-        setFormData(init)
-        setSuccess(true)
 
-        // const result = submitCallback(formData).then((data) => {
-        //     if (data.hasError) {
-        //         setShowErrors(true)
-        //         setErrors((prev) => ({
-        //             ...prev,
-        //             responseError: data.detail,
-        //         }))
-        //     }
-        //     return data
-
-        // })
+        // if (response.hasError) {
+        //     console.log('ERROR', response)
+        //     setShowErrors(true)
+        //     setErrors((prev) => ({
+        //         ...prev,
+        //         [RESPONSE_ERROR_KEY]: response.detail,
+        //     }))
+        //     return
+        // }
     }
+
+    useEffect(() => {
+        let timeout: NodeJS.Timeout
+        if (success) timeout = setTimeout(() => setSuccess(false), 2500)
+        return () => clearTimeout(timeout)
+    }, [success])
 
     return {
         onChange,

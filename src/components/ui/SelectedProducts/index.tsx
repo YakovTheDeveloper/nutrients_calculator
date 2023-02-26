@@ -1,5 +1,7 @@
 import { useProductStore } from '@data/products'
+import Button from '@ui/Button'
 import React, { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
 
 type SelectedProductsProps = {
@@ -39,6 +41,9 @@ const ListItem = ({
                     if (+e.target.value === 0) setMessage('set quantity please')
                 }}
             />
+            <NavLink to={`product/${item.id}`} state={item}>
+                Info
+            </NavLink>
             {`${item.name} (${item.state})`}
             <span>{message}</span>
             <button onClick={() => remove(item)}>x</button>

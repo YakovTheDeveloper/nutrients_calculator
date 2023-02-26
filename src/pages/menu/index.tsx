@@ -1,10 +1,10 @@
-import { del } from '@api'
 import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
 import Table from '@ui/Table'
 import React from 'react'
 import styles from './index.module.scss'
 import { shallow } from 'zustand/shallow'
+import { fetchMenuDelete } from '@api/methods'
 
 const Menu = () => {
     const { menus, removeMenu } = useUserStore(
@@ -16,12 +16,12 @@ const Menu = () => {
     )
 
     async function deleteMenu(id: string | number) {
-        const result = await del(`/products/menu/${id}/`)
-        if (result.hasError) {
-            console.error('Error deleting menu', result)
-            return
+        try {
+            await fetchMenuDelete({ id })
+            removeMenu(id)
+        } catch (error) {
+            console.error(error)
         }
-        removeMenu(id)
     }
 
     console.log('menus from page', menus)
