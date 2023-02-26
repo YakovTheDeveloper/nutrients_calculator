@@ -1,7 +1,37 @@
-.container{
-   
+.container {
 }
 
-.calculateBtn{
+.calculateBtn {
+}
 
+.loader {
+  height: 8px;
+  position: relative;
+  width: 1068px;
+  background: black;
+
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #fdfeff;
+  background: linear-gradient(to right, #5d63b3 8%, #7e82c7 38%, #5d66da 54%);
+  background-size: 1000px 640px;
+
+  position: relative;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -1068px 0;
+  }
+  100% {
+    background-position: 1068px 0;
+  }
+}
+
+.no {
+  animation: none;
+  background: gainsboro;
 }

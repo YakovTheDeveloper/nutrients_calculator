@@ -10,6 +10,8 @@ declare namespace Nutrients {
     // rename table to nutrient or something
     export type TableItem = Pick<Item, 'name' | 'value' | 'unit'>
     export type item = Pick<Item, 'name' | 'value' | 'unit'>
+    export type Items = item[]
+
     // export type TableItems = Record<string, TableItem>
 
     // export type NameNormalized = Partial<Record<keyof TableItems, string>>
@@ -102,12 +104,12 @@ declare namespace Nutrients {
 declare namespace Api {
     export type Response<T> = {
         result: T
-        detail: string
+        detail?: string
     }
     export type urls = 'login/'
 
     export type Result<T> = {
-        result: T
+        data: T
         hasError: boolean
         detail: string
     }
@@ -142,10 +144,12 @@ declare namespace Products {
         name: string
         state: string
         category: string
-        nutrients: Nutrients.NamesToData<Nutrients.Item>
+        nutrients: Nutrients.NamesToItems
     }
 
     type Id = number
+    type IdToItemMapping = Record<Id, Item>
+
     export interface Item {
         id: number
         name: string

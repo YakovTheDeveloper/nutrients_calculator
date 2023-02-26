@@ -1,10 +1,6 @@
 import { apiBaseAddress } from '@constants/api'
-import axios, {
-    AxiosError,
-    AxiosHeaders,
-    AxiosRequestConfig,
-} from 'axios'
-import { getToken} from './localStorage'
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios'
+import { getToken } from './localStorage'
 
 type QueryParams = Record<string, string | string[] | number | undefined>
 
@@ -31,7 +27,7 @@ type SendRequestParameters = {
     payload?: Record<string, unknown>
 }
 
-export async function sendRequest2<T>({
+export async function sendRequest<T>({
     url,
     query,
     method = 'GET',

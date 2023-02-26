@@ -5,10 +5,11 @@ import LoginForm from '@forms/LoginForm'
 import Modal from '@common/Modal'
 import { useModalStore } from '@data/modal'
 import SignupForm from '@forms/SignupForm'
-import { getToken, getMe, get } from '@api'
 import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
 import { shallow } from 'zustand/shallow'
+import { getToken } from '@api/localStorage'
+import { fetchMe, fetchUserMenu } from '@api/methods'
 
 export const App = () => {
     const { isOpened, closeModal, modalContent, openModal } = useModalStore()
@@ -23,8 +24,21 @@ export const App = () => {
         shallow
     )
 
-    const logoutHandler = () => {
-        clearStore()
+    const fetchMeHandler = async () => {
+        try {
+            const response = await fetchMe()
+            console.log('response', response)
+            const userData = response.result
+            console.log('res.result', response.result)
+            console.log('userData', userData)
+            setUser({
+                data: {
+                    email: userData.email,
+                },
+            })
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     useEffect(() => {
@@ -32,46 +46,55 @@ export const App = () => {
         if (user) return
         if (!getToken()) return
 
-        getMe().then((res) => {
-            console.log('res', res)
-            if (res.hasError) return
-            const userData = res.result
-            console.log('res.result', res.result)
-            console.log('userData', userData)
-            setUser({
-                data: {
-                    email: userData.email,
-                },
-            })
-        })
+        fetchMeHandler()
+
+        // getMe().then((res) => {
+        //     console.log('res', res)
+        //     if (res.hasError) return
+        //     const userData = res.result
+        //     console.log('res.result', res.result)
+        //     console.log('userData', userData)
+        //     setUser({
+        //         data: {
+        //             email: userData.email,
+        //         },
+        //     })
+        // })
     }, [user])
 
-    useEffect(() => {
-        if (!user) return
-        get('products/menu/').then((res) => {
-            console.log('response', res)
-            if (res.hasError) return
-            const menus: Products.Menu[] = res.result
+    const getMenuHandler = async () => {
+        try {
+            const response = await fetchUserMenu()
+            const menus = response.result
             console.log('response result', menus)
             // const categories = getNutrientTablesByCategory(menu.nutrients)
             setMenus(menus)
-            // console.log('going to add', {
-            //     id: menu.id,
-            //     name: menu.name,
-            //     description: menu.description,
-            //     nutrients: menu.nutrients,
-            //     products: menu.products,
-            // })
-            // addMenu({
-            //     id: menu.id,
-            //     name: menu.name,
-            //     description: menu.description,
-            //     nutrients: menu.nutrients,
-            //     products: menu.products,
-            // })
-        })
-        // depend on user.data
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    useEffect(() => {
+        if (!user) return
+        getMenuHandler()
     }, [user])
+
+    // console.log('going to add', {
+    //     id: menu.id,
+    //     name: menu.name,
+    //     description: menu.description,
+    //     nutrients: menu.nutrients,
+    //     products: menu.products,
+    // })
+    // addMenu({
+    //     id: menu.id,
+    //     name: menu.name,
+    //     description: menu.description,
+    //     nutrients: menu.nutrients,
+    //     products: menu.products,
+    // })
+
+    // depend on user.data
 
     return (
         <div>

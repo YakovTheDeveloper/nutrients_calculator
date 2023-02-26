@@ -2,9 +2,11 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 interface ProductState {
+    products: Products.IdToItemMapping
     selectedProducts: Data.SelectedProducts
     needToRecalculate: boolean
     setNeedToRecalculate: (status: boolean) => void
+    addProduct: (productMapping: Products.IdToItemMapping) => void
     addProductToSelected: (product: Data.SelectedProduct) => void
     clearSelectedProducts: () => void
     removeProductFromSelected: (product: Data.SelectedProduct) => void
@@ -21,8 +23,16 @@ export const useProductStore = create<ProductState>()(
     devtools(
         (set) => ({
             selectedProducts: {},
+            products: {},
             totalNutrients: null,
             needToRecalculate: false,
+            addProduct: (productMapping) =>
+                set((state) => ({
+                    products: {
+                        ...state.products,
+                        ...productMapping,
+                    },
+                })),
             addProductToSelected: (product) =>
                 set((state) => ({
                     selectedProducts: {

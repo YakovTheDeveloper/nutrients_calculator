@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import Menu from '@pages/menu'
 import Layout from '@layout/Layout';
+import ProductPage from '@pages/product';
 
 const router = createBrowserRouter([
     {
@@ -21,8 +22,13 @@ const router = createBrowserRouter([
                 path: "menu/",
                 element: <Menu />,
             },
+            {
+                path: "product/:id",
+                element: <ProductPage />,
+            },
         ],
     },
+
 ])
 
 const domNode = document.getElementById('root')

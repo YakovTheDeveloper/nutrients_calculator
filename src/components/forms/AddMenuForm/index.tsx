@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { createDefaultResult, post } from '@api'
 import Form from '@forms/Form'
 import useForm from '@hooks/useForm'
 import Input from '@ui/Input/Input'
@@ -9,6 +8,8 @@ import { useProductStore } from '@data/products'
 import { initNutrients } from '@constants/nutrients'
 import { getNutrientTablesByCategory } from '@helpers/mappers'
 import { isEmpty } from '@helpers/isEmpty'
+import { createIdToQuantityMapping } from '@helpers/createIdToQuantityMapping'
+import { fetchAddUserMenu } from '@api/methods'
 const inputNames: Form.InputNames<Form.AddMenuForm> = {
     name: 'name',
     description: 'description',
@@ -19,51 +20,28 @@ const init: Form.AddMenuForm = {
     description: '',
 }
 
-const createIdToQuantityParamsQueryList = (products: Data.SelectedProducts) => {
-    return Object.entries(products).reduce(
-        (acc: string[], [id, { quantity }]) => {
-            acc.push(`id${id}=${quantity}`)
-            return acc
-        },
-        []
-    )
-}
-
 const AddMenuForm = ({ cornerButton }: any) => {
     const { addMenu } = useUserStore()
     const selectedProducts = useProductStore((state) => state.selectedProducts)
 
     const totalNutrients = useProductStore((state) => state.totalNutrients)
 
-    async function addMenuHandler({
-        name,
-        description,
-    }: Form.AddMenuForm): Promise<Api.Result> {
+    async function addMenuHandler({ name, description }: Form.AddMenuForm) {
         if (isEmpty(selectedProducts)) {
-            const result = createDefaultResult()
-            result.detail = 'No products selected'
-            return result
+            return Promise.reject('No products selected')
         }
-        const params = [
-            ...createIdToQuantityParamsQueryList(selectedProducts),
-            `name=${name}`,
-            `description=${description}`,
-        ].join('&')
-
-        const result = await post(`products/menu/?${params}`)
-        if (result.hasError === false) {
-            console.log('result', result)
-            addMenu({
-                id: result.result.menuId,
-                name,
-                description: description,
-                products: selectedProducts,
-                nutrients: totalNutrients,
-                // nutrients: getNutrientTablesByCategory(initNutrients),
-                //todo add nutrients to store
-            })
-        }
-        return result
+        const response = await fetchAddUserMenu({
+            name,
+            description,
+            ids: createIdToQuantityMapping(selectedProducts),
+        })
+        addMenu({
+            id: response.result.menuId,
+            name,
+            description: description,
+            products: selectedProducts,
+            nutrients: totalNutrients,
+        })
     }
 
     const {
