@@ -1,0 +1,22 @@
+.listItem {
+    display: flex;
+    gap: 7px;
+    cursor: pointer;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.9);
+    transition: display 0.6s linear;
+    padding-left: 10px;
+
+
+    &:hover {
+        background-color: rgb(204, 204, 204);
+        transition: background-color 0.2s linear;
+        border-radius: 5px;
+    }
+
+}
+
+.activeItem {
+    background-color: rgb(204, 204, 204);
+    transition: background-color 0.2s linear;
+}

@@ -68,7 +68,6 @@ const SearchAndCalculate = () => {
             },
             '?'
         )
-        console.log('idWithQuantityParams', idWithQuantityParams)
         get(`polls/calculate_nutrients/${idWithQuantityParams}`).then((res) => {
             if (res.hasError) {
                 return
@@ -96,9 +95,6 @@ const SearchAndCalculate = () => {
     const isCalculateDisabled =
         !isAnyProductSelected || isAnyProductWithoutValue
 
-    console.log('isAnyProductSelected', isAnyProductSelected)
-    console.log('isCalculateDisabled', isCalculateDisabled)
-
     const recalculateNeedMessage =
         totalNutrients !== null &&
         needToRecalculate === true &&
@@ -112,7 +108,9 @@ const SearchAndCalculate = () => {
         <div className={styles.container}>
             <Search />
             {isAnyProductSelected ? (
-                <Button onClick={clearDataHandler}>Clear all</Button>
+                <Button onClick={clearDataHandler} size="medium" bordered>
+                    Clear all
+                </Button>
             ) : null}
             <SelectedProducts data={selectedProducts} />
             <div style={{ position: 'relative' }}>
@@ -159,6 +157,8 @@ const SearchAndCalculate = () => {
                     disabled={isCalculateDisabled}
                     className={styles.calculateBtn}
                     onClick={() => getData()}
+                    size="medium"
+                    bordered
                 >
                     Calculate
                 </Button>
@@ -166,7 +166,8 @@ const SearchAndCalculate = () => {
             <span>{recalculateNeedMessage}</span>
             <span>
                 {' '}
-                {isCalculateDisabled && 'Use search, then select your products'}
+                {isAnyProductSelected &&
+                    'To calculate nutrients, enter the required amount of the products'}
             </span>
             <Table data={totalNutrients} />
         </div>

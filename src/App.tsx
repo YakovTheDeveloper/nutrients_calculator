@@ -53,39 +53,16 @@ export const App = () => {
             if (res.hasError) return
             const menus: Products.Menu[] = res.result
             console.log('response result', menus)
-            // const categories = getNutrientTablesByCategory(menu.nutrients)
             setMenus(menus)
-            // console.log('going to add', {
-            //     id: menu.id,
-            //     name: menu.name,
-            //     description: menu.description,
-            //     nutrients: menu.nutrients,
-            //     products: menu.products,
-            // })
-            // addMenu({
-            //     id: menu.id,
-            //     name: menu.name,
-            //     description: menu.description,
-            //     nutrients: menu.nutrients,
-            //     products: menu.products,
-            // })
+          
         })
-        // depend on user.data
     }, [user])
 
     return (
         <div>
-            <br />
-
-            <button onClick={() => openModal(<SignupForm />)}>Sign Up</button>
-            <br />
-            <br />
-            <button onClick={() => openModal(<LoginForm />)}>Log in</button>
             {isOpened && <Modal onClose={closeModal}>{modalContent}</Modal>}
-            <SignupForm />
-            <LoginForm />
             <SearchAndCalculate />
-            {/* <Table /> */}
+
         </div>
     )
 }

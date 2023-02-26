@@ -1,3 +1,4 @@
+import Button from '@ui/Button'
 import React, { ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './index.module.scss'
@@ -26,7 +27,9 @@ const Modal = ({ children, onClose }: ModalProps) => {
     })
     const child = (
         <>
-            <div className={styles.modalContainer}>{children}</div>
+            <div className={styles.modalContainer}>
+                <div className={styles.inner}>{children}</div>
+            </div>
             <div className={styles.overlay} onClick={onClose}></div>
         </>
     )
