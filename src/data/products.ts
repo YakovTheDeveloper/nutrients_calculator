@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-interface ProductState {
+export interface ProductState {
     products: Products.IdToItemMapping
     selectedProducts: Data.SelectedProducts
     needToRecalculate: boolean
@@ -18,6 +18,7 @@ interface ProductState {
     setTotalNutrients: (nutrients: Nutrients.NamesToItems) => void
     clearTotalNutrients: () => void
 }
+
 
 export const useProductStore = create<ProductState>()(
     devtools(

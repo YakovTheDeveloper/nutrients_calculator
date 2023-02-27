@@ -7,70 +7,78 @@ import styles from './index.module.scss'
 type SelectedProductsProps = {
     data?: Data.SelectedProducts
     button?: React.ReactElement | null
+    remove: (product: Data.SelectedProduct) => void
+    setQuantity: (product: Data.SelectedProduct, quantity: number) => void
+    // | ((
+    //       set: React.Dispatch<React.SetStateAction<Data.SelectedProducts>>
+    //   ) => (product: Data.SelectedProduct, quantity: number) => void)
+    setNeedToRecalculate: (status: boolean) => void
+    selectedProducts: Data.SelectedProducts
+    editMode: boolean
 }
 
 const ListItem = ({
     key,
-    item,
+    product,
     remove,
     setQuantity,
     setNeedToRecalculate,
     products,
+    editMode,
 }: any) => {
-    // const remove = useProductStore((state) => state.removeProductFromSelected)
-    // const setQuantity = useProductStore((state) => state.setProductQuantity)
-    // const setNeedToRecalculate = useProductStore(
-    //     (state) => state.setNeedToRecalculate
-    // )
-    // const products = useProductStore((state) => state.selectedProducts)
     const [message, setMessage] = useState('')
-
     console.log('render')
+    // console.log('products s s', products)
+    console.log('products s s', product)
     return (
         <li key={key}>
             <input
+                disabled={editMode === false}
                 type="number"
                 min="0"
-                value={products[item.id].quantity.toString()}
+                value={product.quantity?.toString()}
                 onChange={(e) => {
                     if (e.target.value.length > 6) return
-                    setQuantity(item, +e.target.value)
+                    setQuantity(product, +e.target.value)
                     setNeedToRecalculate(true)
                 }}
                 onBlur={(e) => {
                     if (+e.target.value === 0) setMessage('set quantity please')
                 }}
             />
-            <NavLink to={`product/${item.id}`} state={item}>
+            <NavLink to={`product/${product.id}`} state={product}>
                 Info
             </NavLink>
-            {`${item.name} (${item.state})`}
+            {`${product.name} (${product.state})`}
             <span>{message}</span>
-            <button onClick={() => remove(item)}>x</button>
+            <button onClick={() => remove(product)}>x</button>
         </li>
     )
 }
 
-const SelectedProducts = ({ data, button }: SelectedProductsProps) => {
-    const remove = useProductStore((state) => state.removeProductFromSelected)
-    const setQuantity = useProductStore((state) => state.setProductQuantity)
-    const setNeedToRecalculate = useProductStore(
-        (state) => state.setNeedToRecalculate
-    )
-    const products = useProductStore((state) => state.selectedProducts)
-
+const SelectedProducts = ({
+    data,
+    button,
+    remove,
+    setQuantity,
+    setNeedToRecalculate,
+    selectedProducts,
+    editMode = true,
+}: SelectedProductsProps) => {
+    console.log('dataaaaaaa', data)
     return (
         <div className={styles.container}>
             <ul>
                 {data &&
-                    Object.values(data).map((item) => (
+                    Object.values(data).map((product) => (
                         <ListItem
-                            item={item}
-                            key={item.id}
+                            editMode={editMode}
+                            product={product}
+                            key={product.id}
                             remove={remove}
                             setQuantity={setQuantity}
                             setNeedToRecalculate={setNeedToRecalculate}
-                            products={products}
+                            products={selectedProducts}
                         />
                     ))}
             </ul>

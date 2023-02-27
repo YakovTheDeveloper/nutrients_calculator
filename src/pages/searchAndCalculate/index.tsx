@@ -11,6 +11,7 @@ import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
 import classNames from 'classnames'
 import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
 import { createIdToQuantityMapping } from '@helpers/createIdToQuantityMapping'
+import { findIdCrossings } from '@helpers/findIdCrossings'
 
 const SearchAndCalculate = () => {
     const {
@@ -21,6 +22,10 @@ const SearchAndCalculate = () => {
         addProduct,
         products,
         setTotalNutrients,
+        totalNutrients,
+        needToRecalculate,
+        setNeedToRecalculate,
+        setProductQuantity,
     } = useProductStore((state) => ({
         removeProductFromSelected: state.removeProductFromSelected,
         clearSelectedProducts: state.clearSelectedProducts,
@@ -29,25 +34,20 @@ const SearchAndCalculate = () => {
         products: state.products,
         selectedProducts: state.selectedProducts,
         setTotalNutrients: state.setTotalNutrients,
+        totalNutrients: state.totalNutrients,
+        needToRecalculate: state.needToRecalculate,
+        setNeedToRecalculate: state.setNeedToRecalculate,
+        setProductQuantity: state.setProductQuantity,
     }))
-    const totalNutrients = useProductStore((state) => state.totalNutrients)
-    const setNeedToRecalculate = useProductStore(
-        (state) => state.setNeedToRecalculate
-    )
-    const needToRecalculate = useProductStore(
-        (state) => state.needToRecalculate
-    )
 
     const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
 
     const getData = async () => {
-        const findIdCrossings = (firstArr: string[], secondArr: string[]) =>
-            firstArr.filter((value) => !secondArr.includes(value))
-
         const productIdsToFetch = findIdCrossings(
             Object.keys(selectedProducts),
             Object.keys(products)
         )
+
         if (productIdsToFetch.length === 0) {
             console.info('      No crossings, can use offline calculate')
             const totalNutrients = calculateTotalNutrients(
@@ -59,10 +59,10 @@ const SearchAndCalculate = () => {
             return
         }
 
-        const ids = Object.keys(selectedProducts)
+        const ids = Object.keys(selectedProducts).toString()
         try {
-            const result = await fetchProductListById({ ids })
-            addProduct(result)
+            const response = await fetchProductListById({ ids })
+            addProduct(response.result)
         } catch (error) {
             console.error(error)
             return
@@ -107,7 +107,13 @@ const SearchAndCalculate = () => {
                 <Button onClick={clearDataHandler}>Clear all</Button>
             ) : null}
 
-            <SelectedProducts data={selectedProducts} />
+            <SelectedProducts
+                data={selectedProducts}
+                remove={removeProductFromSelected}
+                selectedProducts={selectedProducts}
+                setNeedToRecalculate={setNeedToRecalculate}
+                setQuantity={setProductQuantity}
+            />
 
             <div style={{ position: 'relative' }}>
                 {isAnyProductSelected && totalNutrients ? (
