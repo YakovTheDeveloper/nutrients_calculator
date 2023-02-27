@@ -4,14 +4,14 @@ type ProductListParams = {
     name: string
 }
 type ProductListByIdParams = {
-    ids: string[] | string | number
+    ids: string | number
 }
 
-type LoginParams = {
+type LoginOptions = {
     email: string
     password: string
 }
-type SignUpParams = {
+type SignUpOptions = {
     email: string
     password: string
 }
@@ -21,7 +21,7 @@ type CalculationParams = {
 }
 
 type MenuDeleteOption = {
-    id: number | string
+    id: number
 }
 
 type addMenuParams = {
@@ -53,18 +53,18 @@ export function fetchProductList(options: ProductListParams) {
     })
 }
 
-export function fetchLogin(options: LoginParams) {
+export function fetchLogin(options: LoginOptions) {
     return sendRequest<AuthResponse>({
         url: 'login/',
         method: 'POST',
-        query: options,
+        payload: options,
     })
 }
-export function fetchSignup(options: SignUpParams) {
+export function fetchSignup(options: SignUpOptions) {
     return sendRequest<AuthResponse>({
         url: 'signup/',
         method: 'POST',
-        query: options,
+        payload: options,
     })
 }
 
