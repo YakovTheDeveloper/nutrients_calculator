@@ -5,6 +5,8 @@ import React from 'react'
 import styles from './index.module.scss'
 import { shallow } from 'zustand/shallow'
 import { fetchMenuDelete } from '@api/methods'
+import OneMenu from './OneMenu'
+import { useProductStore } from '@data/products'
 
 const Menu = () => {
     const { menus, removeMenu, user } = useUserStore(
@@ -16,7 +18,33 @@ const Menu = () => {
         shallow
     )
 
-    async function deleteMenu(id: string | number) {
+    const {
+        clearSelectedProducts,
+        removeProductFromSelected,
+        selectedProducts,
+        clearTotalNutrients,
+        addProduct,
+        products,
+        setTotalNutrients,
+        totalNutrients,
+        needToRecalculate,
+        setNeedToRecalculate,
+        setProductQuantity,
+    } = useProductStore((state) => ({
+        removeProductFromSelected: state.removeProductFromSelected,
+        clearSelectedProducts: state.clearSelectedProducts,
+        clearTotalNutrients: state.clearTotalNutrients,
+        addProduct: state.addProduct,
+        products: state.products,
+        selectedProducts: state.selectedProducts,
+        setTotalNutrients: state.setTotalNutrients,
+        totalNutrients: state.totalNutrients,
+        needToRecalculate: state.needToRecalculate,
+        setNeedToRecalculate: state.setNeedToRecalculate,
+        setProductQuantity: state.setProductQuantity,
+    }))
+
+    async function deleteMenu(id: number) {
         try {
             await fetchMenuDelete({ id })
             removeMenu(id)
@@ -25,19 +53,16 @@ const Menu = () => {
         }
     }
 
-    console.log('menus from page', menus)
     return (
         <div className={styles.menu}>
             {!user && <h2>Log in to see or create your menus</h2>}
             {menus.map((menu) => {
                 return (
-                    <>
-                        <Button onClick={() => deleteMenu(menu.id)}>
-                            Delete menu
-                        </Button>
-                        <h2>{menu.name}</h2>
-                        <Table data={menu.nutrients}></Table>
-                    </>
+                    <OneMenu
+                        key={menu.id}
+                        menu={menu}
+                        deleteMenu={deleteMenu}
+                    />
                 )
             })}
         </div>

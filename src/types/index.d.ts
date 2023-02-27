@@ -166,6 +166,18 @@ declare namespace Products {
     }
 }
 
+declare namespace Menus {
+    type Id = number
+    export interface Item {
+        id: number
+        name: string
+        description: string
+        products: Data.SelectedProducts
+        nutrients: Nutrients.NamesToItems
+    }
+    type IdToItemMapping = Record<Id, Item>
+}
+
 // declare namespace User {
 //     export interface Products {
 //         'id': number,
@@ -179,7 +191,7 @@ declare namespace Data {
     export interface SelectedProduct extends Products.Item {
         quantity: number
     }
-    type Id = string
+    type Id = number
     export type SelectedProducts = Record<Id, SelectedProduct>
 }
 
