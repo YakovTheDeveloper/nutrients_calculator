@@ -4,7 +4,6 @@ import classnames from 'classnames'
 
 type ButtonProps = {
     children: ReactNode
-    // type: 'logIn' | 'signIn' | 'submit' | 'search'
     size?: 'medium' | 'big' | 'small'
     bordered?: boolean
     hovered?: boolean

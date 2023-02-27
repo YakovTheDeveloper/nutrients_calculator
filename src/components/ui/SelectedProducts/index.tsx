@@ -25,10 +25,19 @@ const ListItem = ({
     // const products = useProductStore((state) => state.selectedProducts)
     const [message, setMessage] = useState('')
 
-    console.log('render')
     return (
         <li key={key}>
+            <div className={styles.itemName}>
+                {`${item.name} (${item.state})`}
+
+                <span className={styles.info}>
+                    <NavLink to={`product/${item.id}`} state={item}>
+                        info
+                    </NavLink>
+                </span>
+            </div>
             <input
+                className={styles.inputStyle}
                 type="number"
                 min="0"
                 value={products[item.id].quantity.toString()}
@@ -38,15 +47,15 @@ const ListItem = ({
                     setNeedToRecalculate(true)
                 }}
                 onBlur={(e) => {
-                    if (+e.target.value === 0) setMessage('set quantity please')
+                    if (+e.target.value === 0)
+                        setMessage(' Set quantity please')
                 }}
             />
-            <NavLink to={`product/${item.id}`} state={item}>
-                Info
-            </NavLink>
-            {`${item.name} (${item.state})`}
+            <button onClick={() => remove(item)} className={styles.clearBtn}>
+                delete
+            </button>
+
             <span>{message}</span>
-            <button onClick={() => remove(item)}>x</button>
         </li>
     )
 }

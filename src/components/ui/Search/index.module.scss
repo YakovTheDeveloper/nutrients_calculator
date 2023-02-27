@@ -14,37 +14,19 @@
 }
 
 
-.input {
-    font-size: 17px;
-    padding: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    &::placeholder {
-        color: #999;
-        font-style: italic;
-        font-size: 16px;
-    }
-
-}
-
 
 .list {
     position: absolute;
     background: var(--gray);
     right: 50%;
     transform: translate(50%, 0);
-    max-height: 600px;
-    padding: 15px;
+    padding: 7px 5px 15px 5px;
     overflow-y: scroll;
     width: 500px;
+    height: 700px;
     border-radius: 5px;
     margin-top: 10px;
+    z-index: 1;
 
 }
 

@@ -5,8 +5,12 @@ import styles from './index.module.scss'
 const Nav = () => {
     return (
         <nav className={styles.nav}>
-            <NavLink to="/">Main</NavLink>
-            <NavLink to="menu">Menu</NavLink>
+            <NavLink to="/" className={styles.link}>
+                Search
+            </NavLink>
+            <NavLink to="menu" className={styles.link}>
+                Menu
+            </NavLink>
         </nav>
     )
 }

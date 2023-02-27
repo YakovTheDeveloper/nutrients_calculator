@@ -7,18 +7,46 @@ type InputProps = {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     label?: string
     clear: () => void
-} & React.ComponentPropsWithoutRef<'input'>
+    size: 'medium' | 'big' | 'small'
+    name?: string
+    type: string
+    required?: boolean
+    onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void
+    placeholder?: string
+    // className: string
+}
 
-const Input = ({ value, onChange, label, clear, ...rest }: InputProps) => {
+const Input = ({
+    value,
+    onChange,
+    label,
+    clear,
+    size,
+    name,
+    type,
+    required,
+    onBlur,
+    placeholder,
+}: InputProps) => {
     return (
         <label className={styles.container}>
             {label ? <p className={styles.label}>{label}</p> : null}
-            <input value={value} onChange={onChange} {...rest} />
+            <input
+                value={value}
+                onChange={onChange}
+                className={styles[size]}
+                name={name}
+                type={type}
+                onBlur={onBlur}
+                required={required}
+                placeholder={placeholder}
+            />
             {value ? (
                 <Button
                     size="small"
                     onClick={clear}
                     className={styles.clearBtn}
+                    type="button"
                 >
                     x
                 </Button>

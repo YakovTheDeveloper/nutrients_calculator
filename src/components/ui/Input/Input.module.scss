@@ -1,12 +1,13 @@
 .container {
     position: relative;
+    display: block;
 }
 
 
 .clearBtn {
     position: absolute;
     padding: 5px;
-    top: 40px;
+    top: 30px;
     right: 10px;
     cursor: pointer;
 }
@@ -14,3 +15,40 @@
 .label {
     padding-bottom: 10px;
 }
+
+
+
+.medium {
+    font-size: 14px;
+    padding: 7px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.big {
+
+    font-size: 17px;
+    padding: 15px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    &::placeholder {
+        color: #999;
+        font-style: italic;
+        font-size: 16px;
+    }
+
+}
+
+
+.small {}

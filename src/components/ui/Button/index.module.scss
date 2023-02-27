@@ -51,6 +51,21 @@
 
 .small {
   padding: 5px;
+  border-radius: 5px;
+
+
+  &.bordered {
+    border: var(--border);
+
+  }
+
+  &.hovered {
+    &:hover {
+      border: 1px solid transparent;
+      box-shadow: var(--box-shadow);
+
+    }
+  }
 }
 
 

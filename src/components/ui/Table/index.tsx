@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 // import { initNutrients, nutrientDailyNorm } from '@constants/index'
 
 import { nutrientDailyNorm, initNutrients } from '@constants/nutrients'
@@ -6,6 +7,7 @@ import { getShortNutrientNameIfHas } from '@helpers/normalizers'
 import classNames from 'classnames'
 import React from 'react'
 import styles from './index.module.scss'
+import Indicator from './Indicator'
 
 type TableProps = {
     data: Nutrients.NamesToItems | null
@@ -20,13 +22,14 @@ type TableProps = {
 // }
 const Table = ({ data }: TableProps) => {
     const getDailyNormPercent = (name: Nutrients.Name, value: number) => {
-        console.log(name === 'sugar' && value)
         const norm = nutrientDailyNorm[name]
-        return ((value / norm) * 100).toFixed(1)
+        return Number(((value / norm) * 100).toFixed(1))
     }
 
     if (!data) return null
     return (
+        // Нет key in iterator
+
         <section className={classNames(styles.container)}>
             {Object.entries(getNutrientTablesByCategory(data)).map(
                 ([nutrientGroupName, nutrients]) => (
@@ -44,6 +47,12 @@ const Table = ({ data }: TableProps) => {
                                         )}
                                         %, {item.value} {item.unit}
                                     </td>
+                                    <Indicator
+                                        percent={getDailyNormPercent(
+                                            item.name,
+                                            item.value
+                                        )}
+                                    />
                                 </tr>
                             ))}
                         </tbody>

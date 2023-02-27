@@ -34,6 +34,7 @@ const Search = ({}: SearchProps) => {
 
     const handleClearClick = () => {
         setSearchText('')
+        setShowList(false)
     }
 
     const get = () => {
@@ -45,20 +46,20 @@ const Search = ({}: SearchProps) => {
 
     useEffect(() => {
         get()
-        setShowList(true)
+        if (searchText) setShowList(true)
     }, [searchText])
 
     return (
         <div className={styles.container}>
             <div className={styles.inputContainer}>
                 <Input
-                    className={styles.input}
                     type="text"
                     placeholder="Enter the product"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     clear={handleClearClick}
                     label="Search and select your products"
+                    size="big"
                 ></Input>
             </div>
 

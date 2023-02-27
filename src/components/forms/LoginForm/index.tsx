@@ -34,6 +34,7 @@ const LoginForm = () => {
         onChange,
         onSubmit,
         success,
+        setFormData,
     } = useForm<Form.LoginForm>('login', loginHandler, init)
 
     return (
@@ -52,10 +53,10 @@ const LoginForm = () => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData.email}
+                size="medium"
                 clear={() => {
-                    return
+                    setFormData((prev) => ({ ...prev, email: '' }))
                 }}
-                className={styles.loginInput}
             />
             <Input
                 label="Password"
@@ -65,10 +66,10 @@ const LoginForm = () => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData.password || ''}
+                size="medium"
                 clear={() => {
-                    return
+                    setFormData((prev) => ({ ...prev, password: '' }))
                 }}
-                className={styles.loginInput}
             />
         </Form>
     )

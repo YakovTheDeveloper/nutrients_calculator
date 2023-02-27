@@ -7,10 +7,11 @@ import { shallow } from 'zustand/shallow'
 import { fetchMenuDelete } from '@api/methods'
 
 const Menu = () => {
-    const { menus, removeMenu } = useUserStore(
+    const { menus, removeMenu, user } = useUserStore(
         (state) => ({
             menus: state.menus,
             removeMenu: state.removeMenu,
+            user: state.user,
         }),
         shallow
     )
@@ -27,6 +28,7 @@ const Menu = () => {
     console.log('menus from page', menus)
     return (
         <div className={styles.menu}>
+            {!user && <h2>Log in to see or create your menus</h2>}
             {menus.map((menu) => {
                 return (
                     <>

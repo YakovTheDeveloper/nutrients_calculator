@@ -96,9 +96,9 @@ export const App = () => {
     // depend on user.data
 
     return (
-        <div>
+        <section>
             {isOpened && <Modal onClose={closeModal}>{modalContent}</Modal>}
             <SearchAndCalculate />
-        </div>
+        </section>
     )
 }
