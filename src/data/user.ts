@@ -1,4 +1,5 @@
 import { removeToken } from '@api/localStorage'
+import { ProductIdToQuantityMapping } from '@api/methods'
 import { ReactNode } from 'react'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
@@ -11,6 +12,10 @@ interface UserState {
     setMenus: (menus: Products.Menu[]) => void
     addMenu: (menu: Products.Menu) => void
     removeMenu: (id: number | string) => void
+    patchMenu: (
+        id: number,
+        idToQuantityMapping: ProductIdToQuantityMapping
+    ) => void
     clearStore: () => void
 }
 
@@ -44,6 +49,26 @@ export const useUserStore = create<UserState>()(
                         (el) => el.id !== id
                     )
                     return { ...state, menus: menusWithoutDeleted }
+                }),
+            patchMenu: (id, idToQuantityMapping) =>
+                set((state) => {
+                    const menusWithPatched = state.menus.map((menu) => {
+                        if (menu.id !== id) return menu
+                        const newMenu = { ...menu }
+                        for (const productId in menu.products) {
+                            if (productId in idToQuantityMapping) {
+                                const quantity = idToQuantityMapping[productId]
+                                if (quantity === 0)
+                                    delete newMenu.products[+productId]
+                                else
+                                    newMenu.products[+productId].quantity =
+                                        quantity
+                            }
+                        }
+                        return newMenu
+                    })
+                    console.log('menusWithPatched', menusWithPatched)
+                    return { ...state, menus: menusWithPatched }
                 }),
             clearStore: () =>
                 set((state) => {

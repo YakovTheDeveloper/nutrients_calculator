@@ -80,6 +80,7 @@ module.exports = {
         ],
     },
     devServer: {
+        historyApiFallback: true,
         open: true,
         static: './dist',
         hot: true

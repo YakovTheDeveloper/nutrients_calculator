@@ -1,5 +1,6 @@
-import { fetchProductListById } from '@api/methods'
+import { fetchProductListById, ProductIdToQuantityMapping } from '@api/methods'
 import { ProductState, useProductStore } from '@data/products'
+import { useUserStore } from '@data/user'
 import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
 import { deepCopy } from '@helpers/deepCopy'
 import { findIdCrossings } from '@helpers/findIdCrossings'
@@ -7,13 +8,18 @@ import Button from '@ui/Button'
 import SelectedProducts from '@ui/SelectedProducts'
 import Table from '@ui/Table'
 import React, { useEffect, useReducer, useState } from 'react'
+import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 
 type OneMenuProps = {
     menu: Products.Menu
     deleteMenu(id: string | number): Promise<void>
+    patchMenu(
+        id: number,
+        idtToQuantityMapping: ProductIdToQuantityMapping
+    ): Promise<void>
 }
 
-const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
+const OneMenu = ({ menu, deleteMenu, patchMenu }: OneMenuProps) => {
     // const products = deepCopy<Data.SelectedProducts>(menu.products)
 
     const { products, addProduct } = useProductStore((state) => ({
@@ -21,15 +27,20 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
         addProduct: state.addProduct,
     }))
 
-    const [selectedProducts, setSelectedProducts] =
-        useState<Data.SelectedProducts>(() =>
-            deepCopy<Data.SelectedProducts>(menu.products)
-        )
+    const menus = useUserStore((state) => state.menus)
 
-    const [totalNutrients, setTotalNutrients] =
-        useState<Nutrients.NamesToItems>(() =>
-            deepCopy<Nutrients.NamesToItems>(menu.nutrients)
-        )
+    useEffect(() => {
+        if (!menu) return
+        setSelectedProducts(deepCopy(menu.products))
+    }, [menu])
+
+    const [selectedProducts, setSelectedProducts] = useState(() =>
+        deepCopy<Data.SelectedProducts>(menu.products)
+    )
+
+    const [totalNutrients, setTotalNutrients] = useState(() =>
+        deepCopy<Nutrients.NamesToItems>(menu.nutrients)
+    )
 
     const [editMode, setEditMode] = useState(false)
     const [showSaveButton, setShowSaveButton] = useState(false)
@@ -63,6 +74,30 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
         })
     }
 
+    function getChangedProducts(): ProductIdToQuantityMapping {
+        console.log('getChangedProducts')
+        const was = menus.find(({ id }) => id === menu.id)?.products
+        if (!was) return {}
+        const now = selectedProducts
+        const idToQuantityMapping: ProductIdToQuantityMapping = {}
+
+        for (const id in now) {
+            if (now[id].quantity === was[id].quantity) continue
+            idToQuantityMapping[id] = now[id].quantity
+        }
+
+        const wasIds = Object.keys(was)
+        const nowIds = Object.keys(now)
+
+        const findDifference = (arr1: any[], arr2: any[]) =>
+            arr1.filter((num) => !arr2.includes(num))
+
+        const removedProductsIds = findDifference(wasIds, nowIds)
+        removedProductsIds.forEach((id) => (idToQuantityMapping[id] = 0))
+
+        return idToQuantityMapping
+    }
+
     async function fetchProductsAndAddToGlobalStore() {
         const ids = Object.keys(selectedProducts).toString()
         console.log('ids', ids)
@@ -74,6 +109,10 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
             return
         }
     }
+
+    useEffect(() => {
+        // console.log('getChangedProducts', getChangedProducts())
+    }, [selectedProducts])
 
     useEffect(() => {
         if (!editMode) return
@@ -115,6 +154,15 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
                 Edit menu
             </Button>
             {showSaveButton && <Button bordered>Save changes</Button>}
+            {showSaveButton && (
+                <Button
+                    onClick={() => {
+                        patchMenu(menu.id, getChangedProducts())
+                    }}
+                >
+                    Save changes
+                </Button>
+            )}
             <SelectedProducts
                 editMode={editMode}
                 data={selectedProducts}

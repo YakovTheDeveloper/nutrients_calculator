@@ -8,7 +8,7 @@ import { useProductStore } from '@data/products'
 import { initNutrients } from '@constants/nutrients'
 import { getNutrientTablesByCategory } from '@helpers/mappers'
 import { isEmpty } from '@helpers/isEmpty'
-import { createIdToQuantityMapping } from '@helpers/createIdToQuantityMapping'
+import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 import { fetchAddUserMenu } from '@api/methods'
 const inputNames: Form.InputNames<Form.AddMenuForm> = {
     name: 'name',
@@ -33,7 +33,7 @@ const AddMenuForm = ({ cornerButton }: any) => {
         const response = await fetchAddUserMenu({
             name,
             description,
-            ids: createIdToQuantityMapping(selectedProducts),
+            ids: createProductIdToQuantityMapping(selectedProducts),
         })
         addMenu({
             id: response.result.menuId,

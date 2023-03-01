@@ -2,6 +2,7 @@ import { apiBaseAddress } from '@constants/api'
 import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios'
 import { getToken } from './localStorage'
 
+type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 type QueryParams = Record<string, string | string[] | number | undefined>
 
 function queryParams(params: QueryParams) {
@@ -13,7 +14,7 @@ function queryParams(params: QueryParams) {
                     .map((value) => `${encodeKey}=${encodeURIComponent(value)}`)
                     .join('&')
             }
-            const value = params[key] ? params[key].toString()! : ''
+            const value = key in params ? params[key].toString()! : ''
             return `${encodeKey}=${encodeURIComponent(value)}`
         })
         .join('&')
@@ -22,7 +23,7 @@ function queryParams(params: QueryParams) {
 type SendRequestParameters = {
     url: string
     query?: QueryParams
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+    method?: Methods
     signal?: AbortSignal
     payload?: Record<string, unknown>
 }
@@ -57,7 +58,7 @@ export async function sendRequest<T>({
 }
 
 function createConfig(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    method: Methods,
     payload?: Record<any, any>
 ): AxiosRequestConfig {
     const headers = new AxiosHeaders()
