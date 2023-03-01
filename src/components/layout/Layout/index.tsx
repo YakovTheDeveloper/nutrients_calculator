@@ -11,7 +11,9 @@ const Layout = () => {
     return (
         <>
             <Header></Header>
-            <Outlet />
+            <main className={styles.main}>
+                <Outlet />
+            </main>
             <Footer></Footer>
         </>
     )

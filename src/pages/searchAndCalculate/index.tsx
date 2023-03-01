@@ -101,10 +101,12 @@ const SearchAndCalculate = () => {
     }, [selectedProducts])
 
     return (
-        <div className={styles.container}>
+        <div className={styles.searchAndCalculate}>
             <Search />
             {isAnyProductSelected ? (
-                <Button onClick={clearDataHandler}>Clear all</Button>
+                <Button onClick={clearDataHandler} size="small" bordered>
+                    delete all
+                </Button>
             ) : null}
 
             <SelectedProducts
@@ -161,6 +163,8 @@ const SearchAndCalculate = () => {
                     disabled={isCalculateDisabled}
                     className={styles.calculateBtn}
                     onClick={() => getData()}
+                    size="medium"
+                    bordered
                 >
                     Calculate
                 </Button>

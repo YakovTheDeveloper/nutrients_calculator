@@ -2,17 +2,24 @@
   margin: auto;
   min-width: 600px;
   min-height: 600px;
+  border-radius: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: white;
+  background: rgb(252, 252, 252);
 
   z-index: 1;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.inner {
+  // flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
 }
 
 .overlay {

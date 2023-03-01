@@ -4,20 +4,17 @@ import Table from '@ui/Table'
 import React, { useEffect } from 'react'
 import styles from './index.module.scss'
 import { shallow } from 'zustand/shallow'
-import {
-    fetchMenuDelete,
-    fetchPatchUserMenu,
-    addMenuIdsQueryParams,
-} from '@api/methods'
+import { fetchMenuDelete, fetchPatchUserMenu, addMenuIdsQueryParams } from '@api/methods'
 import OneMenu from './OneMenu'
 import { useProductStore } from '@data/products'
 
 const Menu = () => {
-    const { menus, removeMenu, patchMenu } = useUserStore(
+    const { user, menus, removeMenu, patchMenu } = useUserStore(
         (state) => ({
             menus: state.menus,
             removeMenu: state.removeMenu,
             patchMenu: state.patchMenu,
+            user: state.user,
         })
         // shallow
     )
@@ -49,6 +46,7 @@ const Menu = () => {
 
     return (
         <div className={styles.menu}>
+            {!user && <h2>Log in to see or create your menus</h2>}
             {menus.map((menu) => {
                 return (
                     <OneMenu

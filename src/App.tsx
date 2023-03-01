@@ -85,18 +85,9 @@ export const App = () => {
     // depend on user.data
 
     return (
-        <div>
-            <br />
-
-            <button onClick={() => openModal(<SignupForm />)}>Sign Up</button>
-            <br />
-            <br />
-            <button onClick={() => openModal(<LoginForm />)}>Log in</button>
+        <section>
             {isOpened && <Modal onClose={closeModal}>{modalContent}</Modal>}
-            <SignupForm />
-            <LoginForm />
             <SearchAndCalculate />
-            {/* <Table /> */}
-        </div>
+        </section>
     )
 }

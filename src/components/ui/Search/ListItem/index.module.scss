@@ -1,0 +1,25 @@
+.container {
+    // gap: 7px;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px 0px 8px 12px;
+    color: rgba(0, 0, 0, 0.9);
+    transition: display 0.1s linear;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+
+    &:hover {
+        background-color: rgb(204, 204, 204);
+        transition: background-color 0.2s linear;
+        border-radius: 5px;
+    }
+
+}
+
+.activeItem {
+    background-color: rgb(204, 204, 204);
+    transition: background-color 0.2s linear;
+}

@@ -31,7 +31,17 @@ const ListItem = ({
     console.log('products s s', product)
     return (
         <li key={key}>
+            <div className={styles.itemName}>
+                {`${product.name} (${product.state})`}
+
+                <span className={styles.info}>
+                    <NavLink to={`product/${product.id}`} state={product}>
+                        Info
+                    </NavLink>
+                </span>
+            </div>
             <input
+                className={styles.inputStyle}
                 disabled={editMode === false}
                 type="number"
                 min="0"
@@ -42,15 +52,15 @@ const ListItem = ({
                     setNeedToRecalculate(true)
                 }}
                 onBlur={(e) => {
-                    if (+e.target.value === 0) setMessage('set quantity please')
+                    if (+e.target.value === 0)
+                        setMessage(' Set quantity please')
                 }}
             />
-            <NavLink to={`product/${product.id}`} state={product}>
-                Info
-            </NavLink>
-            {`${product.name} (${product.state})`}
+            <button onClick={() => remove(product)} className={styles.clearBtn}>
+                delete
+            </button>
+
             <span>{message}</span>
-            <button onClick={() => remove(product)}>x</button>
         </li>
     )
 }

@@ -4,6 +4,9 @@ import styles from './index.module.scss'
 import { shallow } from 'zustand/shallow'
 import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
+import { useModalStore } from '@data/modal'
+import SignupForm from '@forms/SignupForm'
+import LoginForm from '@forms/LoginForm'
 
 const Header = () => {
     const { user, setUser, setMenus, clearStore } = useUserStore(
@@ -15,6 +18,7 @@ const Header = () => {
         }),
         shallow
     )
+    const { isOpened, closeModal, modalContent, openModal } = useModalStore()
 
     const logoutHandler = () => {
         clearStore()
@@ -25,14 +29,55 @@ const Header = () => {
             <Nav />
             <section>
                 {user && (
-                    <>
+                    <div className={styles.headerSection}>
                         <span>Logged in as: {user.data.email}</span>
-                        <br />
-                        <br />
-                        <Button onClick={logoutHandler}>Logout</Button>
-                    </>
+
+                        <Button
+                            onClick={logoutHandler}
+                            className={styles.logOutBtn}
+                            size="small"
+                        >
+                            Logout
+                        </Button>
+                    </div>
                 )}
             </section>
+            {user ? null : (
+                <div>
+                    <Button
+                        onClick={() => openModal(<SignupForm />)}
+                        bordered
+                        size="medium"
+                    >
+                        Sign Up
+                    </Button>
+
+                    <Button
+                        onClick={() =>
+                            openModal(
+                                <>
+                                    <button
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            padding: '10px',
+                                        }}
+                                        onClick={closeModal}
+                                    >
+                                        x
+                                    </button>
+                                    <LoginForm />
+                                </>
+                            )
+                        }
+                        bordered
+                        size="medium"
+                    >
+                        Log in
+                    </Button>
+                </div>
+            )}
         </header>
     )
 }

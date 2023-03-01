@@ -1,3 +1,37 @@
 .container {
   display: table;
+
+
+}
+
+.inputStyle {
+  padding: 7px;
+  border: none;
+  border-radius: 4px;
+  background: var(--gray);
+  outline: none;
+  font-size: 17px;
+
+}
+
+.itemName {
+  padding: 7px 0;
+  font-size: 19px;
+}
+
+.info {
+  padding-left: 10px;
+  transition: color .1s ease;
+  color: rgb(107, 107, 255);
+
+  &:hover {
+    color: rgb(0, 0, 248);
+  }
+
+}
+
+.clearBtn {
+  padding: 10px;
+  cursor: pointer;
+  color: rgb(4, 0, 255);
 }

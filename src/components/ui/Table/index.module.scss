@@ -1,13 +1,15 @@
 .container {
   display: flex;
-  gap: 20px 5px;
-  flex-wrap: wrap;
+  gap: 5px 5px;
+  justify-content: space-between;
+  // flex-wrap: wrap;
 
   max-width: 1000px;
 
   & table {
     display: table;
     text-indent: initial;
+    padding: 10px;
 
 
     & td,
@@ -24,8 +26,9 @@
 
     & tr {
       display: flex;
+      position: relative;
 
-      padding: 10px;
+      padding: 10px 0;
     }
 
     &.mainNutrients {

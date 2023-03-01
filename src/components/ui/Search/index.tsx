@@ -2,10 +2,12 @@ import { fetchProductList } from '@api/methods'
 import { apiBaseAddress } from '@constants/api'
 import { useProductStore } from '@data/products'
 import { useKeyPressed } from '@hooks/useKeyPress'
+import Button from '@ui/Button'
 import Input from '@ui/Input/Input'
 import Table from '@ui/Table'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './index.module.scss'
+import ListItem from './ListItem'
 
 type SearchProps = {}
 
@@ -32,6 +34,7 @@ const Search = ({}: SearchProps) => {
 
     const handleClearClick = () => {
         setSearchText('')
+        setShowList(false)
     }
 
     const get = () => {
@@ -43,43 +46,32 @@ const Search = ({}: SearchProps) => {
 
     useEffect(() => {
         get()
-        setShowList(true)
+        if (searchText) setShowList(true)
     }, [searchText])
 
     return (
         <div className={styles.container}>
             <div className={styles.inputContainer}>
                 <Input
-                    className={styles.input}
                     type="text"
                     placeholder="Enter the product"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     clear={handleClearClick}
+                    label="Search and select your products"
+                    size="big"
                 ></Input>
-
-                <button className={styles.searchBtn} onClick={get}>
-                    Search
-                </button>
             </div>
 
             {showList && (
                 <ul className={styles.list} ref={productList}>
                     {data?.map((item) => (
-                        <li
+                        <ListItem
                             key={item.id}
-                            onClick={() =>
-                                addProduct({
-                                    ...item,
-                                    quantity: 0,
-                                })
-                            }
-                        >
-                            {item.name} ({item.state})
-                            {item.id in selectedProducts ? (
-                                <span>✅</span>
-                            ) : null}
-                        </li>
+                            addProduct={addProduct}
+                            item={item}
+                            selectedProducts={selectedProducts}
+                        />
                     ))}
                 </ul>
             )}
