@@ -9,12 +9,12 @@ import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
 import { shallow } from 'zustand/shallow'
 import { getToken } from '@api/localStorage'
-import { fetchMe, fetchUserMenu } from '@api/methods'
+import { fetchMe, fetchUserMenus } from '@api/methods'
 
 export const App = () => {
-    const { isOpened, closeModal, modalContent, openModal } = useModalStore()
+    const { isOpened, closeModal, modalContent } = useModalStore()
 
-    const { user, setUser, setMenus, clearStore } = useUserStore(
+    const { user, setUser, setMenus } = useUserStore(
         (state) => ({
             user: state.user,
             setUser: state.setUser,
@@ -47,24 +47,11 @@ export const App = () => {
         if (!getToken()) return
 
         fetchMeHandler()
-
-        // getMe().then((res) => {
-        //     console.log('res', res)
-        //     if (res.hasError) return
-        //     const userData = res.result
-        //     console.log('res.result', res.result)
-        //     console.log('userData', userData)
-        //     setUser({
-        //         data: {
-        //             email: userData.email,
-        //         },
-        //     })
-        // })
     }, [user])
 
-    const getMenuHandler = async () => {
+    const getMenusHandler = async () => {
         try {
-            const response = await fetchUserMenu()
+            const response = await fetchUserMenus()
             const menus = response.result
             console.log('response result', menus)
             setMenus(menus)
@@ -72,28 +59,11 @@ export const App = () => {
             console.error(error)
         }
     }
-
     useEffect(() => {
         if (!user) return
-        getMenuHandler()
+        closeModal()
+        getMenusHandler()
     }, [user])
-
-    // console.log('going to add', {
-    //     id: menu.id,
-    //     name: menu.name,
-    //     description: menu.description,
-    //     nutrients: menu.nutrients,
-    //     products: menu.products,
-    // })
-    // addMenu({
-    //     id: menu.id,
-    //     name: menu.name,
-    //     description: menu.description,
-    //     nutrients: menu.nutrients,
-    //     products: menu.products,
-    // })
-
-    // depend on user.data
 
     return (
         <section>

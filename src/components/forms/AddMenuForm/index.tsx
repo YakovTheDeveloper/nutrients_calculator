@@ -78,7 +78,8 @@ const AddMenuForm = ({ cornerButton }: any) => {
                 clear={() => {
                     return
                 }}
-                className={styles.loginInput}
+                size="small"
+                // className={styles.loginInput}
             />
             <Input
                 label="Description"
@@ -91,7 +92,8 @@ const AddMenuForm = ({ cornerButton }: any) => {
                 clear={() => {
                     return
                 }}
-                className={styles.loginInput}
+                size="small"
+                // className={styles.loginInput}
             />
         </Form>
     )

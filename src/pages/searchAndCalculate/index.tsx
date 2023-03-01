@@ -12,6 +12,8 @@ import classNames from 'classnames'
 import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
 import { createIdToQuantityMapping } from '@helpers/createIdToQuantityMapping'
 import { findIdCrossings } from '@helpers/findIdCrossings'
+import { useUserStore } from '@data/user'
+import AddNewMenuWindow from './addMenuWindow'
 
 const SearchAndCalculate = () => {
     const {
@@ -39,6 +41,8 @@ const SearchAndCalculate = () => {
         setNeedToRecalculate: state.setNeedToRecalculate,
         setProductQuantity: state.setProductQuantity,
     }))
+
+    const menus = useUserStore((state) => state.menus)
 
     const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
 
@@ -94,18 +98,23 @@ const SearchAndCalculate = () => {
     const recalculateNeedMessage =
         totalNutrients !== null &&
         needToRecalculate === true &&
-        'Product(s) need to be recalculated'
+        ' Product(s) need to be recalculated!'
 
     useEffect(() => {
         isAnyProductSelected && setNeedToRecalculate(true)
     }, [selectedProducts])
 
+    useEffect(() => {
+        setShowAddNewMenuWindow(false)
+    }, [menus])
+
     return (
         <div className={styles.searchAndCalculate}>
             <Search />
+
             {isAnyProductSelected ? (
                 <Button onClick={clearDataHandler} size="small" bordered>
-                    delete all
+                    delete products
                 </Button>
             ) : null}
 
@@ -117,47 +126,6 @@ const SearchAndCalculate = () => {
                 setQuantity={setProductQuantity}
             />
 
-            <div style={{ position: 'relative' }}>
-                {isAnyProductSelected && totalNutrients ? (
-                    <Button
-                        onClick={() => {
-                            setShowAddNewMenuWindow(true)
-                        }}
-                    >
-                        Save to my menu
-                    </Button>
-                ) : null}
-                <div
-                    style={{
-                        position: 'absolute',
-                        zIndex: 10,
-                        top: '0',
-                        background: 'white',
-                    }}
-                >
-                    {showAddNewMenuWindow && (
-                        <AddMenuForm
-                            cornerButton={
-                                <button
-                                    style={{
-                                        position: 'absolute',
-                                        top: '10px',
-                                        right: '10px',
-                                    }}
-                                    onClick={() =>
-                                        setShowAddNewMenuWindow(false)
-                                    }
-                                >
-                                    X
-                                </button>
-                            }
-                        />
-                    )}
-                </div>
-            </div>
-
-            <div className={classNames(styles.loader, styles.no)}></div>
-
             {isAnyProductSelected && (
                 <Button
                     disabled={isCalculateDisabled}
@@ -166,14 +134,28 @@ const SearchAndCalculate = () => {
                     size="medium"
                     bordered
                 >
-                    Calculate
+                    calculate
                 </Button>
             )}
-            <span>{recalculateNeedMessage}</span>
-            {/* <span>
-                {' '}
-                {isCalculateDisabled && 'Use search, then select your products'}
-            </span> */}
+            <span className={styles.text}>{recalculateNeedMessage}</span>
+
+            <div style={{ position: 'relative', margin: '10px 0' }}>
+                {isAnyProductSelected && totalNutrients ? (
+                    <Button
+                        onClick={() => {
+                            setShowAddNewMenuWindow(true)
+                        }}
+                        bordered
+                    >
+                        save to my menu
+                    </Button>
+                ) : null}
+
+                <AddNewMenuWindow
+                    setShowAddNewMenuWindow={setShowAddNewMenuWindow}
+                    showAddNewMenuWindow={showAddNewMenuWindow}
+                ></AddNewMenuWindow>
+            </div>
             <Table data={totalNutrients} />
         </div>
     )

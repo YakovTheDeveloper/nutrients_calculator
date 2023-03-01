@@ -6,13 +6,15 @@ type InputProps = {
     value: string
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     label?: string
-    clear: () => void
+    clear?: () => void
     size: 'medium' | 'big' | 'small'
     name?: string
     type: string
     required?: boolean
     onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void
     placeholder?: string
+    disabled?: any
+    min?: string
     // className: string
 }
 
@@ -27,6 +29,8 @@ const Input = ({
     required,
     onBlur,
     placeholder,
+    disabled,
+    showClearButton,
 }: InputProps) => {
     return (
         <label className={styles.container}>
@@ -41,7 +45,7 @@ const Input = ({
                 required={required}
                 placeholder={placeholder}
             />
-            {value ? (
+            {showClearButton ? (
                 <Button
                     size="small"
                     onClick={clear}

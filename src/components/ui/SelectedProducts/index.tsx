@@ -1,5 +1,6 @@
 import { useProductStore } from '@data/products'
 import Button from '@ui/Button'
+import Input from '@ui/Input/Input'
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
@@ -26,22 +27,17 @@ const ListItem = ({
     editMode,
 }: any) => {
     const [message, setMessage] = useState('')
-    console.log('render')
-    // console.log('products s s', products)
-    console.log('products s s', product)
+
     return (
         <li key={key}>
-            <div className={styles.itemName}>
-                {`${product.name} (${product.state})`}
+            <NavLink to={`product/${product.id}`} state={product}>
+                <div className={styles.info}>
+                    {`${product.name} (${product.state})`}
+                </div>
+            </NavLink>
 
-                <span className={styles.info}>
-                    <NavLink to={`product/${product.id}`} state={product}>
-                        Info
-                    </NavLink>
-                </span>
-            </div>
-            <input
-                className={styles.inputStyle}
+            <Input
+                size="small"
                 disabled={editMode === false}
                 type="number"
                 min="0"
@@ -55,8 +51,12 @@ const ListItem = ({
                     if (+e.target.value === 0)
                         setMessage(' Set quantity please')
                 }}
+                showClearButton={product.quantity > 0}
             />
-            <button onClick={() => remove(product)} className={styles.clearBtn}>
+            <button
+                onClick={() => remove(product)}
+                className={styles.deleteBtn}
+            >
                 delete
             </button>
 
@@ -74,7 +74,7 @@ const SelectedProducts = ({
     selectedProducts,
     editMode = true,
 }: SelectedProductsProps) => {
-    console.log('dataaaaaaa', data)
+    // console.log('dataaaaaaa', data)
     return (
         <div className={styles.container}>
             <ul>

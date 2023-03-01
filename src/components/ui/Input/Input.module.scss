@@ -1,6 +1,6 @@
 .container {
     position: relative;
-    display: block;
+    // display: block;
 }
 
 
@@ -51,4 +51,11 @@
 }
 
 
-.small {}
+.small {
+    padding: 7px;
+    border: none;
+    border-radius: 4px;
+    background: var(--gray);
+    outline: none;
+    font-size: 17px;
+}

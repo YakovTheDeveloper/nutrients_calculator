@@ -110,8 +110,11 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
 
     return (
         <div>
-            {showSaveButton && <Button>Save changes</Button>}
-            <Button onClick={() => setEditMode(true)}>Edit menu</Button>
+            <h2>{menu.name}</h2>
+            <Button onClick={() => setEditMode(true)} bordered>
+                Edit menu
+            </Button>
+            {showSaveButton && <Button bordered>Save changes</Button>}
             <SelectedProducts
                 editMode={editMode}
                 data={selectedProducts}
@@ -120,9 +123,8 @@ const OneMenu = ({ menu, deleteMenu }: OneMenuProps) => {
                 setNeedToRecalculate={needToRecalculate}
                 setQuantity={setProductQuantity}
             />
-            <Button onClick={() => deleteMenu(menu.id)}>Delete menu</Button>
-            <h2>{menu.name}</h2>
             <Table data={totalNutrients}></Table>
+            <Button onClick={() => deleteMenu(menu.id)}>Delete menu</Button>
         </div>
     )
 }
