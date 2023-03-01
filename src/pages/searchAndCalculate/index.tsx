@@ -10,7 +10,7 @@ import AddMenuForm from '@forms/AddMenuForm'
 import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
 import classNames from 'classnames'
 import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
-import { createIdToQuantityMapping } from '@helpers/createIdToQuantityMapping'
+import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 import { findIdCrossings } from '@helpers/findIdCrossings'
 
 const SearchAndCalculate = () => {
@@ -70,7 +70,7 @@ const SearchAndCalculate = () => {
 
         try {
             const calculations = await fetchNutrientCalculation(
-                createIdToQuantityMapping(selectedProducts)
+                createProductIdToQuantityMapping(selectedProducts)
             )
             const nutrients = calculations.result
             setTotalNutrients(nutrients)

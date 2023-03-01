@@ -24,60 +24,48 @@ export const App = () => {
         shallow
     )
 
-    const fetchMeHandler = async () => {
-        try {
-            const response = await fetchMe()
-            console.log('response', response)
-            const userData = response.result
-            console.log('res.result', response.result)
-            console.log('userData', userData)
-            setUser({
-                data: {
-                    email: userData.email,
-                },
-            })
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    // const fetchMeHandler = async () => {
+    //     try {
+    //         const response = await fetchMe()
+    //         console.log('response', response)
+    //         const userData = response.result
+    //         console.log('res.result', response.result)
+    //         console.log('userData', userData)
+    //         setUser({
+    //             data: {
+    //                 email: userData.email,
+    //             },
+    //         })
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
 
-    useEffect(() => {
-        console.log('user', user)
-        if (user) return
-        if (!getToken()) return
+    // useEffect(() => {
+    //     console.log('user', user)
+    //     if (user) return
+    //     if (!getToken()) return
 
-        fetchMeHandler()
+    //     fetchMeHandler()
 
-        // getMe().then((res) => {
-        //     console.log('res', res)
-        //     if (res.hasError) return
-        //     const userData = res.result
-        //     console.log('res.result', res.result)
-        //     console.log('userData', userData)
-        //     setUser({
-        //         data: {
-        //             email: userData.email,
-        //         },
-        //     })
-        // })
-    }, [user])
+    // }, [user])
 
-    const getMenuHandler = async () => {
-        try {
-            const response = await fetchUserMenu()
-            const menus = response.result
-            console.log('response result', menus)
-            // const categories = getNutrientTablesByCategory(menu.nutrients)
-            setMenus(menus)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    // const getMenuHandler = async () => {
+    //     try {
+    //         const response = await fetchUserMenu()
+    //         const menus = response.result
+    //         console.log('response result', menus)
+    //         // const categories = getNutrientTablesByCategory(menu.nutrients)
+    //         setMenus(menus)
+    //     } catch (error) {
+    //         console.error(error)
+    //     }
+    // }
 
-    useEffect(() => {
-        if (!user) return
-        getMenuHandler()
-    }, [user])
+    // useEffect(() => {
+    //     if (!user) return
+    //     getMenuHandler()
+    // }, [user])
 
     // console.log('going to add', {
     //     id: menu.id,

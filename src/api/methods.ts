@@ -1,3 +1,4 @@
+import { addIdKeyPrefixToMapping } from '@helpers/normalizers'
 import { sendRequest } from './sendRequest'
 
 type ProductListParams = {
@@ -17,20 +18,25 @@ type SignUpOptions = {
 }
 
 type CalculationParams = {
-    [key: string]: string | number
+    [key: string]: number
 }
 
 type MenuDeleteOption = {
     id: number
 }
 
+//id1=100 & id2=200...
+export type idToValueMapping = {
+    [key: number]: number
+}
+
 type addMenuParams = {
     name: string
     description: string
-    ids: {
-        [key: string]: number
-    }
+    ids: idToValueMapping
 }
+
+type patchMenuParams = idToValueMapping
 
 type AuthResponse = {
     email: string
@@ -85,12 +91,12 @@ export function fetchNutrientCalculation(options: CalculationParams) {
     return sendRequest<Nutrients.NamesToItems>({
         url: 'polls/calculate_nutrients/',
         method: 'GET',
-        query: options,
+        query: addIdKeyPrefixToMapping(options),
     })
 }
 
 export function fetchMenuDelete(options: MenuDeleteOption) {
-    return sendRequest<null | undefined>({
+    return sendRequest<null>({
         url: `products/menu/${options.id}/`,
         method: 'DELETE',
     })
@@ -111,8 +117,18 @@ export function fetchAddUserMenu(options: addMenuParams) {
         query: {
             description,
             name,
-            ...ids,
+            ...addIdKeyPrefixToMapping(ids),
         },
+    })
+}
+
+export function fetchPatchUserMenu(id: number, options: patchMenuParams) {
+    console.log('options', options)
+
+    return sendRequest<null>({
+        url: `products/menu/${id}/`,
+        method: 'PATCH',
+        query: addIdKeyPrefixToMapping(options),
     })
 }
 

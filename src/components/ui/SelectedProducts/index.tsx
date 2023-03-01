@@ -23,7 +23,6 @@ const ListItem = ({
     remove,
     setQuantity,
     setNeedToRecalculate,
-    products,
     editMode,
 }: any) => {
     const [message, setMessage] = useState('')

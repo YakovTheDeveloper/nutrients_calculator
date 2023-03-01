@@ -1,52 +1,47 @@
 import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
 import Table from '@ui/Table'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './index.module.scss'
 import { shallow } from 'zustand/shallow'
-import { fetchMenuDelete } from '@api/methods'
+import {
+    fetchMenuDelete,
+    fetchPatchUserMenu,
+    addMenuIdsQueryParams,
+} from '@api/methods'
 import OneMenu from './OneMenu'
 import { useProductStore } from '@data/products'
 
 const Menu = () => {
-    const { menus, removeMenu } = useUserStore(
+    const { menus, removeMenu, patchMenu } = useUserStore(
         (state) => ({
             menus: state.menus,
             removeMenu: state.removeMenu,
-        }),
-        shallow
+            patchMenu: state.patchMenu,
+        })
+        // shallow
     )
 
-    const {
-        clearSelectedProducts,
-        removeProductFromSelected,
-        selectedProducts,
-        clearTotalNutrients,
-        addProduct,
-        products,
-        setTotalNutrients,
-        totalNutrients,
-        needToRecalculate,
-        setNeedToRecalculate,
-        setProductQuantity,
-    } = useProductStore((state) => ({
-        removeProductFromSelected: state.removeProductFromSelected,
-        clearSelectedProducts: state.clearSelectedProducts,
-        clearTotalNutrients: state.clearTotalNutrients,
-        addProduct: state.addProduct,
-        products: state.products,
-        selectedProducts: state.selectedProducts,
-        setTotalNutrients: state.setTotalNutrients,
-        totalNutrients: state.totalNutrients,
-        needToRecalculate: state.needToRecalculate,
-        setNeedToRecalculate: state.setNeedToRecalculate,
-        setProductQuantity: state.setProductQuantity,
-    }))
+    useEffect(() => {
+        console.log('menus', menus)
+    }, [menus])
 
-    async function deleteMenu(id: number) {
+    async function deleteMenuHandler(id: number) {
         try {
             await fetchMenuDelete({ id })
             removeMenu(id)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    async function patchMenuHandler(
+        id: number,
+        idtToQuantityMapping: addMenuIdsQueryParams
+    ) {
+        try {
+            await fetchPatchUserMenu(id, idtToQuantityMapping)
+            patchMenu(id, idtToQuantityMapping)
         } catch (error) {
             console.error(error)
         }
@@ -59,7 +54,8 @@ const Menu = () => {
                     <OneMenu
                         key={menu.id}
                         menu={menu}
-                        deleteMenu={deleteMenu}
+                        deleteMenu={deleteMenuHandler}
+                        patchMenu={patchMenuHandler}
                     />
                 )
             })}
