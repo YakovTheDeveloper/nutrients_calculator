@@ -3,6 +3,7 @@ import { apiBaseAddress } from '@constants/api'
 import { useProductStore } from '@data/products'
 import { useKeyPressed } from '@hooks/useKeyPress'
 import Button from '@ui/Button'
+import ClearButton from '@ui/Button/ClearButton'
 import Input from '@ui/Input/Input'
 import Table from '@ui/Table'
 import React, { useEffect, useRef, useState } from 'react'
@@ -57,10 +58,14 @@ const Search = ({}: SearchProps) => {
                     placeholder="Enter the product"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    clear={handleClearClick}
                     label="Search and select your products"
                     size="big"
-                ></Input>
+                >
+                    <ClearButton
+                        onClick={handleClearClick}
+                        className={styles.clearBtn}
+                    />
+                </Input>
             </div>
 
             {showList && (

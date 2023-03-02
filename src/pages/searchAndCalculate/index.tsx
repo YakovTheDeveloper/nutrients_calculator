@@ -119,6 +119,7 @@ const SearchAndCalculate = () => {
             ) : null}
 
             <SelectedProducts
+                editMode={true}
                 data={selectedProducts}
                 remove={removeProductFromSelected}
                 selectedProducts={selectedProducts}

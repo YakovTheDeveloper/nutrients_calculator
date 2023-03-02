@@ -1,5 +1,6 @@
 import { useProductStore } from '@data/products'
 import Button from '@ui/Button'
+import ClearButton from '@ui/Button/ClearButton'
 import Input from '@ui/Input/Input'
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
@@ -27,6 +28,7 @@ const ListItem = ({
     editMode,
 }: any) => {
     const [message, setMessage] = useState('')
+    const isClearButtonShow = product.quantity > 0
 
     return (
         <li key={key}>
@@ -51,8 +53,13 @@ const ListItem = ({
                     if (+e.target.value === 0)
                         setMessage(' Set quantity please')
                 }}
-                showClearButton={product.quantity > 0}
-            />
+            >
+                <ClearButton
+                    show={isClearButtonShow}
+                    onClick={() => setQuantity(product, 0)}
+                    className={styles.container}
+                />
+            </Input>
             <button
                 onClick={() => remove(product)}
                 className={styles.deleteBtn}

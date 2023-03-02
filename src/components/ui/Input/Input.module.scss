@@ -4,30 +4,26 @@
 }
 
 
-.clearBtn {
-    position: absolute;
-    padding: 5px;
-    top: 30px;
-    right: 10px;
-    cursor: pointer;
-}
 
 .label {
-    padding-bottom: 10px;
+    padding: 10px 0 5px 0;
 }
 
 
 
 .medium {
-    font-size: 14px;
-    padding: 7px;
+    font-size: 16px;
+    padding: 10px;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 6px;
+    margin-top: 5px;
 
     &:focus {
         outline: none;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
+
+
 }
 
 .big {
@@ -52,7 +48,7 @@
 
 
 .small {
-    padding: 7px;
+    padding: 9px;
     border: none;
     border-radius: 4px;
     background: var(--gray);

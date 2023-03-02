@@ -29,10 +29,11 @@ const AddNewMenuWindow = ({
                                 top: '10px',
                                 right: '10px',
                                 zIndex: '1',
+                                cursor: 'pointer',
                             }}
                             onClick={() => setShowAddNewMenuWindow(false)}
                         >
-                            X
+                            close
                         </button>
                     }
                 />

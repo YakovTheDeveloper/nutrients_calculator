@@ -40,10 +40,11 @@ const LoginForm = () => {
     return (
         <Form
             errors={errors}
-            heading="Login"
+            heading="Log in"
             onSubmit={onSubmit}
             showErrors={showErrors}
             success={success}
+            className={styles.loginInput}
         >
             <Input
                 label="Email"
