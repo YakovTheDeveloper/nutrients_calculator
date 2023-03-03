@@ -104,7 +104,7 @@ export function fetchMenuDelete(options: MenuDeleteOption) {
     })
 }
 
-export function fetchUserMenu() {
+export function fetchUserMenus() {
     return sendRequest<UserMenuResponse>({
         url: 'products/menu/',
         method: 'GET',

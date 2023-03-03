@@ -1,26 +1,12 @@
 .container {
-  display: table;
-
-
+  margin-bottom: 20px;
 }
 
-.inputStyle {
-  padding: 7px;
-  border: none;
-  border-radius: 4px;
-  background: var(--gray);
-  outline: none;
-  font-size: 17px;
 
-}
-
-.itemName {
-  padding: 7px 0;
-  font-size: 19px;
-}
 
 .info {
-  padding-left: 10px;
+  padding: 10px 0;
+  font-size: 19px;
   transition: color .1s ease;
   color: rgb(107, 107, 255);
 
@@ -30,8 +16,8 @@
 
 }
 
-.clearBtn {
-  padding: 10px;
+.deleteBtn {
+  padding: 7px;
   cursor: pointer;
   color: rgb(4, 0, 255);
 }

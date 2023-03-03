@@ -2,6 +2,8 @@ import { useProductStore } from '@data/products'
 import { SelectedProductsToLoad } from '@pages/menu/OneMenu/useOneMenu'
 import Button from '@ui/Button'
 import React, { useEffect, useRef, useState } from 'react'
+import ClearButton from '@ui/Button/ClearButton'
+import Input from '@ui/Input/Input'
 import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
 
@@ -37,6 +39,7 @@ const ListItem = ({
     const [history, setHistory] = useState<number[]>([])
     const [historyIndex, setHistoryIndex] = useState(-1)
 
+    const isClearButtonShow = product.quantity > 0
     //todo ctrlz to custom hook
     function handleKeyDown(event: any) {
         if (event.ctrlKey && event.key === 'z') {
@@ -65,7 +68,13 @@ const ListItem = ({
 
     return (
         <li key={product.id}>
-            <div className={styles.itemName}>
+            <NavLink to={`product/${product.id}`} state={product}>
+                <div className={styles.info}>
+                    {`${product.name} (${product.state})`}
+                </div>
+            </NavLink>
+
+            {/* <div className={styles.itemName}>
                 {`${product.name} (${product.state})`}
 
                 <span className={styles.info}>
@@ -73,26 +82,51 @@ const ListItem = ({
                         Info
                     </NavLink>
                 </span>
-            </div>
+            </div> */}
             {isLoading ? (
                 <span>L O A D I N G ...</span>
             ) : (
-                <input
-                    onKeyDown={handleKeyDown}
-                    className={styles.inputStyle}
+                <Input
+                    size="small"
                     disabled={editMode === false}
                     type="number"
                     min="0"
                     value={product.quantity?.toString()}
-                    onChange={onChangeHandler}
+                    onChange={(e) => {
+                        if (e.target.value.length > 6) return
+                        setQuantity(product, +e.target.value)
+                        setNeedToRecalculate(true)
+                    }}
                     onBlur={(e) => {
                         if (+e.target.value === 0)
                             setMessage(' Set quantity please')
                     }}
-                />
+                >
+                    <ClearButton
+                        show={isClearButtonShow}
+                        onClick={() => setQuantity(product, 0)}
+                        className={styles.container}
+                    />
+                </Input>
+                // <input
+                //     onKeyDown={handleKeyDown}
+                //     className={styles.inputStyle}
+                //     disabled={editMode === false}
+                //     type="number"
+                //     min="0"
+                //     value={product.quantity?.toString()}
+                //     onChange={onChangeHandler}
+                //     onBlur={(e) => {
+                //         if (+e.target.value === 0)
+                //             setMessage(' Set quantity please')
+                //     }}
+                // />
             )}
 
-            <button onClick={() => remove(product)} className={styles.clearBtn}>
+            <button
+                onClick={() => remove(product)}
+                className={styles.deleteBtn}
+            >
                 delete
             </button>
 
@@ -118,7 +152,7 @@ const SelectedProducts = ({
     setQuantity,
     editMode = true,
 }: SelectedProductsProps) => {
-    console.log('dataaaaaaa', products)
+    // console.log('dataaaaaaa', data)
     return (
         <div className={styles.container}>
             <ul>

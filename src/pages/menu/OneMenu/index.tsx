@@ -81,12 +81,14 @@ const OneMenu = ({
                         />
                     )}
 
+                    <h2>{menu.name}</h2>
+
                     {showSaveButton && (
                         <Button onClick={() => backToInitialProducts()}>
                             Cancel changes
                         </Button>
                     )}
-                    <Button onClick={editButtonHandler}>
+                    <Button onClick={editButtonHandler} bordered>
                         {editMode ? 'Back' : 'Edit menu'}
                     </Button>
 
@@ -99,12 +101,26 @@ const OneMenu = ({
                     )}
 
                     {showSaveButton && (
-                        <Button onClick={saveHandler}>
+                        <Button onClick={saveHandler} bordered>
                             {initialLoading ? 'Loading...' : 'Save changes'}
                         </Button>
                     )}
                 </div>
             )}
+
+            {/* <Button onClick={() => setEditMode(true)} bordered>
+                Edit menu
+            </Button>
+            {showSaveButton && <Button bordered>Save changes</Button>}
+            {showSaveButton && (
+                <Button
+                    onClick={() => {
+                        patchMenu(menu.id, getChangedProducts())
+                    }}
+                >
+                    Save changes
+                </Button>
+            )} */}
 
             <SelectedProducts
                 editMode={editMode}
@@ -122,11 +138,10 @@ const OneMenu = ({
                 )}
             </ul> */}
 
-            <Button onClick={() => removeMenu(menu.id)}>Delete menu</Button>
-
             <h2>{menu.name}</h2>
 
             <Table data={totalNutrients}></Table>
+            <Button onClick={() => removeMenu(menu.id)}>Delete menu</Button>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { fetchMe, fetchUserMenu } from '@api/methods'
+import { fetchMe, fetchUserMenus } from '@api/methods'
 import { useEffect } from 'react'
 import { useUserStore } from '@data/user'
 import { shallow } from 'zustand/shallow'
@@ -33,7 +33,7 @@ export function useInitialSetups() {
 
     const getMenuHandler = async () => {
         try {
-            const response = await fetchUserMenu()
+            const response = await fetchUserMenus()
             const menus = response.result
             console.log('response result', menus)
             // const categories = getNutrientTablesByCategory(menu.nutrients)

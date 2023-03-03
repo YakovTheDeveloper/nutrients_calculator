@@ -13,6 +13,7 @@ import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
 import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 import { findIdCrossings } from '@helpers/findIdCrossings'
 import { useUserStore } from '@data/user'
+import AddNewMenuWindow from './addMenuWindow'
 
 const SearchAndCalculate = () => {
     const {
@@ -44,6 +45,7 @@ const SearchAndCalculate = () => {
     }))
 
     const userData = useUserStore((state) => state.user?.data)
+    const menus = useUserStore((state) => state.menus)
 
     const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
 
@@ -99,11 +101,15 @@ const SearchAndCalculate = () => {
     const recalculateNeedMessage =
         totalNutrients !== null &&
         needToRecalculate === true &&
-        'Product(s) need to be recalculated'
+        ' Product(s) need to be recalculated!'
 
     useEffect(() => {
         isAnyProductSelected && setNeedToRecalculate(true)
     }, [selectedProducts])
+
+    useEffect(() => {
+        setShowAddNewMenuWindow(false)
+    }, [menus])
 
     return (
         <div className={styles.searchAndCalculate}>
@@ -113,7 +119,7 @@ const SearchAndCalculate = () => {
             />
             {isAnyProductSelected ? (
                 <Button onClick={clearDataHandler} size="small" bordered>
-                    delete all
+                    delete products
                 </Button>
             ) : null}
 
@@ -173,14 +179,28 @@ const SearchAndCalculate = () => {
                     size="medium"
                     bordered
                 >
-                    Calculate
+                    calculate
                 </Button>
             )}
-            <span>{recalculateNeedMessage}</span>
-            {/* <span>
-                {' '}
-                {isCalculateDisabled && 'Use search, then select your products'}
-            </span> */}
+            <span className={styles.text}>{recalculateNeedMessage}</span>
+
+            <div style={{ position: 'relative', margin: '10px 0' }}>
+                {isAnyProductSelected && totalNutrients ? (
+                    <Button
+                        onClick={() => {
+                            setShowAddNewMenuWindow(true)
+                        }}
+                        bordered
+                    >
+                        save to my menu
+                    </Button>
+                ) : null}
+
+                <AddNewMenuWindow
+                    setShowAddNewMenuWindow={setShowAddNewMenuWindow}
+                    showAddNewMenuWindow={showAddNewMenuWindow}
+                ></AddNewMenuWindow>
+            </div>
             <Table data={totalNutrients} />
         </div>
     )

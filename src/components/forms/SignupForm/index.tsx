@@ -51,10 +51,7 @@ const SignupForm = () => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData['email']}
-                clear={() => {
-                    return
-                }}
-                className={styles.signupInput}
+                size="medium"
                 aria-label="email-input"
             />
 
@@ -66,11 +63,8 @@ const SignupForm = () => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData['password']}
-                clear={() => {
-                    return
-                }}
-                className={styles.signupInput}
                 aria-label="email-password"
+                size="medium"
             />
         </Form>
     )

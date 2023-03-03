@@ -9,12 +9,12 @@ import { useUserStore } from '@data/user'
 import Button from '@ui/Button'
 import { shallow } from 'zustand/shallow'
 import { getToken } from '@api/localStorage'
-import { fetchMe, fetchUserMenu } from '@api/methods'
+import { fetchMe, fetchUserMenus } from '@api/methods'
 
 export const App = () => {
-    const { isOpened, closeModal, modalContent, openModal } = useModalStore()
+    const { isOpened, closeModal, modalContent } = useModalStore()
 
-    const { user, setUser, setMenus, clearStore } = useUserStore(
+    const { user, setUser, setMenus } = useUserStore(
         (state) => ({
             user: state.user,
             setUser: state.setUser,
@@ -66,23 +66,6 @@ export const App = () => {
     //     if (!user) return
     //     getMenuHandler()
     // }, [user])
-
-    // console.log('going to add', {
-    //     id: menu.id,
-    //     name: menu.name,
-    //     description: menu.description,
-    //     nutrients: menu.nutrients,
-    //     products: menu.products,
-    // })
-    // addMenu({
-    //     id: menu.id,
-    //     name: menu.name,
-    //     description: menu.description,
-    //     nutrients: menu.nutrients,
-    //     products: menu.products,
-    // })
-
-    // depend on user.data
 
     return (
         <section>

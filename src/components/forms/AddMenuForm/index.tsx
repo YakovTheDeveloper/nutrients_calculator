@@ -10,6 +10,7 @@ import { getNutrientTablesByCategory } from '@helpers/mappers'
 import { isEmpty } from '@helpers/isEmpty'
 import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 import { fetchAddUserMenu } from '@api/methods'
+import ClearButton from '@ui/Button/ClearButton'
 const inputNames: Form.InputNames<Form.AddMenuForm> = {
     name: 'name',
     description: 'description',
@@ -65,6 +66,7 @@ const AddMenuForm = ({ cornerButton }: any) => {
             onSubmit={onSubmit}
             showErrors={showErrors}
             success={success}
+            className={styles.container}
         >
             {cornerButton}
             <Input
@@ -75,11 +77,16 @@ const AddMenuForm = ({ cornerButton }: any) => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData.name}
-                clear={() => {
-                    return
-                }}
-                className={styles.loginInput}
-            />
+                size="small"
+                placeholder="name of your menu"
+                // className={styles.loginInput}
+            >
+                {/* <ClearButton
+                    show={formData.name !== '0'}
+                    onClick={() => (formData.name = '')}
+                    className={styles.container}
+                /> */}
+            </Input>
             <Input
                 label="Description"
                 name={inputNames.description}
@@ -88,11 +95,17 @@ const AddMenuForm = ({ cornerButton }: any) => {
                 onChange={onChange}
                 onBlur={validateField}
                 value={formData.description || ''}
-                clear={() => {
-                    return
-                }}
-                className={styles.loginInput}
-            />
+                size="small"
+                placeholder="description of your menu"
+
+                // className={styles.loginInput}
+            >
+                {/* <ClearButton
+                    show={formData.description !== '0'}
+                    onClick={() => (formData.description = '')}
+                    className={styles.container}
+                /> */}
+            </Input>
         </Form>
     )
 }

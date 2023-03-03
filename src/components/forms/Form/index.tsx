@@ -1,4 +1,5 @@
 import StatusMessage from '@ui/StatusMessage'
+import classNames from 'classnames'
 import React, { ReactNode } from 'react'
 import styles from './index.module.scss'
 
@@ -9,6 +10,7 @@ type FormProps = {
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
     showErrors: boolean
     success: boolean
+    className?: string
 }
 
 const Form = ({
@@ -18,6 +20,7 @@ const Form = ({
     heading,
     showErrors,
     success,
+    className,
 }: FormProps) => {
     const errorMessage = Object.values(errors).find(
         (errorMessage) => errorMessage !== ''
@@ -28,7 +31,7 @@ const Form = ({
     // }
 
     return (
-        <div className={styles.loginWrapper}>
+        <div className={classNames(styles.loginWrapper, className)}>
             {heading && <span className={styles.formTypeName}>{heading}</span>}
             <form onSubmit={onSubmit}>
                 {children}
