@@ -1,17 +1,24 @@
+import { fetchProductListById } from '@api/methods'
+import { findIdCrossings } from '@helpers/findIdCrossings'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 export interface ProductState {
     products: Products.IdToItemMapping
-    selectedProducts: Data.SelectedProducts
+    productsLoading: Products.IdToLoadingMapping
+    selectedProducts: Products.Selected
     needToRecalculate: boolean
     setNeedToRecalculate: (status: boolean) => void
     addProduct: (productMapping: Products.IdToItemMapping) => void
-    addProductToSelected: (product: Data.SelectedProduct) => void
+    fetchSelectedProductsFullData: (
+        products: Products.Selected
+    ) => Promise<Products.IdToItemMapping | null>
+    addProductToSelected: (product: Products.ItemSelected) => void
     clearSelectedProducts: () => void
-    removeProductFromSelected: (product: Data.SelectedProduct) => void
+    removeProductFromSelected: (product: Products.ItemSelected) => void
     setProductQuantity: (
-        product: Data.SelectedProduct,
+        product: Products.ItemSelected,
         quantity: number
     ) => void
     totalNutrients: Nutrients.NamesToItems | null
@@ -19,12 +26,13 @@ export interface ProductState {
     clearTotalNutrients: () => void
 }
 
-
 export const useProductStore = create<ProductState>()(
     devtools(
-        (set) => ({
+        (set, get) => ({
             selectedProducts: {},
             products: {},
+            productsLoading: {},
+            IdToLoadingMapping: {},
             totalNutrients: null,
             needToRecalculate: false,
             addProduct: (productMapping) =>
@@ -34,6 +42,29 @@ export const useProductStore = create<ProductState>()(
                         ...productMapping,
                     },
                 })),
+            fetchSelectedProductsFullData: async (
+                products: Products.Selected
+            ) => {
+                const idsAlreadyExist = Object.keys(get().products)
+                const idsToAdd = Object.keys(products)
+                const idsNeedToAdd = findIdCrossings(idsToAdd, idsAlreadyExist)
+                console.log('idsNeedToAdd', idsNeedToAdd)
+                try {
+                    const response = await fetchProductListById({
+                        ids: idsToAdd.toString(),
+                    })
+                    set((state) => ({
+                        products: {
+                            ...state.products,
+                            ...response.result,
+                        },
+                    }))
+                    return response.result
+                } catch (error) {
+                    console.error(error)
+                    return null
+                }
+            },
             addProductToSelected: (product) =>
                 set((state) => ({
                     selectedProducts: {
@@ -86,3 +117,9 @@ export const useProductStore = create<ProductState>()(
         }
     )
 )
+
+export function getProductsById(ids: string[], products: Products.Selected) {
+    const productsById: Products.Selected = {}
+    ids.forEach((id) => (productsById[+id] = products[+id]))
+    return productsById
+}

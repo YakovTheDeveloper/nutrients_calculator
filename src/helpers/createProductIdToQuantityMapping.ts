@@ -3,9 +3,7 @@
     id101:300,
     etc..
 }*/
-export function createProductIdToQuantityMapping(
-    products: Data.SelectedProducts
-) {
+export function createProductIdToQuantityMapping(products: Products.Selected) {
     return Object.entries(products).reduce(
         (acc: Record<string, number>, [productId, { quantity }]) => {
             acc[productId] = quantity

@@ -12,6 +12,7 @@ import classNames from 'classnames'
 import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
 import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
 import { findIdCrossings } from '@helpers/findIdCrossings'
+import { useUserStore } from '@data/user'
 
 const SearchAndCalculate = () => {
     const {
@@ -20,6 +21,7 @@ const SearchAndCalculate = () => {
         selectedProducts,
         clearTotalNutrients,
         addProduct,
+        addProductToSelected,
         products,
         setTotalNutrients,
         totalNutrients,
@@ -31,6 +33,7 @@ const SearchAndCalculate = () => {
         clearSelectedProducts: state.clearSelectedProducts,
         clearTotalNutrients: state.clearTotalNutrients,
         addProduct: state.addProduct,
+        addProductToSelected: state.addProductToSelected,
         products: state.products,
         selectedProducts: state.selectedProducts,
         setTotalNutrients: state.setTotalNutrients,
@@ -39,6 +42,8 @@ const SearchAndCalculate = () => {
         setNeedToRecalculate: state.setNeedToRecalculate,
         setProductQuantity: state.setProductQuantity,
     }))
+
+    const userData = useUserStore((state) => state.user?.data)
 
     const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
 
@@ -102,7 +107,10 @@ const SearchAndCalculate = () => {
 
     return (
         <div className={styles.searchAndCalculate}>
-            <Search />
+            <Search
+                selectedProducts={selectedProducts}
+                addProductToSelected={addProductToSelected}
+            />
             {isAnyProductSelected ? (
                 <Button onClick={clearDataHandler} size="small" bordered>
                     delete all
@@ -110,15 +118,14 @@ const SearchAndCalculate = () => {
             ) : null}
 
             <SelectedProducts
-                data={selectedProducts}
+                editMode={true}
+                products={selectedProducts}
                 remove={removeProductFromSelected}
-                selectedProducts={selectedProducts}
-                setNeedToRecalculate={setNeedToRecalculate}
                 setQuantity={setProductQuantity}
             />
 
             <div style={{ position: 'relative' }}>
-                {isAnyProductSelected && totalNutrients ? (
+                {userData && isAnyProductSelected && totalNutrients ? (
                     <Button
                         onClick={() => {
                             setShowAddNewMenuWindow(true)

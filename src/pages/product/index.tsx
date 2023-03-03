@@ -20,7 +20,7 @@ const ProductPage = () => {
         products: state.products,
     }))
 
-    const product = state as Data.SelectedProduct
+    const product = state as Products.ItemSelected
     const productDataExist = Boolean(products[product.id])
     const idToProductMapping = {
         [product.id]: {

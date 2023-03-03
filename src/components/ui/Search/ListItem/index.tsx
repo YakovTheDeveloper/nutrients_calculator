@@ -4,11 +4,17 @@ import styles from './index.module.scss'
 
 type ListItem = {
     item: Products.Item
-    selectedProducts: Data.SelectedProducts
-    addProduct: (product: Data.SelectedProduct) => void
+    selectedProducts: Products.Selected
+    addProduct: (product: Products.ItemSelected) => void
+    isLoading?: boolean
 }
 
-const ListItem = ({ item, selectedProducts, addProduct }: ListItem) => {
+const ListItem = ({
+    item,
+    selectedProducts,
+    addProduct,
+    isLoading = true,
+}: ListItem) => {
     return (
         <li
             className={classNames(styles.container, {
@@ -19,6 +25,7 @@ const ListItem = ({ item, selectedProducts, addProduct }: ListItem) => {
                 addProduct({
                     ...item,
                     quantity: 0,
+                    isLoading,
                 })
             }
         >

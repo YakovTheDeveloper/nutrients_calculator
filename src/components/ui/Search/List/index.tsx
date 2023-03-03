@@ -1,25 +1,24 @@
-// import React from 'react'
-// import styles from './index.module.scss'
+import React from 'react'
+import styles from './index.module.scss'
 
-// const List = () => {
-//     return (
-//         <ul className={styles.list} ref={productList}>
-//             {data?.map((item) => (
-//                 <li
-//                     key={item.id}
-//                     onClick={() =>
-//                         addProduct({
-//                             ...item,
-//                             quantity: 0,
-//                         })
-//                     }
-//                 >
-//                     {item.name} ({item.state})
-//                     {item.id in selectedProducts ? <span>✅</span> : null}
-//                 </li>
-//             ))}
-//         </ul>
-//     )
-// }
+type ListProps<T> = {
+    data: Array<T>
+}
 
-// export default List
+const List = <T,>({ data }: ListProps<T>) => {
+    return (
+        <ul className={styles.list}>
+            {/* ref={productList} */}
+            {data?.map((item) => (
+                <ListItem
+                    key={item.id}
+                    addProduct={addProduct}
+                    item={item}
+                    selectedProducts={selectedProducts}
+                />
+            ))}
+        </ul>
+    )
+}
+
+export default List

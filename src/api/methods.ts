@@ -26,17 +26,19 @@ type MenuDeleteOption = {
 }
 
 //id1=100 & id2=200...
-export type idToValueMapping = {
+export type IdToValueMapping = {
     [key: number]: number
 }
 
 type addMenuParams = {
     name: string
     description: string
-    ids: idToValueMapping
+    ids: IdToValueMapping
 }
 
-type patchMenuParams = idToValueMapping
+type patchMenuParams = IdToValueMapping
+
+type ProductListResponse = Products.Item[]
 
 type AuthResponse = {
     email: string
@@ -52,7 +54,7 @@ type AddMenuResponse = {
 }
 
 export function fetchProductList(options: ProductListParams) {
-    return sendRequest<Products.Item[]>({
+    return sendRequest<ProductListResponse>({
         url: 'polls/get_product/',
         method: 'GET',
         query: options,

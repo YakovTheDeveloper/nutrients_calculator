@@ -9,15 +9,21 @@ import React, { useEffect, useRef, useState } from 'react'
 import styles from './index.module.scss'
 import ListItem from './ListItem'
 
-type SearchProps = {}
+type SearchProps = {
+    // products: null | Products.Item[]
+    onItemClick?: () => void
+    addProductToSelected: (product: Products.ItemSelected) => void
+    selectedProducts: Products.Selected
+}
 
-const Search = ({}: SearchProps) => {
-    const [data, setData] = useState<null | Products.Item[]>(null)
-    const addProduct = useProductStore((state) => state.addProductToSelected)
-    const selectedProducts = useProductStore((state) => state.selectedProducts)
+const Search = ({ addProductToSelected, selectedProducts }: SearchProps) => {
     const [searchText, setSearchText] = useState('')
-
+    const [data, setData] = useState<null | Products.Item[]>(null)
     const [showList, setShowList] = useState(false)
+
+    // Give props everywheere
+    // const addProduct = useProductStore((state) => state.addProductToSelected)
+    // const selectedProducts = useProductStore((state) => state.selectedProducts)
 
     const productList = useRef<HTMLUListElement>(null)
 
@@ -68,9 +74,10 @@ const Search = ({}: SearchProps) => {
                     {data?.map((item) => (
                         <ListItem
                             key={item.id}
-                            addProduct={addProduct}
+                            addProduct={addProductToSelected}
                             item={item}
                             selectedProducts={selectedProducts}
+                            isLoading={false}
                         />
                     ))}
                 </ul>

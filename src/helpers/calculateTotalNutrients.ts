@@ -1,7 +1,13 @@
+import { isEmpty } from '@helpers/isEmpty'
 export function calculateTotalNutrients(
-    selectedProducts: Data.SelectedProducts,
+    selectedProducts: Products.Selected,
     idToItemMapping: Products.IdToItemMapping
 ): Nutrients.NamesToItems {
+    if (isEmpty(idToItemMapping)) {
+        console.error('No product idToItemMapping found')
+        return createInitialNameToNutrientData()
+    }
+
     const selectedProductsList = Object.values(selectedProducts),
         allProductMultipliedNutrients: Nutrients.NamesToItems[] = []
 
@@ -12,9 +18,11 @@ export function calculateTotalNutrients(
             multipliedNutrients = multiplyEachNutrient(nutrients, quantity)
         allProductMultipliedNutrients.push(multipliedNutrients)
     })
+
     const summarizedNutrients = sumAllProductsNutrients(
         allProductMultipliedNutrients
     )
+
     const fixedNutrients = toFixedNutrientValues(summarizedNutrients)
 
     console.log('fixedNutrients', fixedNutrients)

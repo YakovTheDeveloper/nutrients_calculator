@@ -1,4 +1,5 @@
 import { apiBaseAddress } from '@constants/api'
+import { wait } from '@helpers/wait'
 import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios'
 import { getToken } from './localStorage'
 
@@ -34,8 +35,10 @@ export async function sendRequest<T>({
     method = 'GET',
     payload,
 }: SendRequestParameters): Promise<Api.Response<T>> {
+    await wait(1000)
+    // return Promise.reject(errorMessage)
     const params = query ? queryParams(query) : ''
-    console.log('address', apiBaseAddress + '/' + url + '?' + params)
+    console.log('fetch', apiBaseAddress + '/' + url + '?' + params)
     try {
         const response = await axios<Api.Response<T>>(
             apiBaseAddress + '/' + url + '?' + params,

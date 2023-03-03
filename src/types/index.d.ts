@@ -133,35 +133,44 @@ declare namespace Api {
         id: number
         name: string
         description: string
-        products: Data.SelectedProducts
+        products: Products.Selected
         nutrients: Nutrients.NamesToItems
     }
 }
 
 declare namespace Products {
+    type Id = number
+
     interface Item {
-        id: number
+        id: Id
         name: string
         state: string
         category: string
         nutrients: Nutrients.NamesToItems
     }
 
-    type Id = number
-    type IdToItemMapping = Record<Id, Item>
+    interface ItemSelected extends Item {
+        quantity: number
+        isLoading: boolean
+    }
 
-    export interface Item {
+    type Selected = Record<Id, ItemSelected>
+
+    type IdToItemMapping = Record<Id, Item>
+    type IdToLoadingMapping = Record<Id, boolean>
+
+    interface Item {
         id: number
         name: string
         state: string
         category: string
     }
 
-    export interface Menu {
+    interface Menu {
         id: number
         name: string
         description: string
-        products: Data.SelectedProducts
+        products: Products.Selected
         nutrients: Nutrients.NamesToItems
     }
 }
@@ -172,7 +181,7 @@ declare namespace Menus {
         id: number
         name: string
         description: string
-        products: Data.SelectedProducts
+        products: Products.Selected
         nutrients: Nutrients.NamesToItems
     }
     type IdToItemMapping = Record<Id, Item>

@@ -1,7 +1,6 @@
 import { useProductStore } from '@data/products'
-import { SelectedProductsToLoad } from '@pages/menu/OneMenu/useOneMenu'
 import Button from '@ui/Button'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
 
@@ -13,15 +12,16 @@ type SelectedProductsProps = {
     // | ((
     //       set: React.Dispatch<React.SetStateAction<Products.Selected>>
     //   ) => (product: Products.ItemSelected, quantity: number) => void)
-    // selectedProducts: Products.Selected
+    setNeedToRecalculate: (status: boolean) => void
+    selectedProducts: Products.Selected
     editMode: boolean
-    //
 }
 
 type ListItemProps = {
     product: Products.ItemSelected
     remove: (product: Products.ItemSelected) => void
     setQuantity: (product: Products.ItemSelected, quantity: number) => void
+    setNeedToRecalculate: (status: boolean) => void
     editMode: boolean
     isLoading?: boolean
 }
@@ -30,39 +30,14 @@ const ListItem = ({
     product,
     remove,
     setQuantity,
+    setNeedToRecalculate,
     editMode,
     isLoading = false,
 }: ListItemProps) => {
     const [message, setMessage] = useState('')
-    const [history, setHistory] = useState<number[]>([])
-    const [historyIndex, setHistoryIndex] = useState(-1)
-
-    //todo ctrlz to custom hook
-    function handleKeyDown(event: any) {
-        if (event.ctrlKey && event.key === 'z') {
-            event.preventDefault()
-            const newHistoryIndex = historyIndex - 1
-            if (newHistoryIndex >= 0) {
-                setQuantity(product, history[newHistoryIndex])
-                setHistoryIndex(newHistoryIndex)
-            }
-        }
-    }
-
-    function onChangeHandler(event: any) {
-        const newValue = +event.target.value
-        const newHistory = [...history]
-        newHistory[historyIndex + 1] = newValue
-        setHistory(newHistory)
-        setHistoryIndex(historyIndex + 1)
-        setQuantity(product, newValue)
-    }
-
-    useEffect(() => {
-        console.log('history', history)
-        console.log('historyIndex', historyIndex)
-    }, [history, historyIndex])
-
+    console.log('render')
+    // console.log('products s s', products)
+    console.log('products s s', product)
     return (
         <li key={product.id}>
             <div className={styles.itemName}>
@@ -74,17 +49,20 @@ const ListItem = ({
                     </NavLink>
                 </span>
             </div>
-            {isLoading ? (
-                <span>L O A D I N G ...</span>
+            {!isLoading ? (
+                <span>loading</span>
             ) : (
                 <input
-                    onKeyDown={handleKeyDown}
                     className={styles.inputStyle}
                     disabled={editMode === false}
                     type="number"
                     min="0"
                     value={product.quantity?.toString()}
-                    onChange={onChangeHandler}
+                    onChange={(e) => {
+                        if (e.target.value.length > 6) return
+                        setQuantity(product, +e.target.value)
+                        setNeedToRecalculate(true)
+                    }}
                     onBlur={(e) => {
                         if (+e.target.value === 0)
                             setMessage(' Set quantity please')
@@ -101,21 +79,13 @@ const ListItem = ({
     )
 }
 
-function sortByName<T extends { name: string }>(a: T, b: T) {
-    if (a.name < b.name) {
-        return -1
-    }
-    if (a.name > b.name) {
-        return 1
-    }
-    return 0
-}
-
 const SelectedProducts = ({
     products,
     button,
     remove,
     setQuantity,
+    setNeedToRecalculate,
+    selectedProducts,
     editMode = true,
 }: SelectedProductsProps) => {
     console.log('dataaaaaaa', products)
@@ -123,18 +93,17 @@ const SelectedProducts = ({
         <div className={styles.container}>
             <ul>
                 {products &&
-                    Object.values(products)
-                        .sort(sortByName)
-                        .map((product) => (
-                            <ListItem
-                                editMode={editMode}
-                                product={product}
-                                key={product.id}
-                                remove={remove}
-                                setQuantity={setQuantity}
-                                isLoading={product.isLoading}
-                            />
-                        ))}
+                    Object.values(products).map((product) => (
+                        <ListItem
+                            editMode={editMode}
+                            product={product}
+                            key={product.id}
+                            remove={remove}
+                            setQuantity={setQuantity}
+                            setNeedToRecalculate={setNeedToRecalculate}
+                            // products={selectedProducts}
+                        />
+                    ))}
             </ul>
             {button}
         </div>

@@ -1,10 +1,11 @@
 import { useUserStore } from '@data/user'
-import Button from '@ui/Button'
-import Table from '@ui/Table'
 import React, { useEffect } from 'react'
 import styles from './index.module.scss'
-import { shallow } from 'zustand/shallow'
-import { fetchMenuDelete, fetchPatchUserMenu, addMenuIdsQueryParams } from '@api/methods'
+import {
+    fetchMenuDelete,
+    fetchPatchUserMenu,
+    IdToValueMapping,
+} from '@api/methods'
 import OneMenu from './OneMenu'
 import { useProductStore } from '@data/products'
 
@@ -17,6 +18,15 @@ const Menu = () => {
             user: state.user,
         })
         // shallow
+    )
+
+    // const menus = useUserStore((state) => state.menus)
+
+    const { products, fetchSelectedProductsFullData } = useProductStore(
+        (state) => ({
+            products: state.products,
+            fetchSelectedProductsFullData: state.fetchSelectedProductsFullData,
+        })
     )
 
     useEffect(() => {
@@ -34,11 +44,12 @@ const Menu = () => {
 
     async function patchMenuHandler(
         id: number,
-        idtToQuantityMapping: addMenuIdsQueryParams
+        idtToQuantityMapping: IdToValueMapping,
+        newProducts?: Products.Selected
     ) {
         try {
             await fetchPatchUserMenu(id, idtToQuantityMapping)
-            patchMenu(id, idtToQuantityMapping)
+            patchMenu(id, idtToQuantityMapping, newProducts)
         } catch (error) {
             console.error(error)
         }
@@ -50,10 +61,14 @@ const Menu = () => {
             {menus.map((menu) => {
                 return (
                     <OneMenu
+                        products={products}
+                        fetchSelectedProductsFullData={
+                            fetchSelectedProductsFullData
+                        }
                         key={menu.id}
                         menu={menu}
-                        deleteMenu={deleteMenuHandler}
-                        patchMenu={patchMenuHandler}
+                        removeMenu={deleteMenuHandler}
+                        patchMenuHandler={patchMenuHandler}
                     />
                 )
             })}

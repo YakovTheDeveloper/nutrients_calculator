@@ -28,7 +28,7 @@ const AddMenuForm = ({ cornerButton }: any) => {
 
     async function addMenuHandler({ name, description }: Form.AddMenuForm) {
         if (isEmpty(selectedProducts)) {
-            return Promise.reject('No products selected')
+            return Promise.reject('No Products.ItemSelected')
         }
         const response = await fetchAddUserMenu({
             name,
