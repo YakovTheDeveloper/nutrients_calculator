@@ -3,10 +3,11 @@ import React from 'react'
 import styles from './index.module.scss'
 
 type ListItem = {
-    item: Products.Item
+    item: Products.ItemWithNoNutrients
     selectedProducts: Products.Selected
     addProduct: (product: Products.ItemSelected) => void
     isLoading?: boolean
+    children?: React.ReactNode
 }
 
 const ListItem = ({
@@ -14,6 +15,7 @@ const ListItem = ({
     selectedProducts,
     addProduct,
     isLoading = true,
+    children,
 }: ListItem) => {
     return (
         <li
@@ -21,15 +23,24 @@ const ListItem = ({
                 [styles.activeItem]: item.id in selectedProducts,
             })}
             key={item.id}
-            onClick={() =>
-                addProduct({
-                    ...item,
-                    quantity: 0,
-                    isLoading,
-                })
+            onClick={
+                () =>
+                    addProduct({
+                        id: item.id,
+                        name: item.name,
+                        state: item.state,
+                        category: item.category,
+                        quantity: 0,
+                        isLoading,
+                    })
+                // addProduct({
+                //     ...item,
+                //     quantity: 0,
+                //     isLoading,
+                // })
             }
         >
-            {item.name} ({item.state})
+            {item.name} ({item.state}) {children}
         </li>
     )
 }

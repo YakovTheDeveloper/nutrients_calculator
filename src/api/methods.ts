@@ -8,6 +8,10 @@ type ProductListByIdParams = {
     ids: string | number
 }
 
+type ProductByNutrient = {
+    id: Nutrients.Name
+}
+
 type LoginOptions = {
     email: string
     password: string
@@ -89,6 +93,14 @@ export function fetchProductListById(options: ProductListByIdParams) {
         query: options,
     })
 }
+
+export function fetchProductsByNutrient(options: ProductByNutrient) {
+    return sendRequest<Products.ItemWithSingleNutrient[]>({
+        url: `products/by_richness/${options.id}/`,
+        method: 'GET',
+    })
+}
+
 export function fetchNutrientCalculation(options: CalculationParams) {
     return sendRequest<Nutrients.NamesToItems>({
         url: 'polls/calculate_nutrients/',

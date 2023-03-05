@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 const LINKS = [
     { to: '/', content: 'search' },
     { to: 'menu', content: 'menu' },
+    { to: 'productsTier', content: 'products tier' },
 ]
 
 const Nav = () => {

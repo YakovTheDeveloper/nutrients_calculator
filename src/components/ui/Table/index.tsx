@@ -2,6 +2,7 @@
 // import { initNutrients, nutrientDailyNorm } from '@constants/index'
 
 import { nutrientDailyNorm, initNutrients } from '@constants/nutrients'
+import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent'
 import { getNutrientTablesByCategory } from '@helpers/mappers'
 import { getShortNutrientNameIfHas } from '@helpers/normalizers'
 import classNames from 'classnames'
@@ -21,22 +22,19 @@ type TableProps = {
 //     return rows
 // }
 const Table = ({ data }: TableProps) => {
-    const getDailyNormPercent = (name: Nutrients.Name, value: number) => {
-        const norm = nutrientDailyNorm[name]
-        return Number(((value / norm) * 100).toFixed(1))
-    }
-
     if (!data) return null
     return (
-        // Нет key in iterator
         <>
             <section className={classNames(styles.container)}>
                 {Object.entries(getNutrientTablesByCategory(data)).map(
                     ([nutrientGroupName, nutrients]) => (
-                        <table className={styles[nutrientGroupName]}>
+                        <table
+                            className={styles[nutrientGroupName]}
+                            key={nutrientGroupName}
+                        >
                             <tbody>
                                 {nutrients.map((item) => (
-                                    <tr>
+                                    <tr key={item.name}>
                                         <th>
                                             {getShortNutrientNameIfHas(
                                                 item.name

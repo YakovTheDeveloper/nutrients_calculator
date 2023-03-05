@@ -97,6 +97,7 @@ function reducer(state: ReducerState, action: Action) {
 
 export type SelectedProductsToLoad = Record<Products.Id, ProductLoading>
 
+//todo rename to useSingleMenu
 export const useOneMenu = ({
     menu,
     products,
@@ -137,16 +138,21 @@ export const useOneMenu = ({
         setSelectedProducts((draft) => void delete draft[product.id])
     }
 
+    useEffect(() => {
+        console.log('@@', selectedProducts)
+    }, [selectedProducts])
+
     async function addProductToSelected(product: Products.ItemSelected) {
         // dispatch({ type: 'SHOW_SAVE_BUTTON' })
 
         setSelectedProducts((draft) => {
-            draft[product.id] = product
+            draft[product.id] = { ...product, isLoading: true }
         })
 
         const result = await fetchSelectedProductsFullData({
             [product.id]: product,
         })
+        console.log('@@result', result)
 
         if (result) {
             setSelectedProducts(
