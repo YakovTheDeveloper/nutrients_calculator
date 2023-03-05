@@ -15,10 +15,11 @@ declare namespace Nutrients {
     // export type TableItems = Record<string, TableItem>
 
     // export type NameNormalized = Partial<Record<keyof TableItems, string>>
-    export type NameNormalized = Partial<NamesToData<string>>
+    // export type NameNormalized = Partial<NamesToData<string>>
+    export type NameNormalized = NamesToData<string>
 
     export type NamesToItems = NamesToData<TableItem>
-    export type Name = keyof NamesToItems
+    export type Name = keyof NamesToData<any>
 
     export interface NamesToData<T> {
         protein: T
@@ -149,10 +150,20 @@ declare namespace Products {
         nutrients: Nutrients.NamesToItems
     }
 
-    interface ItemSelected extends Item {
+    type ItemWithNoNutrients = Omit<Item, 'nutrients'>
+
+    type ItemWithSingleNutrient = Omit<Item, 'nutrients'> & {
+        nutrient: Nutrients.item
+    }
+    type ItemSelected = ItemWithNoNutrients & {
         quantity: number
         isLoading: boolean
     }
+
+    // interface ItemSelected extends Item {
+    //     quantity: number
+    //     isLoading: boolean
+    // }
 
     type Selected = Record<Id, ItemSelected>
 

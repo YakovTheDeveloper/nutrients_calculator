@@ -10,6 +10,7 @@ export interface ProductState {
     selectedProducts: Products.Selected
     needToRecalculate: boolean
     setNeedToRecalculate: (status: boolean) => void
+    //todo -> addProductGlobally
     addProduct: (productMapping: Products.IdToItemMapping) => void
     fetchSelectedProductsFullData: (
         products: Products.Selected
