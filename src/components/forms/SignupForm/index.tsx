@@ -6,6 +6,7 @@ import styles from './index.module.scss'
 import { useUserStore } from '@data/user'
 import { fetchSignup } from '@api/methods'
 import { setToken } from '@api/localStorage'
+import ClearButton from '@ui/Button/ClearButton'
 
 const inputNames: Form.InputNames<Form.SignupForm> = {
     email: 'email',
@@ -53,7 +54,14 @@ const SignupForm = () => {
                 value={formData['email']}
                 size="medium"
                 aria-label="email-input"
-            />
+            >
+                <ClearButton
+                    show={true}
+                    onClick={() => {
+                        setFormData((prev) => ({ ...prev, email: '' }))
+                    }}
+                ></ClearButton>
+            </Input>
 
             <Input
                 label="Password"
@@ -65,7 +73,14 @@ const SignupForm = () => {
                 value={formData['password']}
                 aria-label="email-password"
                 size="medium"
-            />
+            >
+                <ClearButton
+                    show={true}
+                    onClick={() =>
+                        setFormData((prev) => ({ ...prev, password: '' }))
+                    }
+                ></ClearButton>
+            </Input>
         </Form>
     )
 }

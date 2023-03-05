@@ -29,37 +29,41 @@ const Table = ({ data }: TableProps) => {
     if (!data) return null
     return (
         // Нет key in iterator
-
-        <section className={classNames(styles.container)}>
-            {Object.entries(getNutrientTablesByCategory(data)).map(
-                ([nutrientGroupName, nutrients]) => (
-                    <table className={styles[nutrientGroupName]}>
-                        <tbody>
-                            {nutrients.map((item) => (
-                                <tr>
-                                    <th>
-                                        {getShortNutrientNameIfHas(item.name)}
-                                    </th>
-                                    <td>
-                                        {getDailyNormPercent(
-                                            item.name,
-                                            item.value
-                                        )}
-                                        %, {item.value} {item.unit}
-                                    </td>
-                                    <Indicator
-                                        percent={getDailyNormPercent(
-                                            item.name,
-                                            item.value
-                                        )}
-                                    />
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                )
-            )}
-        </section>
+        <>
+            <section className={classNames(styles.container)}>
+                {Object.entries(getNutrientTablesByCategory(data)).map(
+                    ([nutrientGroupName, nutrients]) => (
+                        <table className={styles[nutrientGroupName]}>
+                            <tbody>
+                                {nutrients.map((item) => (
+                                    <tr>
+                                        <th>
+                                            {getShortNutrientNameIfHas(
+                                                item.name
+                                            )}
+                                        </th>
+                                        <td>
+                                            {getDailyNormPercent(
+                                                item.name,
+                                                item.value
+                                            )}
+                                            %, {item.value} {item.unit}
+                                        </td>
+                                        <Indicator
+                                            percent={getDailyNormPercent(
+                                                item.name,
+                                                item.value
+                                            )}
+                                        />
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )
+                )}
+            </section>
+            <p>Percentage of Daily Value</p>
+        </>
     )
 }
 

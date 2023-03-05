@@ -61,16 +61,15 @@ const Search = ({ addProductToSelected, selectedProducts }: SearchProps) => {
             <div className={styles.inputContainer}>
                 <Input
                     type="text"
-                    placeholder="Enter the product"
+                    placeholder="enter the product"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    label="Search and select your products"
+                    label="search and select your products"
                     size="big"
+                    pattern="[A-Za-z]+"
+                    title="Please enter English letters only"
                 >
-                    <ClearButton
-                        onClick={handleClearClick}
-                        className={styles.clearBtn}
-                    />
+                    <ClearButton show={searchText} onClick={handleClearClick} />
                 </Input>
             </div>
 

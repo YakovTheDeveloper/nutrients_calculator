@@ -45,7 +45,25 @@ const Header = () => {
             {user ? null : (
                 <div>
                     <Button
-                        onClick={() => openModal(<SignupForm />)}
+                        onClick={() =>
+                            openModal(
+                                <>
+                                    <button
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            padding: '10px',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={closeModal}
+                                    >
+                                        x
+                                    </button>
+                                    <SignupForm />
+                                </>
+                            )
+                        }
                         bordered
                         size="medium"
                     >
@@ -62,6 +80,7 @@ const Header = () => {
                                             top: 0,
                                             right: 0,
                                             padding: '10px',
+                                            cursor: 'pointer',
                                         }}
                                         onClick={closeModal}
                                     >

@@ -9,7 +9,10 @@
     padding: 10px 0 5px 0;
 }
 
-
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
 
 .medium {
     font-size: 16px;
@@ -51,7 +54,38 @@
     padding: 9px;
     border: none;
     border-radius: 4px;
-    background: var(--gray);
+    background: rgb(245, 244, 244);
     outline: none;
     font-size: 17px;
+}
+
+
+.skeletonPreloader {
+    position: relative;
+    overflow: hidden;
+    height: 37px;
+    box-shadow: 0 4px 10px 0 rgba(33, 33, 33, 0.15);
+    width: 250px;
+}
+
+.skeletonPreloader::before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -150px;
+    top: 0;
+    height: 100%;
+    width: 250px;
+    background: linear-gradient(to right, transparent 0%, #f5f3f3 50%, transparent 100%);
+    animation: load 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+}
+
+@keyframes load {
+    from {
+        left: -150px;
+    }
+
+    to {
+        left: 100%;
+    }
 }

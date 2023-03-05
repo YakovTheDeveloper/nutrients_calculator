@@ -6,6 +6,7 @@ import ClearButton from '@ui/Button/ClearButton'
 import Input from '@ui/Input/Input'
 import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
+import { BASE_APP_URL } from '@constants/url'
 
 type SelectedProductsProps = {
     products?: Products.Selected
@@ -53,6 +54,8 @@ const ListItem = ({
     }
 
     function onChangeHandler(event: any) {
+        if (event.target.value.length > 6) return
+        if (event.target.value.includes('-')) return
         const newValue = +event.target.value
         const newHistory = [...history]
         newHistory[historyIndex + 1] = newValue
@@ -68,35 +71,63 @@ const ListItem = ({
 
     return (
         <li key={product.id}>
-            <NavLink to={`product/${product.id}`} state={product}>
+            <NavLink
+                to={`${BASE_APP_URL}/product/${product.id}`}
+                state={product}
+                className={styles.linkContainer}
+            >
                 <div className={styles.info}>
                     {`${product.name} (${product.state})`}
                 </div>
             </NavLink>
+            {editMode && (
+                <button
+                    onClick={() => remove(product)}
+                    className={styles.deleteBtn}
+                >
+                    delete
+                </button>
+            )}
 
-            {/* <div className={styles.itemName}>
-                {`${product.name} (${product.state})`}
-
-                <span className={styles.info}>
-                    <NavLink to={`product/${product.id}`} state={product}>
-                        Info
-                    </NavLink>
-                </span>
-            </div> */}
             {isLoading ? (
                 <span>L O A D I N G ...</span>
             ) : (
                 <Input
+                    onKeyDown={handleKeyDown}
+                    skeletonPreloader={isLoading && 'skeletonPreloader'}
+                    size="small"
+                    disabled={editMode === false || isLoading}
+                    type="number"
+                    min="0"
+                    value={product.quantity?.toString()}
+                    onChange={onChangeHandler}
+                    onBlur={(e) => {
+                        if (+e.target.value === 0)
+                            setMessage(' Set quantity please')
+                    }}
+                >
+                    {editMode && (
+                        <ClearButton
+                            show={isClearButtonShow}
+                            onClick={() => setQuantity(product, 0)}
+                            className={styles.container}
+                        />
+                    )}
+                </Input>
+            )}
+
+            {/* {!isLoading ? (
+                <span>L O A D I N G ...</span>
+            ) : (
+                <Input
+                    onKeyDown={handleKeyDown}
+                    className={styles.inputStyle}
                     size="small"
                     disabled={editMode === false}
                     type="number"
                     min="0"
                     value={product.quantity?.toString()}
-                    onChange={(e) => {
-                        if (e.target.value.length > 6) return
-                        setQuantity(product, +e.target.value)
-                        setNeedToRecalculate(true)
-                    }}
+                    onChange={onChangeHandler}
                     onBlur={(e) => {
                         if (+e.target.value === 0)
                             setMessage(' Set quantity please')
@@ -108,27 +139,7 @@ const ListItem = ({
                         className={styles.container}
                     />
                 </Input>
-                // <input
-                //     onKeyDown={handleKeyDown}
-                //     className={styles.inputStyle}
-                //     disabled={editMode === false}
-                //     type="number"
-                //     min="0"
-                //     value={product.quantity?.toString()}
-                //     onChange={onChangeHandler}
-                //     onBlur={(e) => {
-                //         if (+e.target.value === 0)
-                //             setMessage(' Set quantity please')
-                //     }}
-                // />
-            )}
-
-            <button
-                onClick={() => remove(product)}
-                className={styles.deleteBtn}
-            >
-                delete
-            </button>
+            )} */}
 
             <span>{message}</span>
         </li>

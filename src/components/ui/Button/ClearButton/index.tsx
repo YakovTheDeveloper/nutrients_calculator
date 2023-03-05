@@ -5,14 +5,14 @@ import classnames from 'classnames'
 
 type ClearButtonProps = {
     show: boolean
-    className: string
+    className?: string
     onClick: () => void
 }
 
 const ClearButton = ({ show, className, onClick }: ClearButtonProps) => {
     return show ? (
         <Button
-            size="small"
+            size="xSmall"
             onClick={onClick}
             className={className}
             type="button"

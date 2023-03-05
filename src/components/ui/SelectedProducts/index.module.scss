@@ -5,19 +5,54 @@
 
 
 .info {
-  padding: 10px 0;
-  font-size: 19px;
+  padding: 15px 0 7px 0;
+  font-size: 21px;
   transition: color .1s ease;
   color: rgb(107, 107, 255);
+  width: fit-content;
+  display: inline-block;
+  position: relative;
+
 
   &:hover {
     color: rgb(0, 0, 248);
+
+    &::before {
+      content: 'click to show nutrient info';
+
+      width: 160px;
+      height: 10px;
+
+      color: rgb(255, 166, 0);
+      font-size: 13px;
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+    }
   }
 
 }
 
+
+
+
 .deleteBtn {
   padding: 7px;
   cursor: pointer;
-  color: rgb(4, 0, 255);
+  color: rgb(0, 0, 0);
+  margin-left: 15px;
+
+  &:hover {
+    color: rgb(255, 0, 0);
+
+  }
+}
+
+
+.linkContainer {
+  display: inline-block;
+  width: fit-content;
+
 }

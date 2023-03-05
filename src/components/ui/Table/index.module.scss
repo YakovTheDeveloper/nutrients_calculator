@@ -10,6 +10,7 @@
     display: table;
     text-indent: initial;
     padding: 10px;
+    // width: 100%;
 
 
     & td,
@@ -28,11 +29,11 @@
       display: flex;
       position: relative;
 
-      padding: 10px 0;
+      padding: 13px 0;
     }
 
     &.mainNutrients {
-      border: 1px solid rgb(204, 204, 204);
+      border: 3px solid rgb(204, 204, 204);
 
       & th {
         width: 7ch;
@@ -44,11 +45,11 @@
         width: 10ch;
       }
 
-      border: 1px solid rgb(204, 204, 204);
+      border: 3px solid rgb(204, 204, 204);
     }
 
     &.VitaminsNotB {
-      border: 1px solid rgb(204, 204, 204);
+      border: 3px solid rgb(204, 204, 204);
 
       & th {
         width: 3ch;
@@ -56,7 +57,7 @@
     }
 
     &.vitaminsB {
-      border: 1px solid rgb(204, 204, 204);
+      border: 3px solid rgb(204, 204, 204);
 
       & th {
         width: 5ch;
@@ -64,7 +65,7 @@
     }
 
     &.minerals {
-      border: 1px solid rgb(204, 204, 204);
+      border: 3px solid rgb(204, 204, 204);
 
       & th {
         width: 11ch;

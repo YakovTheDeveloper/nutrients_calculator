@@ -19,6 +19,7 @@ import styles from './index.module.scss'
 import { UserState } from '@data/user'
 import { findDifference } from '@helpers/findDifference'
 import { useOneMenu } from './useOneMenu'
+import Loader from '@ui/PreLoader'
 
 export type OneMenuProps = {
     menu: Products.Menu
@@ -70,8 +71,8 @@ const OneMenu = ({
     }
 
     return (
-        <div>
-            <h1>{initialLoading && 'L.O.A.D.I.N.G'}</h1>
+        <div className={styles.container}>
+            <h1>{initialLoading && <Loader />}</h1>
             {!initialLoading && (
                 <div className={styles.buttonPanel}>
                     {showSearch && (
@@ -81,30 +82,34 @@ const OneMenu = ({
                         />
                     )}
 
-                    <h2>{menu.name}</h2>
-
-                    {showSaveButton && (
-                        <Button onClick={() => backToInitialProducts()}>
-                            Cancel changes
+                    <div className={styles.menuNameAndEditContainer}>
+                        <h2 className={styles.menuName}>{menu.name}</h2>
+                        <Button
+                            onClick={editButtonHandler}
+                            bordered
+                            size="small"
+                        >
+                            {editMode ? 'cancel' : 'edit'}
                         </Button>
-                    )}
-                    <Button onClick={editButtonHandler} bordered>
-                        {editMode ? 'Back' : 'Edit menu'}
-                    </Button>
+                    </div>
 
                     {editMode && (
                         <Button
+                            bordered
                             onClick={() => dispatch({ type: 'SHOW_SEARCH' })}
+                            size="small"
                         >
-                            Add
+                            add new product
                         </Button>
                     )}
 
-                    {showSaveButton && (
-                        <Button onClick={saveHandler} bordered>
-                            {initialLoading ? 'Loading...' : 'Save changes'}
-                        </Button>
-                    )}
+                    <div className={styles.saveBtnContainer}>
+                        {showSaveButton && (
+                            <Button onClick={saveHandler} bordered size="small">
+                                {initialLoading ? 'Loading...' : 'save changes'}
+                            </Button>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -138,10 +143,10 @@ const OneMenu = ({
                 )}
             </ul> */}
 
-            <h2>{menu.name}</h2>
-
             <Table data={totalNutrients}></Table>
-            <Button onClick={() => removeMenu(menu.id)}>Delete menu</Button>
+            <Button onClick={() => removeMenu(menu.id)} bordered size="medium">
+                delete {menu.name}
+            </Button>
         </div>
     )
 }

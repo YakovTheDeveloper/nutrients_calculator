@@ -4,8 +4,8 @@ import { NavLink } from 'react-router-dom'
 import styles from './index.module.scss'
 
 const LINKS = [
-    { to: '/', content: 'Search' },
-    { to: 'menu', content: 'Menu' },
+    { to: '/', content: 'search' },
+    { to: 'menu', content: 'menu' },
 ]
 
 const Nav = () => {

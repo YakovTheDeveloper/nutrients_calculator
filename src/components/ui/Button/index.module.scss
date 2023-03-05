@@ -70,8 +70,12 @@
 }
 
 
+.xSmall {
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
 
-
-.bordered {
-  border: 1px solid black;
+  &:hover {
+    color: red;
+  }
 }

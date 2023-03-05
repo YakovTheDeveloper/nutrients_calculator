@@ -130,45 +130,6 @@ const SearchAndCalculate = () => {
                 setQuantity={setProductQuantity}
             />
 
-            <div style={{ position: 'relative' }}>
-                {userData && isAnyProductSelected && totalNutrients ? (
-                    <Button
-                        onClick={() => {
-                            setShowAddNewMenuWindow(true)
-                        }}
-                    >
-                        Save to my menu
-                    </Button>
-                ) : null}
-                <div
-                    style={{
-                        position: 'absolute',
-                        zIndex: 10,
-                        top: '0',
-                        background: 'white',
-                    }}
-                >
-                    {showAddNewMenuWindow && (
-                        <AddMenuForm
-                            cornerButton={
-                                <button
-                                    style={{
-                                        position: 'absolute',
-                                        top: '10px',
-                                        right: '10px',
-                                    }}
-                                    onClick={() =>
-                                        setShowAddNewMenuWindow(false)
-                                    }
-                                >
-                                    X
-                                </button>
-                            }
-                        />
-                    )}
-                </div>
-            </div>
-
             <div className={classNames(styles.loader, styles.no)}></div>
 
             {isAnyProductSelected && (
@@ -185,7 +146,7 @@ const SearchAndCalculate = () => {
             <span className={styles.text}>{recalculateNeedMessage}</span>
 
             <div style={{ position: 'relative', margin: '10px 0' }}>
-                {isAnyProductSelected && totalNutrients ? (
+                {userData && isAnyProductSelected && totalNutrients ? (
                     <Button
                         onClick={() => {
                             setShowAddNewMenuWindow(true)

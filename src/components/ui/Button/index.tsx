@@ -4,7 +4,7 @@ import classnames from 'classnames'
 
 type ButtonProps = {
     children: ReactNode
-    size?: 'medium' | 'big' | 'small'
+    size?: 'medium' | 'big' | 'small' | 'xSmall'
     bordered?: boolean
     hovered?: boolean
     className?: string
