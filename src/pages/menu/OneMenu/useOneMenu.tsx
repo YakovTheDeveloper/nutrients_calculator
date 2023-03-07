@@ -114,10 +114,6 @@ export const useOneMenu = ({
     const [menuState, dispatch] = useImmerReducer(reducer, initialState)
     const { editMode } = menuState
 
-    useEffect(() => {
-        console.log('menuState.editMode', menuState)
-    }, [menuState])
-
     function backToInitialProducts() {
         dispatch({ type: 'EDIT_MODE_OFF' })
         setSelectedProducts(() => menu.products)
@@ -221,9 +217,19 @@ export const useOneMenu = ({
         const needToFetch = productIdsToFetch.length > 0
         needToFetch && console.log('GOING TO FETCH')
         if (needToFetch) {
+            setSelectedProducts((draft) => {
+                Object.values(draft).forEach((product) => {
+                    draft[product.id] = { ...product, isLoading: true }
+                })
+            })
             dispatch({ type: 'InitialLoadingOn' })
             await fetchSelectedProductsFullData(selectedProducts)
             dispatch({ type: 'InitialLoadingOff' })
+            setSelectedProducts((draft) => {
+                Object.values(draft).forEach((product) => {
+                    draft[product.id] = { ...product, isLoading: false }
+                })
+            })
         }
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
     fetchNutrientCalculation,
     fetchProductListById,
@@ -15,41 +15,79 @@ import { useLocation } from 'react-router-dom'
 import { nutrientNameNormalized } from '@constants/nutrients'
 import ListItem from '@ui/Search/ListItem'
 import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent'
+import Loader from '@ui/PreLoader'
+import { wait } from '@helpers/wait'
+import { groupNutrientsByCategory } from '@helpers/mappers'
 
 const ProductsTier = () => {
     // fetchProductsByNutrient({ id: 'copper' })
 
-    const { selectedProducts, addProductToSelected } = useProductStore(
-        (state) => ({
-            selectedProducts: state.selectedProducts,
-            addProductToSelected: state.addProductToSelected,
-        })
-    )
+    const {
+        selectedProducts,
+        addProductToSelected,
+        productsTier,
+        fetchAndAddTierProducts,
+    } = useProductStore((state) => ({
+        selectedProducts: state.selectedProducts,
+        addProductToSelected: state.addProductToSelected,
+        productsTier: state.productsTier,
+        fetchAndAddTierProducts: state.fetchAndAddTierProducts,
+    }))
 
-    const [data, setData] = useState<Products.ItemWithSingleNutrient[]>([])
-    const [currentNutrient, setCurrentNutrient] = useState<Nutrients.Name | ''>(
-        'protein'
-    )
+    const [currentNutrient, setCurrentNutrient] =
+        useState<Nutrients.Name>('protein')
+
+    const [productsLoading, setProductsLoading] = useState(false)
+
+    const [currentProducts, setCurrentProducts] = useState<
+        Products.ItemWithSingleNutrient[]
+    >(productsTier[currentNutrient] || [])
 
     const nutrientNames = Object.entries(nutrientNameNormalized) as [
         Nutrients.Name,
         string
     ][]
 
-    async function getProductsHandler(nutrient: Nutrients.Name) {
-        const data = await fetchProductsByNutrient({ id: nutrient })
-        setData(data.result)
+    async function getProductsHandler(
+        nutrient: Nutrients.Name,
+        productsIsInGlobalStore: Products.ItemWithSingleNutrient[] | undefined
+    ) {
+        if (productsIsInGlobalStore) {
+            setCurrentProducts(productsIsInGlobalStore)
+            return
+        }
+        setProductsLoading(true)
+        const result = await fetchAndAddTierProducts(nutrient)
+        result && setCurrentProducts(result)
+        setProductsLoading(false)
     }
 
+    const tab = useRef<HTMLInputElement>(null)
+
     useEffect(() => {
-        console.log('@currentNutrient', currentNutrient)
-        if (!currentNutrient) return
-        const handler = setTimeout(
-            () => getProductsHandler(currentNutrient),
-            100
+        // if (!currentNutrient) return
+
+        const productsInGlobalStore = productsTier[currentNutrient]
+        // const timeoutMs = productsInGlobalStore ? 0 : 100
+        const result = getProductsHandler(
+            currentNutrient,
+            productsInGlobalStore
         )
-        return () => clearTimeout(handler)
+        // const handler = setTimeout(() => {
+        //     getProductsHandler(currentNutrient, productsInGlobalStore)
+        //     // fetchAndAddTierProducts(currentNutrient)
+        // }, timeoutMs)
+        // return () => Promise.reject(result)
+        // return () => clearTimeout(handler)
     }, [currentNutrient])
+
+    const getShowLoaderStatus = (nutrientName: Nutrients.Name) => {
+        return productsLoading && currentNutrient === nutrientName
+    }
+
+    // const nutrientsByCategory = groupNutrientsByCategory<string>(
+    //     nutrientNameNormalized
+    // )
 
     return (
         <>
@@ -59,18 +97,27 @@ const ProductsTier = () => {
                         {nutrientNames.map(
                             ([nutrientName, nutrientNameNormalized]) => {
                                 return (
-                                    <label key={nutrientName}>
+                                    <label
+                                        key={nutrientName}
+                                        className={styles.filterTab}
+                                    >
+                                        {getShowLoaderStatus(nutrientName) && (
+                                            <Loader
+                                                className={styles.spinner}
+                                            />
+                                        )}
                                         {nutrientNameNormalized}
                                         <input
                                             type="radio"
-                                            // value={nutrientName}
                                             checked={
                                                 currentNutrient === nutrientName
                                             }
                                             name="nutrient"
                                             onChange={() =>
+                                                !productsLoading &&
                                                 setCurrentNutrient(nutrientName)
                                             }
+                                            // disabled={productsLoading}
                                         />
                                     </label>
                                 )
@@ -79,8 +126,10 @@ const ProductsTier = () => {
                     </fieldset>
                 </form>
             </section>
+
             <section>
-                {data.map((product) => {
+                {/* {productsTier[currentNutrient]?.map((product) => { */}
+                {currentProducts.map((product) => {
                     const { ['nutrient']: nutrientNames, ...productForList } =
                             product,
                         nutrient = product.nutrient

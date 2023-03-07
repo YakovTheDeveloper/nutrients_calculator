@@ -21,19 +21,22 @@ const SearchAndCalculate = () => {
         removeProductFromSelected,
         selectedProducts,
         clearTotalNutrients,
-        addProduct,
+        // addProduct,
         addProductToSelected,
         products,
         setTotalNutrients,
         totalNutrients,
         needToRecalculate,
         setNeedToRecalculate,
+        fetchSelectedProductsFullData,
         setProductQuantity,
+        setSelectedProductLoading,
+        fetchAndAddProductToSelected,
     } = useProductStore((state) => ({
         removeProductFromSelected: state.removeProductFromSelected,
         clearSelectedProducts: state.clearSelectedProducts,
         clearTotalNutrients: state.clearTotalNutrients,
-        addProduct: state.addProduct,
+        // addProduct: state.addProduct,
         addProductToSelected: state.addProductToSelected,
         products: state.products,
         selectedProducts: state.selectedProducts,
@@ -42,6 +45,9 @@ const SearchAndCalculate = () => {
         needToRecalculate: state.needToRecalculate,
         setNeedToRecalculate: state.setNeedToRecalculate,
         setProductQuantity: state.setProductQuantity,
+        fetchSelectedProductsFullData: state.fetchSelectedProductsFullData,
+        setSelectedProductLoading: state.setSelectedProductLoading,
+        fetchAndAddProductToSelected: state.fetchAndAddProductToSelected,
     }))
 
     const userData = useUserStore((state) => state.user?.data)
@@ -49,43 +55,30 @@ const SearchAndCalculate = () => {
 
     const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
 
-    const getData = async () => {
+    // async function addProduct(product: Products.ItemSelected) {
+    //     addProductToSelected(product)
+
+    //     const result = await fetchSelectedProductsFullData({
+    //         [product.id]: product,
+    //     })
+    //     if (!result) removeProductFromSelected(product)
+    //     setSelectedProductLoading(product.id, false)
+    // }
+
+    useEffect(() => {
         const productIdsToFetch = findIdCrossings(
             Object.keys(selectedProducts),
             Object.keys(products)
         )
 
-        if (productIdsToFetch.length === 0) {
-            console.info('      No crossings, can use offline calculate')
-            const totalNutrients = calculateTotalNutrients(
-                selectedProducts,
-                products
-            )
-            setTotalNutrients(totalNutrients)
-            setNeedToRecalculate(false)
-            return
-        }
+        if (productIdsToFetch.length > 0) return
 
-        const ids = Object.keys(selectedProducts).toString()
-        try {
-            const response = await fetchProductListById({ ids })
-            addProduct(response.result)
-        } catch (error) {
-            console.error(error)
-            return
-        }
-
-        try {
-            const calculations = await fetchNutrientCalculation(
-                createProductIdToQuantityMapping(selectedProducts)
-            )
-            const nutrients = calculations.result
-            setTotalNutrients(nutrients)
-            setNeedToRecalculate(false)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+        const totalNutrients = calculateTotalNutrients(
+            selectedProducts,
+            products
+        )
+        setTotalNutrients(totalNutrients)
+    }, [selectedProducts, products])
 
     const clearDataHandler = () => {
         clearSelectedProducts()
@@ -95,17 +88,6 @@ const SearchAndCalculate = () => {
         (product) => product.quantity === 0
     )
     const isAnyProductSelected = Object.keys(selectedProducts).length > 0
-    const isCalculateDisabled =
-        !isAnyProductSelected || isAnyProductWithoutValue
-
-    const recalculateNeedMessage =
-        totalNutrients !== null &&
-        needToRecalculate === true &&
-        ' Product(s) need to be recalculated!'
-
-    useEffect(() => {
-        isAnyProductSelected && setNeedToRecalculate(true)
-    }, [selectedProducts])
 
     useEffect(() => {
         setShowAddNewMenuWindow(false)
@@ -115,7 +97,7 @@ const SearchAndCalculate = () => {
         <div className={styles.searchAndCalculate}>
             <Search
                 selectedProducts={selectedProducts}
-                addProductToSelected={addProductToSelected}
+                addProductToSelected={fetchAndAddProductToSelected}
             />
             {isAnyProductSelected ? (
                 <Button onClick={clearDataHandler} size="small" bordered>
@@ -132,7 +114,7 @@ const SearchAndCalculate = () => {
 
             <div className={classNames(styles.loader, styles.no)}></div>
 
-            {isAnyProductSelected && (
+            {/* {isAnyProductSelected && (
                 <Button
                     disabled={isCalculateDisabled}
                     className={styles.calculateBtn}
@@ -142,8 +124,8 @@ const SearchAndCalculate = () => {
                 >
                     calculate
                 </Button>
-            )}
-            <span className={styles.text}>{recalculateNeedMessage}</span>
+            )} */}
+            {/* <span className={styles.text}>{recalculateNeedMessage}</span> */}
 
             <div style={{ position: 'relative', margin: '10px 0' }}>
                 {userData && isAnyProductSelected && totalNutrients ? (

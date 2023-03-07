@@ -18,7 +18,7 @@ declare namespace Nutrients {
     // export type NameNormalized = Partial<NamesToData<string>>
     export type NameNormalized = NamesToData<string>
 
-    export type NamesToItems = NamesToData<TableItem>
+    export type NamesToItems = NamesToData<item>
     export type Name = keyof NamesToData<any>
 
     export interface NamesToData<T> {
@@ -155,6 +155,9 @@ declare namespace Products {
     type ItemWithSingleNutrient = Omit<Item, 'nutrients'> & {
         nutrient: Nutrients.item
     }
+
+    type Tiers = Partial<Record<Nutrients.Name, ItemWithSingleNutrient[]>>
+
     type ItemSelected = ItemWithNoNutrients & {
         quantity: number
         isLoading: boolean

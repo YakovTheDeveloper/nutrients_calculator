@@ -1,5 +1,5 @@
-export const getNutrientTablesByCategory = (
-    data: Nutrients.NamesToItems
+export const groupNutrientsByCategory = <T = Nutrients.item>(
+    data: Nutrients.NamesToData<T>
 ): Nutrients.Groups => {
     console.log('data', data)
     const mainNutrients = [

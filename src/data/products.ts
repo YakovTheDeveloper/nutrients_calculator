@@ -1,4 +1,4 @@
-import { fetchProductListById } from '@api/methods'
+import { fetchProductListById, fetchProductsByNutrient } from '@api/methods'
 import { findIdCrossings } from '@helpers/findIdCrossings'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
@@ -7,6 +7,11 @@ import { immer } from 'zustand/middleware/immer'
 export interface ProductState {
     products: Products.IdToItemMapping
     productsLoading: Products.IdToLoadingMapping
+    productsTier: Products.Tiers
+    addProductToTier: (product: Products.ItemWithSingleNutrient) => void
+    fetchAndAddTierProducts: (
+        nutrient: Nutrients.Name
+    ) => Promise<Products.ItemWithSingleNutrient[] | null>
     selectedProducts: Products.Selected
     needToRecalculate: boolean
     setNeedToRecalculate: (status: boolean) => void
@@ -16,6 +21,7 @@ export interface ProductState {
         products: Products.Selected
     ) => Promise<Products.IdToItemMapping | null>
     addProductToSelected: (product: Products.ItemSelected) => void
+    setSelectedProductLoading: (id: Products.Id, status: boolean) => void
     clearSelectedProducts: () => void
     removeProductFromSelected: (product: Products.ItemSelected) => void
     setProductQuantity: (
@@ -24,15 +30,17 @@ export interface ProductState {
     ) => void
     totalNutrients: Nutrients.NamesToItems | null
     setTotalNutrients: (nutrients: Nutrients.NamesToItems) => void
+    fetchAndAddProductToSelected: (product: Products.ItemSelected) => void
     clearTotalNutrients: () => void
 }
 
 export const useProductStore = create<ProductState>()(
     devtools(
-        (set, get) => ({
+        immer((set, get) => ({
             selectedProducts: {},
             products: {},
             productsLoading: {},
+            productsTier: {},
             IdToLoadingMapping: {},
             totalNutrients: null,
             needToRecalculate: false,
@@ -43,16 +51,14 @@ export const useProductStore = create<ProductState>()(
                         ...productMapping,
                     },
                 })),
-            fetchSelectedProductsFullData: async (
-                products: Products.Selected
-            ) => {
+            fetchSelectedProductsFullData: async (products) => {
                 const idsAlreadyExist = Object.keys(get().products)
                 const idsToAdd = Object.keys(products)
                 const idsNeedToAdd = findIdCrossings(idsToAdd, idsAlreadyExist)
                 console.log('idsNeedToAdd', idsNeedToAdd)
                 try {
                     const response = await fetchProductListById({
-                        ids: idsToAdd.toString(),
+                        ids: idsNeedToAdd.toString(),
                     })
                     set((state) => ({
                         products: {
@@ -66,13 +72,72 @@ export const useProductStore = create<ProductState>()(
                     return null
                 }
             },
+            addProductToTier: (product) =>
+                set((state) => ({
+                    productsTier: {
+                        ...state.productsTier,
+                        [product.nutrient.name]: product,
+                    },
+                })),
+            fetchAndAddTierProducts: async (nutrient) => {
+                try {
+                    const { result } = await fetchProductsByNutrient({
+                        id: nutrient,
+                    })
+                    set((state) => ({
+                        productsTier: {
+                            ...state.productsTier,
+                            [nutrient]: result,
+                        },
+                    }))
+                    return result
+                } catch (error) {
+                    console.error(error)
+                    return null
+                }
+            },
             addProductToSelected: (product) =>
                 set((state) => ({
                     selectedProducts: {
                         ...state.selectedProducts,
-                        [product.id]: product,
+                        [product.id]: { ...product, isLoading: true },
                     },
                 })),
+            fetchAndAddProductToSelected: async (product) => {
+                const noNeedToFetch = Boolean(get().products[product.id])
+                console.log('@@ noNeedToFetch', noNeedToFetch)
+                set((state) => {
+                    state.selectedProducts[product.id] = {
+                        ...product,
+                        isLoading: !noNeedToFetch,
+                    }
+                })
+
+                if (noNeedToFetch === true) return
+
+                try {
+                    const { result } = await fetchProductListById({
+                        ids: product.id,
+                    })
+                    set((state) => {
+                        for (const id in result) {
+                            state.products[id] = result[id]
+                        }
+                        state.selectedProducts[product.id].isLoading = false
+                    })
+                    return result
+                } catch (error) {
+                    console.error(error)
+                    set((state) => {
+                        delete state.selectedProducts[product.id]
+                    })
+                    return null
+                }
+            },
+            setSelectedProductLoading: (id, status) =>
+                set((state) => {
+                    state.selectedProducts[id].isLoading = status
+                }),
             clearSelectedProducts: () =>
                 set((state) => ({
                     selectedProducts: {},
@@ -112,7 +177,7 @@ export const useProductStore = create<ProductState>()(
                         totalNutrients: null,
                     }
                 }),
-        }),
+        })),
         {
             name: 'product-storage',
         }

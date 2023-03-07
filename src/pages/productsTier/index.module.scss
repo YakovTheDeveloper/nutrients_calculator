@@ -2,4 +2,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  border: none;
+}
+
+.spinner {
+  display: inline-block;
+}
+
+.filterTab {
+  padding: 8px 4px;
+  border: 1px solid #000;
 }

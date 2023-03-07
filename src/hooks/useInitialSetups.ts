@@ -36,7 +36,7 @@ export function useInitialSetups() {
             const response = await fetchUserMenus()
             const menus = response.result
             console.log('response result', menus)
-            // const categories = getNutrientTablesByCategory(menu.nutrients)
+            // const categories = groupNutrientsByCategory(menu.nutrients)
             setMenus(menus)
         } catch (error) {
             console.error(error)

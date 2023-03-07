@@ -3,7 +3,7 @@
 
 import { nutrientDailyNorm, initNutrients } from '@constants/nutrients'
 import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent'
-import { getNutrientTablesByCategory } from '@helpers/mappers'
+import { groupNutrientsByCategory } from '@helpers/mappers'
 import { getShortNutrientNameIfHas } from '@helpers/normalizers'
 import classNames from 'classnames'
 import React from 'react'
@@ -26,7 +26,7 @@ const Table = ({ data }: TableProps) => {
     return (
         <>
             <section className={classNames(styles.container)}>
-                {Object.entries(getNutrientTablesByCategory(data)).map(
+                {Object.entries(groupNutrientsByCategory(data)).map(
                     ([nutrientGroupName, nutrients]) => (
                         <table
                             className={styles[nutrientGroupName]}
