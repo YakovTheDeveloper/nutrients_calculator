@@ -1,13 +1,11 @@
 import { useUserStore } from '@data/user'
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from './index.module.scss'
-import {
-    fetchMenuDelete,
-    fetchPatchUserMenu,
-    IdToValueMapping,
-} from '@api/methods'
-import OneMenu from './OneMenu'
+import { fetchMenuDelete, fetchPatchUserMenu } from '@api/methods'
+import SingleMenu from './SingleMenu'
 import { useProductStore } from '@data/products'
+import { PatchMenuConfig } from '@data/user'
+import { wait } from '@helpers/wait'
 
 const Menu = () => {
     const { user, menus, removeMenu, patchMenu } = useUserStore(
@@ -20,18 +18,12 @@ const Menu = () => {
         // shallow
     )
 
-    // const menus = useUserStore((state) => state.menus)
-
-    const { products, fetchSelectedProductsFullData } = useProductStore(
-        (state) => ({
+    const { products, fetchSelectedProductsFullData, setSelectedProducts } =
+        useProductStore((state) => ({
             products: state.products,
             fetchSelectedProductsFullData: state.fetchSelectedProductsFullData,
-        })
-    )
-
-    useEffect(() => {
-        console.log('menus', menus)
-    }, [menus])
+            setSelectedProducts: state.setSelectedProducts,
+        }))
 
     async function deleteMenuHandler(id: number) {
         try {
@@ -43,28 +35,69 @@ const Menu = () => {
     }
 
     async function patchMenuHandler(
-        id: number,
-        idtToQuantityMapping: IdToValueMapping,
-        newProducts?: Products.Selected
+        config: PatchMenuConfig,
+        order: 'fetchFirst' | 'storeFirst' = 'fetchFirst'
     ) {
         try {
-            await fetchPatchUserMenu(id, idtToQuantityMapping)
-            patchMenu(id, idtToQuantityMapping, newProducts)
+            // throw new Error()
+            console.log('order', order)
+            if (order === 'fetchFirst') {
+                await fetchPatchUserMenu(config.id, config)
+                patchMenu(config)
+                return true
+            }
+            patchMenu(config)
+
+            const result = fetchPatchUserMenu(config.id, config)
+                .then(() => true)
+                .catch((error) => {
+                    console.error(error)
+                    return false
+                })
+            return result
         } catch (error) {
             console.error(error)
+            return false
         }
     }
+    // async function patchMenuHandler(
+    //     config: PatchMenuConfig,
+    //     order: 'fetchFirst' | 'storeFirst' = 'fetchFirst'
+    // ) {
+    //     try {
+    //         // throw new Error()
+    //         console.log('order', order)
+    //         if (order === 'fetchFirst') {
+    //             await fetchPatchUserMenu(config.id, config)
+    //             patchMenu(config)
+    //             return true
+    //         }
+    //         patchMenu(config)
+
+    //         const result = fetchPatchUserMenu(config.id, config)
+    //             .then(() => true)
+    //             .catch((error) => {
+    //                 console.error(error)
+    //                 return false
+    //             })
+    //         return result
+    //     } catch (error) {
+    //         console.error(error)
+    //         return false
+    //     }
+    // }
 
     return (
         <div className={styles.menu}>
             {!user && <h2>Log in to see or create your menus</h2>}
             {menus.map((menu) => {
                 return (
-                    <OneMenu
+                    <SingleMenu
                         products={products}
                         fetchSelectedProductsFullData={
                             fetchSelectedProductsFullData
                         }
+                        setGlobalSelectedProducts={setSelectedProducts}
                         key={menu.id}
                         menu={menu}
                         removeMenu={deleteMenuHandler}

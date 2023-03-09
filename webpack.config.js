@@ -1,7 +1,7 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpack = require('webpack');
+const path = require('path'),
+    HtmlWebpackPlugin = require('html-webpack-plugin'),
+    MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+    webpack = require('webpack');
 
 const CSSModuleLoader = {
     loader: 'css-loader',
@@ -83,7 +83,7 @@ module.exports = {
         historyApiFallback: true,
         open: true,
         static: './dist',
-        hot: true
+        hot: true,
     },
     plugins: [
         new HtmlWebpackPlugin({

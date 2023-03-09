@@ -1,3 +1,4 @@
+import { PatchMenuConfig } from '@data/user'
 import { addIdKeyPrefixToMapping } from '@helpers/normalizers'
 import { sendRequest } from './sendRequest'
 
@@ -40,7 +41,7 @@ type addMenuParams = {
     ids: IdToValueMapping
 }
 
-type patchMenuParams = IdToValueMapping
+type PatchMenuParams = Omit<PatchMenuConfig, 'newProducts'>
 
 type ProductListResponse = Products.Item[]
 
@@ -136,13 +137,18 @@ export function fetchAddUserMenu(options: addMenuParams) {
     })
 }
 
-export function fetchPatchUserMenu(id: number, options: patchMenuParams) {
-    console.log('options', options)
+export function fetchPatchUserMenu(menuId: number, options: PatchMenuParams) {
+    //todo: remove id from config
+    const { idToQuantityMapping, id, ...rest } = options
+    const ids = idToQuantityMapping
+        ? addIdKeyPrefixToMapping(idToQuantityMapping)
+        : {}
+    console.log('config', { ...rest })
 
     return sendRequest<null>({
-        url: `products/menu/${id}/`,
+        url: `products/menu/${menuId}/`,
         method: 'PATCH',
-        query: addIdKeyPrefixToMapping(options),
+        query: { ...ids, ...rest },
     })
 }
 

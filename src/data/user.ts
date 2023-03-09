@@ -7,6 +7,14 @@ import { devtools, persist } from 'zustand/middleware'
 import { isEmpty } from '@helpers/isEmpty'
 import { immer } from 'zustand/middleware/immer'
 
+export type PatchMenuConfig = {
+    id: number
+    idToQuantityMapping?: IdToValueMapping
+    newProducts?: Products.Selected
+    name?: string
+    description?: string
+}
+
 export interface UserState {
     user: Pick<Api.User, 'data'> | null
     setUser: (user: Pick<Api.User, 'data'>) => void
@@ -15,11 +23,7 @@ export interface UserState {
     setMenus: (menus: Products.Menu[]) => void
     addMenu: (menu: Products.Menu) => void
     removeMenu: (id: number) => void
-    patchMenu: (
-        id: number,
-        idToQuantityMapping: IdToValueMapping,
-        newProducts?: Products.Selected
-    ) => void
+    patchMenu: (config: PatchMenuConfig) => void
     clearStore: () => void
 }
 
@@ -54,24 +58,35 @@ export const useUserStore = create<UserState>()(
                     )
                     state.menus.splice(index, 1)
                 }),
-            patchMenu: (id, idToQuantityMapping, newProducts) =>
+            patchMenu: ({
+                id,
+                idToQuantityMapping,
+                newProducts,
+                description,
+                name,
+            }) =>
                 set((state) => {
                     const menu = state.menus.find(
                         (menu: Products.Menu) => menu.id === id
                     )
                     if (!menu) return state
-                    for (const [id, quantity] of Object.entries(
-                        idToQuantityMapping
-                    )) {
-                        const product = menu.products[+id]
-                        if (!product) continue
-                        if (quantity === 0) {
-                            // menu.products[+id] = null
-                            delete menu.products[+id]
-                            continue
+
+                    if (name) menu.name = name
+                    if (description) menu.description = description
+
+                    if (idToQuantityMapping)
+                        for (const [id, quantity] of Object.entries(
+                            idToQuantityMapping
+                        )) {
+                            const product = menu.products[+id]
+                            if (!product) continue
+                            if (quantity === 0) {
+                                // menu.products[+id] = null
+                                delete menu.products[+id]
+                                continue
+                            }
+                            product.quantity = quantity
                         }
-                        product.quantity = quantity
-                    }
 
                     if (newProducts && isEmpty(newProducts) === false) {
                         for (const [id, product] of Object.entries(newProducts))

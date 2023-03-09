@@ -21,6 +21,7 @@ export interface ProductState {
         products: Products.Selected
     ) => Promise<Products.IdToItemMapping | null>
     addProductToSelected: (product: Products.ItemSelected) => void
+    setSelectedProducts: (product: Products.Selected) => void
     setSelectedProductLoading: (id: Products.Id, status: boolean) => void
     clearSelectedProducts: () => void
     removeProductFromSelected: (product: Products.ItemSelected) => void
@@ -134,6 +135,10 @@ export const useProductStore = create<ProductState>()(
                     return null
                 }
             },
+            setSelectedProducts: (products) =>
+                set((state) => {
+                    state.selectedProducts = products
+                }),
             setSelectedProductLoading: (id, status) =>
                 set((state) => {
                     state.selectedProducts[id].isLoading = status

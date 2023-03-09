@@ -1,5 +1,5 @@
 import { useProductStore } from '@data/products'
-import { SelectedProductsToLoad } from '@pages/menu/OneMenu/useOneMenu'
+import { SelectedProductsToLoad } from '@pages/menu/SingleMenu/useMenuProducts'
 import Button from '@ui/Button'
 import React, { useEffect, useRef, useState } from 'react'
 import ClearButton from '@ui/Button/ClearButton'

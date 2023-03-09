@@ -10,67 +10,24 @@ import Button from '@ui/Button'
 import { shallow } from 'zustand/shallow'
 import { getToken } from '@api/localStorage'
 import { fetchMe, fetchUserMenus } from '@api/methods'
+import Layout from '@layout/Layout'
+import { useInitialSetups } from '@hooks/useInitialSetups'
 
 export const App = () => {
     const { isOpened, closeModal, modalContent } = useModalStore()
+    const userData = useUserStore((state) => state.user?.data)
 
-    const { user, setUser, setMenus } = useUserStore(
-        (state) => ({
-            user: state.user,
-            setUser: state.setUser,
-            setMenus: state.setMenus,
-            clearStore: state.clearStore,
-        }),
-        shallow
-    )
+    useInitialSetups()
 
-    // const fetchMeHandler = async () => {
-    //     try {
-    //         const response = await fetchMe()
-    //         console.log('response', response)
-    //         const userData = response.result
-    //         console.log('res.result', response.result)
-    //         console.log('userData', userData)
-    //         setUser({
-    //             data: {
-    //                 email: userData.email,
-    //             },
-    //         })
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     console.log('user', user)
-    //     if (user) return
-    //     if (!getToken()) return
-
-    //     fetchMeHandler()
-
-    // }, [user])
-
-    // const getMenuHandler = async () => {
-    //     try {
-    //         const response = await fetchUserMenu()
-    //         const menus = response.result
-    //         console.log('response result', menus)
-    //         // const categories = groupNutrientsByCategory(menu.nutrients)
-    //         setMenus(menus)
-    //     } catch (error) {
-    //         console.error(error)
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     if (!user) return
-    //     getMenuHandler()
-    // }, [user])
+    useEffect(() => {
+        if (!userData) return
+        closeModal()
+    }, [userData])
 
     return (
-        <section>
+        <>
             {isOpened && <Modal onClose={closeModal}>{modalContent}</Modal>}
-            <SearchAndCalculate />
-        </section>
+            <Layout />
+        </>
     )
 }

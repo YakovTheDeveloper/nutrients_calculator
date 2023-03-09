@@ -5,23 +5,20 @@ import Menu from '@pages/menu'
 import Layout from '@layout/Layout'
 import ProductPage from '@pages/product'
 import ProductsTier from '@pages/productsTier'
+import SearchAndCalculate from '@pages/searchAndCalculate'
 
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: <Layout />,
+        element: <App />,
         children: [
             {
                 path: '/',
-                element: <App />,
+                element: <SearchAndCalculate />,
             },
             {
                 path: '/menu',
                 element: <Menu />,
-            },
-            {
-                path: '/product/:id',
-                element: <ProductPage />,
             },
             {
                 path: '/product/:id',

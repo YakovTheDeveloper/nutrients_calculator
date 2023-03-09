@@ -2,7 +2,7 @@ import { useProductStore } from '@data/products'
 import { useUserStore } from '@data/user'
 import AddMenuForm from '@forms/AddMenuForm'
 import { renderHook } from '@testing-library/react'
-import { useOneMenu } from './useOneMenu'
+import { useMenuProducts } from './useMenuProducts'
 
 describe('One menu hook', () => {
     test('Request with token, should return user data', async () => {
@@ -41,7 +41,7 @@ describe('One menu hook', () => {
         addMenu(mockMenu)
 
         renderHook(() =>
-            useOneMenu({
+            useMenuProducts({
                 menu: mockMenu,
                 products,
                 fetchSelectedProductsFullData,

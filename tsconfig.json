@@ -48,9 +48,6 @@
             "@layout/*": [
                 "src/components/layout/*"
             ],
-            // "@api": [
-            //     "src/api/index.ts"
-            // ],
             "@api/*": [
                 "src/api/*"
             ],
