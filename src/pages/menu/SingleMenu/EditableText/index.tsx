@@ -1,5 +1,5 @@
 import { EMOJI } from '@constants/misc'
-import Button from '@ui/Button'
+import {Button} from '@ui/Button'
 import cn from 'classnames'
 import React from 'react'
 import { MenuAction } from '../useMenuControls'

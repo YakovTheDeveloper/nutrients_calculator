@@ -1,3 +1,25 @@
+.searchAndCalculate {
+  position: relative;
+
+  &__products {
+    display: flex;
+
+
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__searchBarContainer {
+    box-shadow: 0 10px 10px 5px rgba(64, 60, 67, .04);
+    padding-bottom: 15px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+}
+
 .no {
   animation: none;
   background: gainsboro;

@@ -1,1 +1,1 @@
-export const apiBaseAddress = 'http://192.168.88.254:8000'
+export const apiBaseAddress = 'http://localhost:3000'

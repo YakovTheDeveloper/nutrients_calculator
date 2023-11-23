@@ -42,6 +42,7 @@ module.exports = {
             '@constants': path.resolve(__dirname, 'src/constants/'),
             '@forms': path.resolve(__dirname, 'src/components/forms/'),
             '@layout': path.resolve(__dirname, 'src/components/layout/'),
+            '@assets': path.resolve(__dirname, 'src/assets/'),
             '@api': path.resolve(__dirname, 'src/api/'),
             // '@api': path.resolve(__dirname, 'src/api/index.ts'),
         },
@@ -67,7 +68,7 @@ module.exports = {
                 use: ['style-loader', CSSModuleLoader, "sass-loader"]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.(png|jpg|gif)$/,
                 use: [
                     {
                         loader: 'file-loader',
@@ -76,6 +77,11 @@ module.exports = {
                         },
                     },
                 ],
+            },
+            {
+                test: /\.svg$/,
+                use: ['@svgr/webpack', 'url-loader'],
+                include: path.resolve(__dirname, 'src'), // Make sure to include the 'src' directory
             },
         ],
     },

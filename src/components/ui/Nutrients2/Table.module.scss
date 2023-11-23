@@ -1,3 +1,45 @@
+//todo rename
+.test {
+  display: contents;
+
+  &:hover {
+    * {
+      opacity: 1;
+    }
+  }
+
+  &:nth-child(2n + 1) .tableContentCell {
+    background: rgb(244, 246, 255);
+  }
+
+  &_mark {
+    .tableContentCell {
+      opacity: 0.3;
+    }
+  }
+}
+
+.table {
+  font-size: 1rem;
+
+  &Heading {
+    padding: 10px 10px 15px;
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+
+  &Content {
+    display: grid;
+
+    &Cell {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+    }
+  }
+
+}
+
 .nutrients {
   display: flex;
   flex-direction: column;
@@ -5,6 +47,7 @@
   gap: 30px;
   max-height: 65vh;
   overflow: auto;
+
 
   &__groupNav {
     display: flex;

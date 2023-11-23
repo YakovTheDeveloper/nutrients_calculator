@@ -1,99 +1,75 @@
-import Footer from "@layout/Footer";
-import Header from "@layout/Header";
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
-import { NutrientCodes, nutrientCodeToName, nutrientDailyNormCode, NutrientsNorm } from "@constants/nutrients";
-import s from "./Settings.module.scss";
-import Input from "@ui/Input/Input";
-import { useSettings } from "@data/settings";
-import classNames from "classnames";
-import { useImmer } from "use-immer";
-import {Button} from "@ui/Button";
-import { useNutrientsStore } from "@data/nutrients";
-import { Tab } from "@ui";
-import { objectEntries } from "@helpers/objectEntries";
-
-
+import React, { useState } from 'react';
+import {
+    NutrientCodes,
+    nutrientCodeToName,
+    nutrientDailyNormCode,
+} from '@constants/nutrients';
+import s from './NutrientNorms.module.scss';
+import Input from '@ui/Input/Input';
+import { useSettings } from '@data/settings';
+import classNames from 'classnames';
+import { useImmer } from 'use-immer';
+import { Button, ButtonTypes } from '@ui/Button';
+import { useNutrientsStore } from '@data/nutrients';
+import { Tab, TabTypes } from '@ui';
+import { objectEntries } from '@helpers/objectEntries';
+import Table from '@ui/Nutrients2/Table';
+import NormEditor from './normEditor/NormEditor';
+import { v4 as uuidv4 } from 'uuid';
 
 const createNewNorm = () => {
-    const norm = JSON.parse(JSON.stringify(nutrientDailyNormCode));
-    norm.id = Math.random().toString();
-    norm.name = "Name " + Math.random().toString();
+    const norm: Norm.Item = JSON.parse(JSON.stringify(nutrientDailyNormCode));
+    norm.name = 'My Norm';
+    norm.id = uuidv4();
     return norm;
 };
 
 const NutrientNorms = () => {
+    const [tab, setTab] = useState();
 
-    const { currentNormId } = useSettings(state => state.calcSettings);
-    const setCalcNutrientNorm = useSettings(state => state.setCalcNutrientNorm);
-    const addNutrientNorm = useNutrientsStore(state => state.addNutrientNorm);
-    const nutrientNorms = useNutrientsStore(state => state.nutrientNorms);
-    const [newNorm, setNewNorm] = useImmer<NutrientsNorm | null>(null);
+    const nutrientNorms = useNutrientsStore((state) => state.nutrientNorms);
+    const { currentNormId } = useSettings((state) => state.calcSettings);
+    const setCalcNutrientNormId = useSettings(
+        (state) => state.setCalcNutrientNormId
+    );
+    const addNutrientNorm = useNutrientsStore((state) => state.addNutrientNorm);
 
-    const forExampleNorm = JSON.parse(JSON.stringify(nutrientDailyNormCode));
-    forExampleNorm.id = "1";
-    forExampleNorm.name = "Custom";
-
-    const onNewNutrientNormChange = (value: string, nutrientId: NutrientCodes) => {
-        if (!newNorm) return;
-        setNewNorm(prev => {
-            if (!prev) return;
-            prev.nameToQuantityMapping[nutrientId] = +value;
-        });
-    };
-
-    const onSaveNewNorm = () => {
-        if (!newNorm) return;
-        // fetch add new norm
-
-        //if ok
-        addNutrientNorm(newNorm);
-        setNewNorm(null);
+    const createNewNormHandler = () => {
+        const norm = createNewNorm();
+        addNutrientNorm(norm);
+        setCalcNutrientNormId(norm.id);
     };
 
     return (
         <div className={s.settings}>
-            <Tab.Panel>
-                {nutrientNorms.map(({ id, name }) => (
-                    <Tab active={currentNormId === id} onClick={() => setCalcNutrientNorm(id)}>{name}</Tab>
-                ))}
-
-            </Tab.Panel>
-            Установить норму нутриентов
-            <button onClick={() => {
-                setNewNorm(createNewNorm());
-            }}>add</button>
-            <div className={s.norms}>
-                {newNorm &&
-                  <div className={classNames(s.normsNorm)}>
-                    <div className={classNames(s.normsNorm__table)}>
-                        {objectEntries(newNorm.nameToQuantityMapping).map(([code, value]) => {
-                            return (
-                                <>
-                                    <span>{nutrientCodeToName[code]}</span>
-                                    <Input value={newNorm.nameToQuantityMapping[code]}
-                                           onChange={(e) => onNewNutrientNormChange(e.target.value, code)} />
-                                </>);
-                        })}
-                    </div>
-                    <Button onClick={onSaveNewNorm}>
-                      Сохранить
-                    </Button>
-                  </div>}
-                {nutrientNorms.map(({ id, nameToQuantityMapping, name }) =>
-                    <div className={classNames(s.normsNorm, currentNormId === id && s.normsNorm_selected)}>
-                        <div className={classNames(s.normsNorm__table)}>
-                            {objectEntries(nameToQuantityMapping).map(([code, value]) => {
-                                return <>
-                                    <span>{nutrientCodeToName[code]}</span>
-                                    {id !== "0" ? <Input value={value} /> : <span>{value}</span>}
-
-                                </>;
-                            })}
-                        </div>
-                    </div>
-                )}
+            {currentNormId}
+            <div className={s.settings__norms}>
+                <div className={s.settings__normsGroup}>
+                    <Tab.Panel>
+                        {nutrientNorms.map(({ id, name }) => (
+                            <Tab
+                                key={id}
+                                active={currentNormId === id}
+                                onClick={() => setCalcNutrientNormId(id)}
+                            >
+                                {name}
+                            </Tab>
+                        ))}
+                    </Tab.Panel>
+                </div>
+                <div className={s.settings__normsGroup}>
+                    <Tab.Panel>
+                        <Tab
+                            variant={TabTypes.secondary}
+                            onClick={createNewNormHandler}
+                        >
+                            + New Norm
+                        </Tab>
+                    </Tab.Panel>
+                </div>
             </div>
+
+            <NormEditor />
         </div>
     );
 };

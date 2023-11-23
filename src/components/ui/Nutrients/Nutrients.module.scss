@@ -1,0 +1,48 @@
+@import '../../../styles/mixins.scss';
+
+.nutrients {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  gap: 30px;
+  max-height: 65vh;
+  overflow: auto;
+
+  &__percent {
+    width: 100%;
+    position: relative;
+  }
+
+  &__tables {
+    height: 100vh;
+    padding-top: 25px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__visibilityButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(0.9);
+
+    path {
+      color: rgb(100, 100, 100);
+      fill: rgb(100, 100, 100);
+    }
+
+    transition: all 0.1s;
+
+    &_row {
+      opacity: 0;
+    }
+  }
+}

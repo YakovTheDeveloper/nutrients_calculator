@@ -1,4 +1,4 @@
-import Button from '@ui/Button'
+import {Button} from '@ui/Button'
 import React, { ReactNode, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './index.module.scss'
@@ -8,7 +8,7 @@ const portalRoot = document.getElementById('portal-root')
 const hideScrollbar = () =>
     document.getElementsByTagName('body')[0].classList.add('modal-open')
 const showScrollbar = () =>
-    document.getElementsByTagName('body')[0].classList.add('modal-open')
+    document.getElementsByTagName('body')[0].classList.remove('modal-open')
 
 type ModalProps = {
     children: ReactNode
@@ -26,12 +26,12 @@ const Modal = ({ children, onClose }: ModalProps) => {
         }
     })
     const child = (
-        <>
+        <div className={styles.modal}>
             <div className={styles.modalContainer}>
-                <div className={styles.inner}>{children}</div>
+                <div className={styles.modalInner}>{children}</div>
             </div>
-            <div className={styles.overlay} onClick={onClose}></div>
-        </>
+            <div className={styles.modalOverlay} onClick={onClose}></div>
+        </div>
     )
     return createPortal(child, container)
 }

@@ -1,0 +1,32 @@
+@import '../../../../styles/mixins.scss';
+
+.nutrientsNavigation {
+  display: flex;
+  flex-direction: column;
+
+  &ToggleButton,
+  &VisibilityButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(0.9);
+    @include opacity-button;
+
+  }
+
+  &VisibilityButton {
+    @include opacity-button;
+    margin-left: auto;
+  }
+
+  // &VisibilityButton {
+  //   opacity: 0.9;
+  //   cursor: pointer;
+
+  //   &:hover {
+  //     opacity: 0.2;
+  //   }
+  // }
+
+}

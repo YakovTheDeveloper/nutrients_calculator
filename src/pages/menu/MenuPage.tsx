@@ -1,24 +1,17 @@
-import { useUserStore } from "@data/user";
-import React, { useEffect, useState } from "react";
-import styles from "./index.module.scss";
-import {
-    fetchMenuDelete,
-    fetchPatchUserMenu,
-    fetchProductListById
-} from "@api/methods";
-import SingleMenu from "./SingleMenu";
-import { useProductStore } from "@data/products";
-import { PatchMenuConfig } from "@data/user";
-import { wait } from "@helpers/wait";
-import SelectedProducts from "./SelectedProducts";
-import Table from "@ui/Table";
-import Nutrients from "@ui/Nutrients";
-import { calculateTotalNutrients2 } from "@helpers/calculateTotalNutrients";
-import { Button } from "@ui/Button";
-import { ProductSearch } from "./ProductSearch";
-import { Tab } from "@ui";
+import { useUserStore } from '@data/user';
+import React, { useEffect, useState } from 'react';
+import styles from './MenuPage.module.scss';
+import { fetchPatchUserMenu, fetchProductListById } from '@api/methods';
+import { useProductStore } from '@data/products';
+import SelectedProducts from './SelectedProducts';
+import Nutrients from '@ui/Nutrients/Nutrients';
+import { calculateTotalNutrients2 } from '@helpers/calculateTotalNutrients';
+import { Button } from '@ui/Button';
+import { ProductSearch } from './ProductSearch';
+import { Tab, TabTypes } from '@ui';
+import SplitSection from '@layout/SplitSection';
 
-const Menu = () => {
+const MenuPage = () => {
     const {
         user,
         menus,
@@ -27,26 +20,32 @@ const Menu = () => {
         setMenus,
         initialMenuSnapshot,
         patchMenuProducts,
-        updateMenu
+        updateMenu,
+        currentMenuId,
+        setCurrentMenuId,
     } = useUserStore(
         (state) => ({
             menus: state.menus,
+            currentMenuId: state.currentMenuId,
             initialMenuSnapshot: state.initialMenuSnapshot,
             removeMenu: state.removeMenu,
             // patchMenu: state.patchMenu,
             patchMenuProducts: state.patchMenuProducts,
             user: state.user,
             setMenus: state.setMenus,
-            updateMenu: state.updateMenu
+            updateMenu: state.updateMenu,
+            setCurrentMenuId: state.setCurrentMenuId,
         })
         // shallow
     );
 
     const { products } = useProductStore((state) => ({
-        products: state.products
+        products: state.products,
     }));
 
-    const [currentMenuId, setCurrentMenuId] = useState(-1);
+    const fetchSelectedProductsFullData = useProductStore(
+        (s) => s.fetchSelectedProductsFullData
+    );
 
     const currentMenu = menus.find((menu) => menu.id === currentMenuId);
     const currentMenuOriginal = initialMenuSnapshot.find(
@@ -55,30 +54,30 @@ const Menu = () => {
 
     const onProductValueChange = (value: string, productId: number) =>
         patchMenuProducts({
-            type: "modify",
+            type: 'modify',
             menuId: currentMenuId,
             productId,
-            value
+            value,
         });
 
     const onProductDelete = (productId: number) =>
         patchMenuProducts({
-            type: "delete",
+            type: 'delete',
             menuId: currentMenuId,
-            productId
+            productId,
         });
 
     const onProductAdd = (productId: number) =>
         patchMenuProducts({
-            type: "add",
+            type: 'add',
             menuId: currentMenuId,
             productId,
-            value: 0
+            value: 0,
         });
 
-    const { addProduct } = useProductStore((state) => ({
-        addProduct: state.addProduct
-    }));
+    // const { addProduct } = useProductStore((state) => ({
+    //     addProduct: state.addProduct,
+    // }));
 
     async function patchMenu() {
         if (!currentMenu) return;
@@ -88,19 +87,15 @@ const Menu = () => {
     }
 
     useEffect(() => {
-        const lol = menus.map((menu) => Object.keys(menu.products)).flat();
-        const unique = Array.from(new Set(lol)).toString();
-        //todo вычесть уже готовые id продуктов
-        fetchProductListById({ food_id: unique }).then((items) =>
-            addProduct(items.result)
-        );
+        if (!currentMenu) return;
+        fetchSelectedProductsFullData(currentMenu?.products);
     }, [menus]);
 
     const wasChange =
         Object.keys(currentMenu?.products || {}).length !==
-        Object.keys(currentMenuOriginal?.products || {}).length ||
+            Object.keys(currentMenuOriginal?.products || {}).length ||
         JSON.stringify(currentMenu?.products) !==
-        JSON.stringify(currentMenuOriginal?.products);
+            JSON.stringify(currentMenuOriginal?.products);
 
     const idToQuantity = currentMenu?.products || {};
 
@@ -118,6 +113,7 @@ const Menu = () => {
                 <Tab.Panel>
                     {menus.map((menu) => (
                         <Tab
+                            variant={TabTypes.primary}
                             active={menu.id === currentMenuId}
                             key={menu.id}
                             onClick={() => setCurrentMenuId(menu.id)}
@@ -128,27 +124,26 @@ const Menu = () => {
                 </Tab.Panel>
             </header>
             {!user && <h2>Log in to see or create your menus</h2>}
-            <div className={styles.menu__content}>
-                <div>
-                    {currentMenu && (
-                        <SelectedProducts
-                            products={currentMenu.products}
-                            onProductValueChange={onProductValueChange}
-                            onProductDelete={onProductDelete}
-                        />
-                    )}
-                    <div>
-                        {wasChange && (
-                            <Button onClick={patchMenu}>Сохранить</Button>
-                        )}
-                    </div>
-                </div>
+            <SplitSection>
+                {currentMenu && (
+                    <SelectedProducts
+                        products={currentMenu.products}
+                        onProductValueChange={onProductValueChange}
+                        onProductDelete={onProductDelete}
+                    >
+                        <div>
+                            {wasChange && (
+                                <Button onClick={patchMenu}>Сохранить</Button>
+                            )}
+                        </div>
+                    </SelectedProducts>
+                )}
                 {currentMenu && (
                     <Nutrients data={Object.values(totalNutrients)} />
                 )}
-            </div>
+            </SplitSection>
         </div>
     );
 };
 
-export default Menu;
+export default MenuPage;

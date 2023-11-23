@@ -1,7 +1,7 @@
 import { IdToValueMapping } from '@api/methods'
 import { deepCopy } from '@helpers/deepCopy'
 import { findIdCrossings } from '@helpers/findIdCrossings'
-import { SingleMenuProps } from './index'
+import { SingleMenuProps } from '../index'
 
 import { findDifference } from '@helpers/findDifference'
 import { useImmer } from 'use-immer'

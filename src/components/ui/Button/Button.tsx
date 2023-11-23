@@ -1,30 +1,44 @@
 import React, { ReactNode } from "react";
 import s from "./index.module.scss";
 import cn from "classnames";
+import { ButtonToggleAddProduct } from "@ui/Button/ButtonToggleAddProduct";
+import { Loader } from "@ui/Loader";
 
 export enum ButtonTypes {
     primary = "primary",
     secondary = "secondary",
     danger = "danger",
     success = "success",
+    ghost = "ghost",
+    tertiary = "tertiary",
 }
 
-type ButtonProps = {
-    children: ReactNode
-    size?: "medium" | "big" | "small" | "xSmall"
+export enum ButtonSizes {
+    small = "small",
+    medium = "medium",
+    big = "big",
+}
+
+export type ButtonProps = {
+    children?: ReactNode
+    size?: ButtonSizes
     bordered?: boolean
     hovered?: boolean
     className?: string
-    type: ButtonTypes
+    variant?: ButtonTypes
+    danger?: boolean
+    loading?: boolean
 } & React.ComponentPropsWithoutRef<"button">
 
 const Button = ({
                     children,
-                    size = "medium",
+                    size = ButtonSizes.small,
                     bordered,
                     hovered = true,
                     className,
-                    type,
+                    variant = ButtonTypes.primary,
+                    danger,
+                    loading,
                     ...rest
                 }: ButtonProps) => {
     return (
@@ -33,14 +47,19 @@ const Button = ({
             className={cn([
                 className,
                 s.button,
-                s[size],
+                danger && s.button_danger,
+                s[`button_${variant}`],
+                s[`button_${size}`],
                 bordered && s["bordered"],
                 hovered && s["hovered"]
             ])}
         >
             {children}
+            {loading && <Loader className={s.button__loader} />}
         </button>
     );
 };
+
+Button.ToggleAddProduct = ButtonToggleAddProduct;
 
 export default Button;

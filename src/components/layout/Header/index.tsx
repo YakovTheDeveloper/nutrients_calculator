@@ -1,104 +1,94 @@
-import React from 'react'
-import Nav from './Nav'
-import styles from './index.module.scss'
-import { shallow } from 'zustand/shallow'
-import { useUserStore } from '@data/user'
-import Button from '@ui/Button'
-import { useModalStore } from '@data/modal'
-import SignupForm from '@forms/SignupForm'
-import LoginForm from '@forms/LoginForm'
+import React from 'react';
+import Nav from './Nav';
+import styles from './index.module.scss';
+import { shallow } from 'zustand/shallow';
+import { useUserStore } from '@data/user';
+import { Button, ButtonSizes, ButtonTypes } from '@ui/Button';
+import { useModalStore } from '@data/modal';
+import SignupForm from '@forms/SignupForm';
+import LoginForm from '@forms/LoginForm';
+import Settings from '@pages/nutrientNorms/NutrientNorms';
+import { Link, NavLink } from 'react-router-dom';
+import classNames from 'classnames';
+import { ModalsEnum } from '@constants/modal';
 
 const Header = () => {
-    const { user, setUser, setMenus, clearStore } = useUserStore(
-        (state) => ({
-            user: state.user,
-            setUser: state.setUser,
-            setMenus: state.setMenus,
-            clearStore: state.clearStore,
-        }),
-        shallow
-    )
-    const { isOpened, closeModal, modalContent, openModal } = useModalStore()
+	const { user, setUser, setMenus, clearStore } = useUserStore(
+		(state) => ({
+			user: state.user,
+			setUser: state.setUser,
+			setMenus: state.setMenus,
+			clearStore: state.clearStore
+		}),
+		shallow
+	);
 
-    const logoutHandler = () => {
-        clearStore()
-    }
+	const { openModal } = useModalStore();
 
-    return (
-        <header className={styles.header}>
-            <Nav />
-            <section>
-                {user && (
-                    <div className={styles.headerSection}>
-                        <span>Logged in as: {user.data.email}</span>
+	const logoutHandler = () => {
+		clearStore();
+	};
 
-                        <Button
-                            onClick={logoutHandler}
-                            className={styles.logOutBtn}
-                            size="small"
-                        >
+	return (
+		<header className={styles.header}>
+			<Nav />
+			<section className={styles.headerAuth}>
+				{user ? (
+					<div className={styles.headerSection}>
+						{/*<span>{user.data.email}</span>*/}
+						<Button
+							onClick={logoutHandler}
+							size={ButtonSizes.small}
+							variant={ButtonTypes.secondary}
+						>
                             Logout
-                        </Button>
-                    </div>
-                )}
-            </section>
-            {user ? null : (
-                <div>
-                    <Button
-                        onClick={() =>
-                            openModal(
-                                <>
-                                    <button
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            right: 0,
-                                            padding: '10px',
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={closeModal}
-                                    >
-                                        x
-                                    </button>
-                                    <SignupForm />
-                                </>
-                            )
-                        }
-                        bordered
-                        size="medium"
-                    >
-                        Sign Up
-                    </Button>
+						</Button>
+					</div>
+				) : (
+					<>
+						<Button
+							onClick={() =>
+								openModal(
+									ModalsEnum.signup
+								)
+							}
+							bordered
+							size={ButtonSizes.small}
+						>
+                            Sign Up
+						</Button>
 
-                    <Button
-                        onClick={() =>
-                            openModal(
-                                <>
-                                    <button
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            right: 0,
-                                            padding: '10px',
-                                            cursor: 'pointer',
-                                        }}
-                                        onClick={closeModal}
-                                    >
-                                        x
-                                    </button>
-                                    <LoginForm />
-                                </>
-                            )
-                        }
-                        bordered
-                        size="medium"
-                    >
-                        Log in
-                    </Button>
-                </div>
-            )}
-        </header>
-    )
-}
+						<Button
+							onClick={() =>
+								openModal(
+									ModalsEnum.login
+								)
+							}
+							bordered
+							size={ButtonSizes.small}
+						>
+                            Login
+						</Button>
+					</>
+				)}
 
-export default Header
+			</section>
+			<NavLink
+				to="/settings"
+				className={({ isActive }) =>
+					isActive
+						? classNames(styles.link, styles.active)
+						: classNames(styles.link)
+				}
+			>
+				<Button variant={ButtonTypes.tertiary}>
+                    Settings
+				</Button>
+			</NavLink>
+
+
+		</header>
+	);
+};
+
+export default Header;

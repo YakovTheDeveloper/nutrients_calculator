@@ -1,31 +1,29 @@
 import React, { ReactNode } from "react";
-import styles from "./index.module.scss";
+import styles from "./TabPanel.module.scss";
 import classnames from "classnames";
 
-type TabProps = {
+type TabPanelProps = {
     children: ReactNode
     size?: "medium" | "big" | "small" | "xSmall"
     className?: string
-} & React.ComponentPropsWithoutRef<"button">
+    show?: boolean
+}
 
-const Tab = ({
-                 children,
-                 size = "medium",
-                 className,
-                 ...rest
-             }: TabProps) => {
+export const TabPanel = ({
+                             children,
+                             className,
+                             show = true
+                         }: TabPanelProps) => {
+    if (!show) return null;
     return (
-        <button
-            {...rest}
+        <div
             className={classnames([
-                className,
-                styles.tab,
-                styles[size]
+                styles.tabPanel,
+                className
             ])}
         >
             {children}
-        </button>
+        </div>
     );
 };
-
-export default Tab;
+export default TabPanel;

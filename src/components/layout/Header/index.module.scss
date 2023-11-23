@@ -1,8 +1,14 @@
 .header {
   display: flex;
-  justify-content: space-between;
+  //justify-content: space-between;
   gap: 50px;
-  padding: 30px 50px;
+  padding: var(--padding-container-lg);
+
+  &Auth{
+    display: flex;
+    margin-left: auto;
+    gap: 10px;
+  }
 }
 
 

@@ -1,4 +1,4 @@
-import { SingleMenuProps } from './index'
+import { SingleMenuProps } from '../index'
 import { useImmerReducer } from 'use-immer'
 import { useLayoutEffect } from 'react'
 

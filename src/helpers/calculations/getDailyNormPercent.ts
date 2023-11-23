@@ -1,10 +1,11 @@
-import { nutrientDailyNorm } from '@constants/nutrients'
+import { NutrientCodes, nutrientDailyNormCode, NutrientsNorm } from '@constants/nutrients';
 
 export const getDailyNormPercent = (
-    name: Nutrients.Name,
+    code: NutrientCodes,
     value: number,
-    norms: Nutrients.NamesToData<number> = nutrientDailyNorm
+    norms: NutrientsNorm = nutrientDailyNormCode
 ) => {
-    const norm = norms[name]
-    return Number(((value / norm) * 100).toFixed(1))
-}
+    const norm = norms.norm[code];
+    if (!norm) return null;
+    return Number(((value / norm) * 100).toFixed(0));
+};

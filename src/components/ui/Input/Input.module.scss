@@ -1,91 +1,158 @@
-.container {
+.input {
+  width: 100%;
+  // border: 1px solid #bb84842d;
+
+  & &_offset {
+    padding-right: 35px;
+  }
+
+  &__errorMessage {
+    font-style: italic;
+    font-size: 0.8rem;
+    color: #3d7bff;
+    opacity: 0.8;
+  }
+
+
+  &__item:not(:placeholder-shown):focus~&__itemClearButton {
+    display: flex;
+  }
+
+  &Container {
     position: relative;
-    // display: block;
+    border: 1px solid #bb848423;
+    border-radius: 10px;
+    overflow: hidden;
+
+    &:focus-within {
+      border-color: #3D7BFF;
+      box-shadow: 0 0 10px #3d7aff2c;
+    }
+
+    &_error {
+      border-color: #ff00ea;
+    }
+
+    &__after {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0;
+    }
+  }
+
+  // display: block;
+  &__item {
+    width: 80%;
+    border: none;
+    outline: none;
+    padding: 5px 8px;
+
+    &:focus {
+      // border-color: rgb(121, 121, 247);
+      outline-width: 0;
+    }
+
+    &::placeholder {
+      color: #bebebe;
+      font-style: italic;
+      font-size: 16px;
+    }
+
+    // &:not(:placeholder-shown):focus~&ClearButton {
+    //   display: flex;
+    // }
+
+    // &:not(:placeholder-shown):hover~&ClearButton {
+    //   display: flex;
+    // }
+
+    &ClearButton {
+      display: none;
+
+      &:hover {
+        display: flex;
+      }
+    }
+
+  }
 }
 
 
-
 .label {
-    padding: 10px 0 5px 0;
+  padding: 10px 0 5px 0;
 }
 
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
+  -webkit-appearance: none;
 }
 
 .medium {
-    font-size: 16px;
-    padding: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
-    margin-top: 5px;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 6px;
 
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
+  &:focus {
+    outline: none;
+  }
 
 
 }
 
 .big {
 
-    font-size: 17px;
-    padding: 15px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 6px;
+  font-size: 17px;
+  padding: 15px;
+  border-radius: 6px;
 
-    &:focus {
-        outline: none;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    }
-
-    &::placeholder {
-        color: #999;
-        font-style: italic;
-        font-size: 16px;
-    }
+  &:focus {
+    outline: none;
+  }
 
 }
 
 
 .small {
-    padding: 9px;
-    border: none;
-    border-radius: 4px;
-    background: rgb(245, 244, 244);
-    outline: none;
-    font-size: 17px;
+  padding: 9px;
+  border: none;
+  border-radius: 4px;
+  background: rgb(245, 244, 244);
+  outline: none;
+  font-size: 17px;
 }
 
 
 .skeletonPreloader {
-    position: relative;
-    overflow: hidden;
-    height: 37px;
-    box-shadow: 0 4px 10px 0 rgba(33, 33, 33, 0.15);
-    width: 250px;
+  position: relative;
+  overflow: hidden;
+  height: 37px;
+  box-shadow: 0 4px 10px 0 rgba(33, 33, 33, 0.15);
+  width: 250px;
 }
 
 .skeletonPreloader::before {
-    content: '';
-    display: block;
-    position: absolute;
-    left: -150px;
-    top: 0;
-    height: 100%;
-    width: 250px;
-    background: linear-gradient(to right, transparent 0%, #f5f3f3 50%, transparent 100%);
-    animation: load 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+  content: '';
+  display: block;
+  position: absolute;
+  left: -150px;
+  top: 0;
+  height: 100%;
+  width: 250px;
+  background: linear-gradient(to right, transparent 0%, #f5f3f3 50%, transparent 100%);
+  animation: load 1s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
 }
 
 @keyframes load {
-    from {
-        left: -150px;
-    }
+  from {
+    left: -150px;
+  }
 
-    to {
-        left: 100%;
-    }
+  to {
+    left: 100%;
+  }
 }

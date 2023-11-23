@@ -1,1 +1,1 @@
-export { default as NutrientNorms } from "./NutrientNorms";
+export { default as NormEditor } from "./NormEditor";

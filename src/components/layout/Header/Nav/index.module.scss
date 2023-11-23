@@ -1,13 +1,13 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 60px;
-  padding: 0 20px;
+  gap: 30px;
 }
 
 .link {
   padding: 2px 11px;
   border-bottom: 1px solid transparent;
+  white-space: nowrap;
 
   &:hover {
     border-bottom: 1px solid #0000001f;
@@ -15,5 +15,6 @@
 }
 
 .active {
-  border-bottom: 1px solid #0000001f;
+  border-bottom: 1px solid #3d7bff;
+  opacity: 0.9;
 }

@@ -2,7 +2,7 @@ import { fetchProductList } from '@api/methods'
 import { apiBaseAddress } from '@constants/api'
 import { useProductStore } from '@data/products'
 import { useKeyPressed } from '@hooks/useKeyPress'
-import Button from '@ui/Button'
+import {Button} from '@ui/Button'
 import ClearButton from '@ui/Button/ClearButton'
 import Input from '@ui/Input/Input'
 import Table from '@ui/Table'
@@ -19,8 +19,11 @@ type SearchProps = {
 
 const Search = ({ addProductToSelected, selectedProducts }: SearchProps) => {
     const [searchText, setSearchText] = useState('')
-    const [data, setData] = useState<null | Products.Item[]>(null)
+    const [data, setData] = useState<null | Products.ItemWithNoNutrients[]>(
+        null
+    )
     const [showList, setShowList] = useState(false)
+    useKeyPressed('Enter', dataHandler)
 
     // Give props everywheere
     // const addProduct = useProductStore((state) => state.addProductToSelected)
@@ -39,21 +42,26 @@ const Search = ({ addProductToSelected, selectedProducts }: SearchProps) => {
         }
     }, [productList, setShowList, showList])
 
+    // useEffect(() => {
+    //     console.log('data', data)
+    // }, [data])
+
     const handleClearClick = () => {
         setSearchText('')
         setShowList(false)
     }
 
-    const get = () => {
+    function dataHandler() {
         fetchProductList({ name: searchText })
             .then((res) => setData(res.result))
             .catch((err) => console.log(err))
     }
-    useKeyPressed('Enter', get)
 
     useEffect(() => {
-        get()
-        if (searchText) setShowList(true)
+        if (!searchText) return
+        setShowList(true)
+        const timeout = setTimeout(() => dataHandler(), 300)
+        return () => clearTimeout(timeout)
     }, [searchText])
 
     return (

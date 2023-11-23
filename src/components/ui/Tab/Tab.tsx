@@ -1,31 +1,44 @@
-import React, { ReactNode } from "react";
-import styles from "./index.module.scss";
-import classnames from "classnames";
+import React, { ReactNode } from 'react';
+import s from './Tab.module.scss';
+import cn from 'classnames';
+import { TabPanel } from '@ui/Tab/TabPanel/TabPanel';
+
+export enum TabTypes {
+    primary = 'primary',
+    secondary = 'secondary',
+}
 
 type TabProps = {
-    children: ReactNode
-    size?: "medium" | "big" | "small" | "xSmall"
-    className?: string
-} & React.ComponentPropsWithoutRef<"button">
+    children: React.ReactNode;
+    size?: 'medium' | 'big' | 'small';
+    className?: string;
+    active?: boolean;
+    variant?: TabTypes;
+} & React.ComponentPropsWithoutRef<'button'>;
 
 const Tab = ({
-                 children,
-                 size = "medium",
-                 className,
-                 ...rest
-             }: TabProps) => {
+    children,
+    size = 'medium',
+    className,
+    active,
+    variant = TabTypes.primary,
+    ...rest
+}: TabProps) => {
     return (
         <button
             {...rest}
-            className={classnames([
+            className={cn([
                 className,
-                styles.tab,
-                styles[size]
+                active && s.tab_disabled,
+                active && s.tab_active,
+                s.tab,
+                s[`tab_${variant}`],
+                s[size],
             ])}
         >
             {children}
         </button>
     );
 };
-
+Tab.Panel = TabPanel;
 export default Tab;

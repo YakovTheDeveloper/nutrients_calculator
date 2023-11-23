@@ -1,0 +1,8 @@
+@mixin opacity-button {
+  opacity: 0.5;
+  transition: 0.1s all;
+
+  &:hover {
+    opacity: 0.35;
+  }
+}

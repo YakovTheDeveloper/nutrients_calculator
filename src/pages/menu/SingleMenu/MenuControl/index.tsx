@@ -1,6 +1,6 @@
 import { IdToValueMapping } from '@api/methods'
 import { PatchMenuConfig } from '@data/user'
-import Button from '@ui/Button'
+import {Button} from '@ui/Button'
 import React from 'react'
 import { Updater } from 'use-immer'
 import { EditAction } from '../controlsMethods'

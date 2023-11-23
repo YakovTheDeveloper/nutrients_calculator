@@ -1,25 +1,26 @@
-import React from 'react'
-import Button from '..'
-import styles from './index.module.scss'
-import classnames from 'classnames'
+import React from 'react';
+import { Button, ButtonTypes } from '..';
+import { DeleteIcon } from '@assets/icons';
+import classNames from 'classnames';
+import styles from './index.module.scss';
 
 type ClearButtonProps = {
-    show: boolean
+    show?: boolean
     className?: string
     onClick: () => void
 }
 
-const ClearButton = ({ show, className, onClick }: ClearButtonProps) => {
-    return show ? (
-        <Button
-            size="xSmall"
-            onClick={onClick}
-            className={className}
-            type="button"
-        >
+const ClearButton = ({ show = true, className, onClick }: ClearButtonProps) => {
+	return show ? (
+		<Button
+			variant={ButtonTypes.ghost}
+			onClick={onClick}
+			className={classNames(className, styles.container)}
+			type="button"
+		>
             x
-        </Button>
-    ) : null
-}
+		</Button>
+	) : null;
+};
 
-export default ClearButton
+export default ClearButton;

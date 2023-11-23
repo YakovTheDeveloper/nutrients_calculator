@@ -17,20 +17,20 @@
   &:hover {
     color: rgb(0, 0, 248);
 
-    &::before {
-      content: 'click to show nutrient info';
+    // &::before {
+    //   content: 'click to show nutrient info';
 
-      width: 160px;
-      height: 10px;
+    //   width: 160px;
+    //   height: 10px;
 
-      color: rgb(255, 166, 0);
-      font-size: 13px;
+    //   color: rgb(255, 166, 0);
+    //   font-size: 13px;
 
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-    }
+    //   position: absolute;
+    //   left: 0;
+    //   right: 0;
+    //   top: 0;
+    // }
   }
 
 }

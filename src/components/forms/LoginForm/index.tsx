@@ -56,14 +56,16 @@ const LoginForm = () => {
                 onBlur={validateField}
                 value={formData.email}
                 size="medium"
-            >
-                <ClearButton
-                    show={true}
-                    onClick={() => {
-                        setFormData((prev) => ({ ...prev, email: '' }))
-                    }}
-                ></ClearButton>
-            </Input>
+                after={
+                    <ClearButton
+                        show={Boolean(formData.email)}
+                        onClick={() => {
+                            setFormData((prev) => ({ ...prev, email: '' }))
+                        }}
+                    />
+                }
+
+            />
             <Input
                 label="Password"
                 name={inputNames.password}
@@ -73,14 +75,15 @@ const LoginForm = () => {
                 onBlur={validateField}
                 value={formData.password || ''}
                 size="medium"
-            >
-                <ClearButton
-                    show={true}
-                    onClick={() =>
-                        setFormData((prev) => ({ ...prev, password: '' }))
-                    }
-                ></ClearButton>
-            </Input>
+                after={
+                    <ClearButton
+                        show={Boolean(formData.password)}
+                        onClick={() => {
+                            setFormData((prev) => ({ ...prev, password: '' }))
+                        }}
+                    />
+                }
+            />
         </Form>
     )
 }

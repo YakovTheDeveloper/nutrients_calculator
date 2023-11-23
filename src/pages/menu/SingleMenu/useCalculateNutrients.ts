@@ -1,8 +1,8 @@
 import { MenuReducerState } from './useMenuControls'
-import { SelectedProduct } from './../../../types/index.d'
+import { SelectedProduct } from '../../../types/declaration'
 import { findIdCrossings } from '@helpers/findIdCrossings'
 import { useState, useEffect } from 'react'
-import { SingleMenuProps } from './index'
+import { SingleMenuProps } from '../index'
 import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
 import { deepCopy } from '@helpers/deepCopy'
 

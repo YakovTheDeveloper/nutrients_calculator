@@ -13,15 +13,9 @@ import Indicator from './Indicator'
 type TableProps = {
     data: Nutrients.NamesToItems | null
 }
-// const ITEMS_PER_ROW = 7
-// const arrangeInRows = (data: Nutrients.TableItem[], itemsPerRow: number) => {
-//     const rows: Array<Nutrients.TableItem[]> = []
-//     for (let i = 0; i < Math.ceil(data.length / itemsPerRow); i++) {
-//         rows.push(data.slice(i * itemsPerRow, (i + 1) * itemsPerRow))
-//     }
-//     return rows
-// }
+
 const Table = ({ data }: TableProps) => {
+    console.log('data', data)
     if (!data) return null
     return (
         <>

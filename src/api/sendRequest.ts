@@ -68,7 +68,7 @@ function createConfig(
     const headers = new AxiosHeaders()
     headers.set('Content-Type', 'application/json')
     const token = getToken()
-    token && headers.set('Authorization', `Token ${token}`)
+    token && headers.set('Authorization', `Bearer ${token}`)
 
     const result: AxiosRequestConfig = {
         method: method,

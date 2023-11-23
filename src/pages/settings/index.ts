@@ -1,1 +1,1 @@
-export {default as MyProducts} from './MyProducts'
+export {default as Settings} from './Settings'
