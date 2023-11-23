@@ -1,4 +1,4 @@
-import { idToValueMapping } from './../api/methods'
+import { IdToValueMapping } from './../api/methods'
 import { nutrientNameNormalized } from '@constants/nutrients'
 
 export const getShortNutrientNameIfHas = (
@@ -8,7 +8,7 @@ export const getShortNutrientNameIfHas = (
 }
 
 // {100: 200} => {id100: 200}
-export const addIdKeyPrefixToMapping = (mapping: idToValueMapping) => {
+export const addIdKeyPrefixToMapping = (mapping: IdToValueMapping) => {
     return Object.keys(mapping).reduce(
         (newMapping: Record<string, number>, id) => {
             newMapping['id' + id] = mapping[+id]

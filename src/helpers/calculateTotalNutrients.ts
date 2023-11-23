@@ -1,121 +1,170 @@
 import { isEmpty } from '@helpers/isEmpty'
+
+const maxDigits = {
+    G: 1,
+    UG: 4,
+    KCAL: 1,
+    MG: 2,
+}
+
 export function calculateTotalNutrients(
     selectedProducts: Products.Selected,
     idToItemMapping: Products.IdToItemMapping
 ): Nutrients.NamesToItems {
-    if (isEmpty(idToItemMapping)) {
-        console.error('No product idToItemMapping found')
-        return createInitialNameToNutrientData()
+    return createInitialNameToNutrientData()
+}
+
+export function calculateTotalNutrients2(
+    idToProduct: Products.IdToValueMapping,
+    idToQuantity: { [key: number]: number }
+) {
+    const totalNutrients: Nutrients.IdToItem = {}
+
+    for (const productId in idToProduct) {
+        if (idToQuantity.hasOwnProperty(productId)) {
+            const quantity = idToQuantity[productId]
+
+            for (const nutrient of idToProduct[productId].nutrients) {
+                if (totalNutrients[nutrient.id] == null) {
+                    totalNutrients[nutrient.id] = {
+                        ...nutrient,
+                        amount: (nutrient.amount * quantity) / 100,
+                    }
+                    continue
+                }
+                totalNutrients[nutrient.id].amount +=
+                    (nutrient.amount * quantity) / 100
+            }
+        }
     }
 
-    const selectedProductsList = Object.values(selectedProducts),
-        allProductMultipliedNutrients: Nutrients.NamesToItems[] = []
+    for (const id in totalNutrients) {
+        const unit = totalNutrients[id].unit
+        totalNutrients[id].amount = +totalNutrients[id].amount.toFixed(
+            maxDigits[unit]
+        )
+    }
 
-    selectedProductsList.forEach((el) => {
-        const quantity = el.quantity,
-            id = el.id,
-            nutrients = idToItemMapping[id].nutrients,
-            multipliedNutrients = multiplyEachNutrient(nutrients, quantity)
-        allProductMultipliedNutrients.push(multipliedNutrients)
-    })
-
-    const summarizedNutrients = sumAllProductsNutrients(
-        allProductMultipliedNutrients
-    )
-
-    const fixedNutrients = toFixedNutrientValues(summarizedNutrients)
-
-    console.log('fixedNutrients', fixedNutrients)
-    return fixedNutrients
+    return totalNutrients
 }
 
-function multiplyEachNutrient(
-    nutrients: Nutrients.NamesToItems,
-    quantity: number
-) {
-    const result = createInitialNameToNutrientData()
-    Object.values(nutrients).forEach((nutrient: Nutrients.TableItem) => {
-        result[nutrient.name] = {
-            name: nutrient.name,
-            // nutrient.value is a value per 100 grams quantity
-            value: (nutrient.value * quantity) / 100,
-            unit: nutrient.unit,
-        }
-    })
-    return result
-}
+// export function calculateTotalNutrients(
+//     selectedProducts: Products.Selected,
+//     idToItemMapping: Products.IdToItemMapping
+// ): Nutrients.NamesToItems {
+//     if (isEmpty(idToItemMapping)) {
+//         console.error('No product idToItemMapping found')
+//         return createInitialNameToNutrientData()
+//     }
 
-function sumAllProductsNutrients(
-    nutrientList: Nutrients.NamesToItems[]
-): Nutrients.NamesToItems {
-    const result = createInitialNameToNutrientData()
-    nutrientList.forEach((product) => {
-        Object.values(product).forEach((nutrient: Nutrients.TableItem) => {
-            const nutrientData = result[nutrient.name]
-            const previousValue = nutrientData.value
-            const incomingValue = nutrient.value
-            result[nutrient.name] = {
-                ...nutrientData,
-                value: previousValue + incomingValue,
-            }
-        })
-    })
-    return result
-}
+//     const selectedProductsList = Object.values(selectedProducts),
+//         allProductMultipliedNutrients: Nutrients.NamesToItems[] = []
 
-const NUTRIENT_FRACTION_DIGITS: Nutrients.NamesToData<number> = {
-    protein: 0,
-    fat: 0,
-    carbohydrate: 0,
-    'vitamin a': 4,
-    'beta carotene': 4,
-    'alpha carotene': 4,
-    'vitamin d': 4,
-    'vitamin d2': 4,
-    'vitamin d3': 4,
-    'vitamin e': 1,
-    'vitamin k': 4,
-    'vitamin c': 1,
-    'vitamin b1': 1,
-    'vitamin b2': 1,
-    'vitamin b3': 1,
-    'vitamin b4': 1,
-    'vitamin b5': 1,
-    'vitamin b6': 1,
-    'vitamin b9': 4,
-    'vitamin b12': 4,
-    calcium: 1,
-    iron: 1,
-    magnesium: 1,
-    phosphorus: 1,
-    potassium: 1,
-    sodium: 1,
-    zinc: 1,
-    copper: 1,
-    manganese: 1,
-    selenium: 4,
-    fluoride: 1,
-    water: 0,
-    fiber: 0,
-    sugar: 0,
-    energy: 0,
-}
+//     selectedProductsList.forEach((el) => {
+//         const quantity = el.quantity,
+//             id = el.id,
+//             nutrients = idToItemMapping[id].nutrients,
+//             multipliedNutrients = multiplyEachNutrient(nutrients, quantity)
+//         allProductMultipliedNutrients.push(multipliedNutrients)
+//     })
 
-function toFixedNutrientValues(
-    nutrients: Nutrients.NamesToItems
-): Nutrients.NamesToItems {
-    const result: Nutrients.NamesToItems = createInitialNameToNutrientData()
-    const nutrientList: Nutrients.TableItem[] = Object.values(nutrients)
+//     const summarizedNutrients = sumAllProductsNutrients(
+//         allProductMultipliedNutrients
+//     )
 
-    nutrientList.forEach((nutrient) => {
-        const fractionDigits = NUTRIENT_FRACTION_DIGITS[nutrient.name]
-        result[nutrient.name] = {
-            ...nutrient,
-            value: Number(nutrient.value.toFixed(fractionDigits)),
-        }
-    })
-    return result
-}
+//     const fixedNutrients = toFixedNutrientValues(summarizedNutrients)
+
+//     console.log('fixedNutrients', fixedNutrients)
+//     return fixedNutrients
+// }
+
+// function multiplyEachNutrient(
+//     nutrients: Nutrients.NamesToItems,
+//     quantity: number
+// ) {
+//     const result = createInitialNameToNutrientData()
+//     Object.values(nutrients).forEach((nutrient: Nutrients.TableItem) => {
+//         result[nutrient.name] = {
+//             name: nutrient.name,
+//             // nutrient.value is a value per 100 grams quantity
+//             value: (nutrient.value * quantity) / 100,
+//             unit: nutrient.unit,
+//         }
+//     })
+//     return result
+// }
+
+// function sumAllProductsNutrients(
+//     nutrientList: Nutrients.NamesToItems[]
+// ): Nutrients.NamesToItems {
+//     const result = createInitialNameToNutrientData()
+//     nutrientList.forEach((product) => {
+//         Object.values(product).forEach((nutrient: Nutrients.TableItem) => {
+//             const nutrientData = result[nutrient.name]
+//             const previousValue = nutrientData.value
+//             const incomingValue = nutrient.value
+//             result[nutrient.name] = {
+//                 ...nutrientData,
+//                 value: previousValue + incomingValue,
+//             }
+//         })
+//     })
+//     return result
+// }
+
+// const NUTRIENT_FRACTION_DIGITS: Nutrients.NamesToData<number> = {
+//     protein: 0,
+//     fat: 0,
+//     carbohydrate: 0,
+//     'vitamin a': 4,
+//     'beta carotene': 4,
+//     'alpha carotene': 4,
+//     'vitamin d': 4,
+//     'vitamin d2': 4,
+//     'vitamin d3': 4,
+//     'vitamin e': 1,
+//     'vitamin k': 4,
+//     'vitamin c': 1,
+//     'vitamin b1': 1,
+//     'vitamin b2': 1,
+//     'vitamin b3': 1,
+//     'vitamin b4': 1,
+//     'vitamin b5': 1,
+//     'vitamin b6': 1,
+//     'vitamin b9': 4,
+//     'vitamin b12': 4,
+//     calcium: 1,
+//     iron: 1,
+//     magnesium: 1,
+//     phosphorus: 1,
+//     potassium: 1,
+//     sodium: 1,
+//     zinc: 1,
+//     copper: 1,
+//     manganese: 1,
+//     selenium: 4,
+//     fluoride: 1,
+//     water: 0,
+//     fiber: 0,
+//     sugar: 0,
+//     energy: 0,
+// }
+
+// function toFixedNutrientValues(
+//     nutrients: Nutrients.NamesToItems
+// ): Nutrients.NamesToItems {
+//     const result: Nutrients.NamesToItems = createInitialNameToNutrientData()
+//     const nutrientList: Nutrients.TableItem[] = Object.values(nutrients)
+
+//     nutrientList.forEach((nutrient) => {
+//         const fractionDigits = NUTRIENT_FRACTION_DIGITS[nutrient.name]
+//         result[nutrient.name] = {
+//             ...nutrient,
+//             value: Number(nutrient.value.toFixed(fractionDigits)),
+//         }
+//     })
+//     return result
+// }
 
 function createInitialNameToNutrientData(): Nutrients.NamesToItems {
     return {

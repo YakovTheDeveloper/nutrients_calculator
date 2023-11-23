@@ -17,6 +17,8 @@ const ListItem = ({
     isLoading = true,
     children,
 }: ListItem) => {
+    const { id, name, description } = item
+    console.log('item', item)
     return (
         <li
             className={classNames(styles.container, {
@@ -26,11 +28,11 @@ const ListItem = ({
             onClick={
                 () =>
                     addProduct({
-                        id: item.id,
-                        name: item.name,
-                        state: item.state,
-                        category: item.category,
+                        id,
+                        name,
+                        description,
                         quantity: 0,
+                        category: 'foo',
                         isLoading,
                     })
                 // addProduct({
@@ -40,9 +42,11 @@ const ListItem = ({
                 // })
             }
         >
-            {item.name} ({item.state}) {children}
+            {name} ({description}) {children}
         </li>
     )
 }
 
 export default ListItem
+
+

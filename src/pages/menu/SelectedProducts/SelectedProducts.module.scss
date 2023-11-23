@@ -1,0 +1,41 @@
+$offset-to-align-containers: 24px;
+
+.selectedProducts {
+  padding: $offset-to-align-containers 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__tabPanel {}
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &__tabs {
+      display: flex;
+      gap: 10px;
+
+      button {
+        border-radius: 10px;
+        background: rgb(177, 200, 211);
+        // background: rgb(83, 182, 228);
+        padding: 10px;
+        color: #fff;
+      }
+    }
+
+    &_cards {
+      flex-direction: row;
+    }
+
+    &_list {
+      padding: 10px 0;
+      gap: 0;
+      flex-direction: column;
+      box-shadow: 0 10px 10px 5px rgba(64, 60, 67, 0.04);
+    }
+  }
+}

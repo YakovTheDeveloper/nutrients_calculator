@@ -1,6 +1,6 @@
 import { useProductStore } from '@data/products'
-import { SelectedProductsToLoad } from '@pages/menu/OneMenu/useOneMenu'
-import Button from '@ui/Button'
+import { SelectedProductsToLoad } from '@pages/menu/SingleMenu/useMenuProducts'
+import {Button} from '@ui/Button'
 import React, { useEffect, useRef, useState } from 'react'
 import ClearButton from '@ui/Button/ClearButton'
 import Input from '@ui/Input/Input'
@@ -77,7 +77,7 @@ const ListItem = ({
                 className={styles.linkContainer}
             >
                 <div className={styles.info}>
-                    {`${product.name} (${product.state})`}
+                    {`${product.name} (${product.description})`}
                 </div>
             </NavLink>
             {editMode && (
@@ -115,32 +115,6 @@ const ListItem = ({
                     )}
                 </Input>
             )}
-
-            {/* {!isLoading ? (
-                <span>L O A D I N G ...</span>
-            ) : (
-                <Input
-                    onKeyDown={handleKeyDown}
-                    className={styles.inputStyle}
-                    size="small"
-                    disabled={editMode === false}
-                    type="number"
-                    min="0"
-                    value={product.quantity?.toString()}
-                    onChange={onChangeHandler}
-                    onBlur={(e) => {
-                        if (+e.target.value === 0)
-                            setMessage(' Set quantity please')
-                    }}
-                >
-                    <ClearButton
-                        show={isClearButtonShow}
-                        onClick={() => setQuantity(product, 0)}
-                        className={styles.container}
-                    />
-                </Input>
-            )} */}
-
             <span>{message}</span>
         </li>
     )

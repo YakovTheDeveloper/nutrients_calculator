@@ -1,0 +1,31 @@
+.settings {
+  width: 100%;
+  display: flex;
+  // flex-direction: column;
+}
+
+.norms {
+  overflow: auto;
+  display: flex;
+  max-height: 800px;
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &Norm {
+    width: 200px;
+
+    &__table {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+    }
+
+    &_selected &__table {
+      background: #ebebeb;
+    }
+
+  }
+}

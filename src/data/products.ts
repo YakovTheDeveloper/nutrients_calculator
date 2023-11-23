@@ -1,38 +1,39 @@
-import { fetchProductListById } from '@api/methods'
-import { findIdCrossings } from '@helpers/findIdCrossings'
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { immer } from 'zustand/middleware/immer'
+import { fetchProductListById, fetchProductsByNutrient } from '@api/methods';
+import { findIdCrossings } from '@helpers/findIdCrossings';
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
+import { immer } from 'zustand/middleware/immer';
+import data from './initProducts.json';
+
 
 export interface ProductState {
-    products: Products.IdToItemMapping
-    productsLoading: Products.IdToLoadingMapping
-    selectedProducts: Products.Selected
-    needToRecalculate: boolean
-    setNeedToRecalculate: (status: boolean) => void
+    products: Products.IdToItemMapping;
+    productsLoading: Products.IdToLoadingMapping;
+    selectedProducts: Products.Selected2;
+    needToRecalculate: boolean;
+    setNeedToRecalculate: (status: boolean) => void;
     //todo -> addProductGlobally
-    addProduct: (productMapping: Products.IdToItemMapping) => void
+    addProduct: (productMapping: Products.IdToItemMapping) => void;
     fetchSelectedProductsFullData: (
-        products: Products.Selected
-    ) => Promise<Products.IdToItemMapping | null>
-    addProductToSelected: (product: Products.ItemSelected) => void
-    clearSelectedProducts: () => void
-    removeProductFromSelected: (product: Products.ItemSelected) => void
-    setProductQuantity: (
-        product: Products.ItemSelected,
-        quantity: number
-    ) => void
-    totalNutrients: Nutrients.NamesToItems | null
-    setTotalNutrients: (nutrients: Nutrients.NamesToItems) => void
-    clearTotalNutrients: () => void
+        products: Products.Selected2
+    ) => Promise<Products.IdToItemMapping | null>;
+    addProductToSelected: (product: Products.ItemSelected) => void;
+    setSelectedProducts: (product: Products.Selected2) => void;
+    setSelectedProductLoading: (id: Products.Id, status: boolean) => void;
+    clearSelectedProducts: () => void;
+    removeProductFromSelected: (product: Products.ItemSelected) => void;
+    totalNutrients: Nutrients.NamesToItems | null;
+    setTotalNutrients: (nutrients: Nutrients.NamesToItems) => void;
+    clearTotalNutrients: () => void;
 }
 
 export const useProductStore = create<ProductState>()(
     devtools(
-        (set, get) => ({
+        immer((set, get) => ({
             selectedProducts: {},
-            products: {},
+            products: data,
             productsLoading: {},
+            // productsTier: {},
             IdToLoadingMapping: {},
             totalNutrients: null,
             needToRecalculate: false,
@@ -40,87 +41,118 @@ export const useProductStore = create<ProductState>()(
                 set((state) => ({
                     products: {
                         ...state.products,
-                        ...productMapping,
-                    },
+                        ...productMapping
+                    }
                 })),
-            fetchSelectedProductsFullData: async (
-                products: Products.Selected
-            ) => {
-                const idsAlreadyExist = Object.keys(get().products)
-                const idsToAdd = Object.keys(products)
-                const idsNeedToAdd = findIdCrossings(idsToAdd, idsAlreadyExist)
-                console.log('idsNeedToAdd', idsNeedToAdd)
+            fetchSelectedProductsFullData: async (products) => {
+                const idsAlreadyExist = Object.keys(get().products);
+                const idsToAdd = Object.keys(products);
+                const idsNeedToAdd = findIdCrossings(idsToAdd, idsAlreadyExist);
+
+                // console.log('@@idsAlreadyExist',idsAlreadyExist);
+                // console.log('@@idsAlreadyExist',idsToAdd);
+                // console.log('@@idsAlreadyExist',idsNeedToAdd);
+
+                if (idsNeedToAdd.length === 0) return null;
+
                 try {
                     const response = await fetchProductListById({
-                        ids: idsToAdd.toString(),
-                    })
+                        food_id: idsNeedToAdd
+                    });
                     set((state) => ({
                         products: {
                             ...state.products,
-                            ...response.result,
-                        },
-                    }))
-                    return response.result
+                            ...response.result
+                        }
+                    }));
+                    return response.result;
                 } catch (error) {
-                    console.error(error)
-                    return null
+                    console.error(error);
+                    return null;
                 }
             },
+            // addProductToTier: (product) =>
+            //   set((state) => ({
+            //     productsTier: {
+            //       ...state.productsTier,
+            //       [product.nutrient.name]: product,
+            //     },
+            //   })),
+            // fetchAndAddTierProducts: async (nutrient) => {
+            //   try {
+            //     const { result } = await fetchProductsByNutrient({
+            //       id: nutrient,
+            //     });
+            //     set((state) => ({
+            //       productsTier: {
+            //         ...state.productsTier,
+            //         [nutrient]: result,
+            //       },
+            //     }));
+            //     return result;
+            //   } catch (error) {
+            //     console.error(error);
+            //     return null;
+            //   }
+            // },
             addProductToSelected: (product) =>
                 set((state) => ({
                     selectedProducts: {
                         ...state.selectedProducts,
-                        [product.id]: product,
-                    },
+                        [product.id]: { ...product, isLoading: true }
+                    }
                 })),
+            setSelectedProducts: (products) =>
+                set((state) => {
+                    state.selectedProducts = products;
+                }),
+            setSelectedProductLoading: (id, status) =>
+                set((state) => {
+                    state.selectedProducts[id].isLoading = status;
+                }),
             clearSelectedProducts: () =>
                 set((state) => ({
-                    selectedProducts: {},
+                    selectedProducts: {}
                 })),
             removeProductFromSelected: (product) =>
                 set((state) => {
-                    const { [product.id]: value, ...rest } =
-                        state.selectedProducts
-                    return { selectedProducts: { ...rest } }
-                }),
-            setProductQuantity: (product, quantity) =>
-                set((state) => {
-                    console.log(`${product.id} ${quantity} `)
-                    return {
-                        selectedProducts: {
-                            ...state.selectedProducts,
-                            [product.id]: {
-                                ...state.selectedProducts[product.id],
-                                quantity,
-                            },
-                        },
-                    }
+                    const { [product.id]: value, ...rest } = state.selectedProducts;
+                    return { selectedProducts: { ...rest } };
                 }),
             setNeedToRecalculate: (status) =>
                 set((state) => ({
-                    needToRecalculate: status,
+                    needToRecalculate: status
                 })),
             setTotalNutrients: (nutrients) =>
                 set((state) => {
                     return {
-                        totalNutrients: nutrients,
-                    }
+                        totalNutrients: nutrients
+                    };
                 }),
             clearTotalNutrients: () =>
                 set(() => {
                     return {
-                        totalNutrients: null,
-                    }
-                }),
-        }),
+                        totalNutrients: null
+                    };
+                })
+        })),
         {
-            name: 'product-storage',
+            name: 'product-storage'
         }
     )
-)
+);
 
 export function getProductsById(ids: string[], products: Products.Selected) {
-    const productsById: Products.Selected = {}
-    ids.forEach((id) => (productsById[+id] = products[+id]))
-    return productsById
+    const productsById: Products.Selected = {};
+    ids.forEach((id) => (productsById[+id] = products[+id]));
+    return productsById;
 }
+
+// export function createIdToItemMapping(items: Products.Item[]){
+//     const result: Record<string,Products.Item> = {};
+//     items.forEach(item => result[item.id] = item);
+//     return result;
+// }
+
+
+// console.log('data',data);

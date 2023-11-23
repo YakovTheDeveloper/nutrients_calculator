@@ -1,0 +1,19 @@
+.productInfo{
+  width: 700px;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+
+  &__product{
+    width: 100%;
+    display: flex;
+    position: relative;
+    justify-content: center;
+  }
+
+  &__addButton{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

@@ -2,6 +2,7 @@
     "compilerOptions": {
         "outDir": "./dist/",
         "baseUrl": ".",
+        "resolveJsonModule": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "noImplicitAny": true,
@@ -13,16 +14,23 @@
         "allowJs": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "strict": true,
+        "strict": false,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "useUnknownInCatchVariables": false,
         "lib": [
             "es2018",
             "DOM"
         ],
         "paths": {
+            "@ui": [
+                "src/components/ui"
+            ],
             "@ui/*": [
                 "src/components/ui/*"
+            ],
+            "@assets/*": [
+                "src/assets/*"
             ],
             "@common/*": [
                 "src/components/common/*"
@@ -48,17 +56,27 @@
             "@layout/*": [
                 "src/components/layout/*"
             ],
-            // "@api": [
-            //     "src/api/index.ts"
-            // ],
             "@api/*": [
                 "src/api/*"
             ],
+            // "*": [
+            //     "*",
+            //     "src/*",
+            //     "../src/*",
+            //     "./src/*"
+            // ]
+        }
+    },
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
         }
     },
     "include": [
+        "src",
         "./src/**/*",
-        "./declaration.d.ts"
+        "./declaration.d.ts",
+        "./src/types/declaration.d.ts",
     ],
     "exclude": [
         "node_modules",

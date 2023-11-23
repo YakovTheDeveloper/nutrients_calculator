@@ -1,0 +1,26 @@
+.input {
+  border: 1px solid #ebebeb;
+  border-radius: 4px;
+  outline-color: aqua;
+  flex: 1;
+  max-width: 200px;
+  padding: 5px;
+  height: 100%;
+  flex: 1;
+}
+
+.container {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  transition: all .9s;
+
+  .editButton {
+    font-size: 14px;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}

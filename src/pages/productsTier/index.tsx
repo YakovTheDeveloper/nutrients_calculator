@@ -1,121 +1,154 @@
-import React, { useEffect, useState } from 'react'
-import {
-    fetchNutrientCalculation,
-    fetchProductListById,
-    fetchProductsByNutrient,
-} from '@api/methods'
-import { useProductStore } from '@data/products'
-import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
-import { isEmpty } from '@helpers/isEmpty'
-import Button from '@ui/Button'
-import SelectedProducts from '@ui/SelectedProducts'
-import Table from '@ui/Table'
-import styles from './index.module.scss'
-import { useLocation } from 'react-router-dom'
-import { nutrientNameNormalized } from '@constants/nutrients'
-import ListItem from '@ui/Search/ListItem'
-import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent'
+import React, { useEffect, useMemo, useState } from "react";
+import { fetchNutrients, fetchProductsByNutrient } from "@api/methods";
+import { useProductStore } from "@data/products";
+import { Button, ButtonTypes } from "@ui/Button";
+
+import s from "./index.module.scss";
+import { getNutrientsByGroups, useNutrientsStore } from "@data/nutrients";
+import { objectEntries } from "@helpers/objectEntries";
+import { useNutrientNavigation } from "@pages/common/useNutrientNavigation";
+import Table from "@ui/Nutrients2/Table";
+import { useModalStore } from "@data/modal";
+import { ProductInfo } from "../../components/modals/ProductInfo";
+import classNames from "classnames";
+import { colorFoodHighlight } from "@constants/colors";
+
+const columns = [{
+    key: "name",
+    label: "Name"
+}];
 
 const ProductsTier = () => {
     // fetchProductsByNutrient({ id: 'copper' })
 
-    const { selectedProducts, addProductToSelected } = useProductStore(
-        (state) => ({
-            selectedProducts: state.selectedProducts,
-            addProductToSelected: state.addProductToSelected,
-        })
-    )
-
-    const [data, setData] = useState<Products.ItemWithSingleNutrient[]>([])
-    const [currentNutrient, setCurrentNutrient] = useState<Nutrients.Name | ''>(
-        'protein'
-    )
-
-    const nutrientNames = Object.entries(nutrientNameNormalized) as [
-        Nutrients.Name,
-        string
-    ][]
-
-    async function getProductsHandler(nutrient: Nutrients.Name) {
-        const data = await fetchProductsByNutrient({ id: nutrient })
-        setData(data.result)
-    }
+    const {
+            allDefaultNutrientsFromNorm,
+            setAllDefaultNutrientsFromNorm,
+            hasDefaultNutrientsFromNorm
+        } = useNutrientsStore(),
+        { scrollRefs, containerRef, navigate } = useNutrientNavigation();
 
     useEffect(() => {
-        console.log('@currentNutrient', currentNutrient)
-        if (!currentNutrient) return
-        const handler = setTimeout(
-            () => getProductsHandler(currentNutrient),
-            100
+        if (hasDefaultNutrientsFromNorm()) return;
+        fetchNutrients({ have_norms: true })
+            .then((data) => {
+
+                if (!data.result) return;
+                setAllDefaultNutrientsFromNorm(data.result);
+            });
+    }, []);
+
+
+    const {
+        selectedProducts,
+        fetchSelectedProductsFullData,
+        addProductToSelected,
+        productsTier,
+        fetchAndAddTierProducts
+    } = useProductStore((state) => ({
+        fetchSelectedProductsFullData: state.fetchSelectedProductsFullData,
+        selectedProducts: state.selectedProducts,
+        addProductToSelected: state.addProductToSelected,
+        productsTier: state.productsTier,
+        fetchAndAddTierProducts: state.fetchAndAddTierProducts
+    }));
+
+    const [currentNutrient, setCurrentNutrient] =
+        useState<{
+            id: number,
+            name: string
+        } | null>(null);
+
+    const [products, setProducts] =
+        useState<Products.ItemSelected[]>([]);
+
+    //todo как-то кешировать одинаковые запросы
+    useEffect(() => {
+        if (currentNutrient == null) return;
+        fetchProductsByNutrient({ nutrient_id: currentNutrient.id })
+            .then(data => data.result && setProducts(data.result));
+    }, [currentNutrient]);
+
+
+    const groups = useMemo(() => getNutrientsByGroups(allDefaultNutrientsFromNorm), [allDefaultNutrientsFromNorm]);
+    const render = {
+        name: ({ id, name }) => (
+            <div
+                className={classNames(
+                    s.productTiers__nutrient,
+                    id === currentNutrient?.id && s.productTiers__nutrient_active
+                )}
+                onClick={() => setCurrentNutrient({
+                    id,
+                    name
+                })}>
+                {name}
+            </div>
         )
-        return () => clearTimeout(handler)
-    }, [currentNutrient])
+    };
+
+    const openModal = useModalStore(state => state.openModal);
+    const onItemClick = (product: Products.ItemWithNoNutrients) => openModal(
+        <ProductInfo
+            product={product}
+        />);
+
+    const productsHeading = (
+        <>
+            Products {currentNutrient && <span>
+                {currentNutrient?.name}
+            </span>}
+        </>
+    );
 
     return (
-        <>
-            <section>
-                <form action="" onChange={(e) => console.dir(e.currentTarget)}>
-                    <fieldset className={styles.fieldset}>
-                        {nutrientNames.map(
-                            ([nutrientName, nutrientNameNormalized]) => {
-                                return (
-                                    <label key={nutrientName}>
-                                        {nutrientNameNormalized}
-                                        <input
-                                            type="radio"
-                                            // value={nutrientName}
-                                            checked={
-                                                currentNutrient === nutrientName
-                                            }
-                                            name="nutrient"
-                                            onChange={() =>
-                                                setCurrentNutrient(nutrientName)
-                                            }
-                                        />
-                                    </label>
-                                )
-                            }
-                        )}
-                    </fieldset>
-                </form>
-            </section>
-            <section>
-                {data.map((product) => {
-                    const { ['nutrient']: nutrientNames, ...productForList } =
-                            product,
-                        nutrient = product.nutrient
-                    return (
-                        <ListItem
-                            key={product.id}
-                            addProduct={addProductToSelected}
-                            selectedProducts={selectedProducts}
-                            item={productForList}
-                            isLoading={false}
-                        >
-                            <div>
-                                {currentNutrient && product && (
-                                    <>
-                                        <span>{nutrient.name}</span>
-                                        <span>
-                                            {getDailyNormPercent(
-                                                nutrient.name,
-                                                nutrient.value
-                                            )}
-                                            %
-                                        </span>
-                                        <span>
-                                            {nutrient.value}
-                                            {nutrient.unit}
-                                        </span>
-                                    </>
-                                )}
-                            </div>
-                        </ListItem>
-                    )
-                })}
-            </section>
-        </>
-    )
-}
+        <div className={s.productTiers}>
 
-export default ProductsTier
+            <div ref={containerRef}>
+                {objectEntries(groups).map(([key, group], index) => {
+                    // if (!showGroups[key]) return null;
+                    return (
+                        <Table
+                            ref={scrollRefs[index]}
+                            key={key}
+                            data={group.content}
+                            heading={group.name}
+                            columns={columns}
+                            render={render}
+                            emptyPlaceholder={"N/A"}
+                            showHeader={false}
+                            highlight={{
+                                show: false
+                            }}
+                        />
+                    );
+                })}
+            </div>
+            <div>
+                <Table
+                    data={products}
+                    heading={productsHeading}
+                    columns={[
+                        { key: "name", label: "Name" },
+                        { key: "description", label: "Description" },
+                        { key: "quantity", label: "Amount" },
+                        { key: "action", label: "" }
+                    ]}
+                    render={{
+                        action: (data) => <Button.ToggleAddProduct productId={data.id} toggleBetween={{
+                            add: ButtonTypes.success,
+                            added: ButtonTypes.tertiary
+                        }} />,
+                        name: (data) => <div className={s.productTiers__product} onClick={() => onItemClick(data)}>{data.name}</div>
+                    }}
+                    emptyPlaceholder={"N/A"}
+                    highlight={{
+                        color: colorFoodHighlight
+                    }}
+                />
+            </div>
+        </div>
+    );
+};
+
+export default ProductsTier;

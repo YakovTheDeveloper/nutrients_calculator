@@ -7,6 +7,7 @@ type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 type QueryParams = Record<string, string | string[] | number | undefined>
 
 function queryParams(params: QueryParams) {
+    console.log('params', params)
     return Object.keys(params)
         .map((key) => {
             const encodeKey = encodeURIComponent(key)
@@ -15,7 +16,7 @@ function queryParams(params: QueryParams) {
                     .map((value) => `${encodeKey}=${encodeURIComponent(value)}`)
                     .join('&')
             }
-            const value = key in params ? params[key].toString()! : ''
+            const value = params[key] != null ? params[key].toString()! : ''
             return `${encodeKey}=${encodeURIComponent(value)}`
         })
         .join('&')
@@ -67,7 +68,7 @@ function createConfig(
     const headers = new AxiosHeaders()
     headers.set('Content-Type', 'application/json')
     const token = getToken()
-    token && headers.set('Authorization', `Token ${token}`)
+    token && headers.set('Authorization', `Bearer ${token}`)
 
     const result: AxiosRequestConfig = {
         method: method,

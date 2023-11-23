@@ -1,170 +1,139 @@
-import React, { useEffect, useState } from 'react'
-import { useProductStore } from '@data/products'
-import Button from '@ui/Button'
-import Search from '@ui/Search'
-import SelectedProducts from '@ui/SelectedProducts'
-import Table from '@ui/Table'
+import React, { useEffect, useId, useState } from 'react';
+import { useProductStore } from '@data/products';
+import { Button, ButtonSizes, ButtonTypes } from '@ui/Button';
 
-import styles from './index.module.scss'
-import AddMenuForm from '@forms/AddMenuForm'
-import { calculateTotalNutrients } from '@helpers/calculateTotalNutrients'
-import classNames from 'classnames'
-import { fetchNutrientCalculation, fetchProductListById } from '@api/methods'
-import { createProductIdToQuantityMapping } from '@helpers/createProductIdToQuantityMapping'
-import { findIdCrossings } from '@helpers/findIdCrossings'
-import { useUserStore } from '@data/user'
-import AddNewMenuWindow from './addMenuWindow'
+import styles from './index.module.scss';
+import { calculateTotalNutrients2 } from '@helpers/calculateTotalNutrients';
+import classNames from 'classnames';
+import { useUserStore } from '@data/user';
+import AddNewMenuWindow from './addMenuWindow';
+import Nutrients from '@ui/Nutrients/Nutrients';
+import { ProductSearch } from '@pages/menu/ProductSearch';
+import SelectedProducts from '@pages/menu/SelectedProducts';
+import SplitSection from '@layout/SplitSection';
+import AddMenuForm from '@forms/AddMenuForm';
+import { Popover } from '@ui/Popover';
 
 const SearchAndCalculate = () => {
     const {
-        clearSelectedProducts,
-        removeProductFromSelected,
-        selectedProducts,
         clearTotalNutrients,
-        addProduct,
-        addProductToSelected,
         products,
-        setTotalNutrients,
-        totalNutrients,
-        needToRecalculate,
-        setNeedToRecalculate,
-        setProductQuantity,
+        fetchSelectedProductsFullData,
     } = useProductStore((state) => ({
-        removeProductFromSelected: state.removeProductFromSelected,
-        clearSelectedProducts: state.clearSelectedProducts,
         clearTotalNutrients: state.clearTotalNutrients,
-        addProduct: state.addProduct,
-        addProductToSelected: state.addProductToSelected,
         products: state.products,
-        selectedProducts: state.selectedProducts,
-        setTotalNutrients: state.setTotalNutrients,
-        totalNutrients: state.totalNutrients,
-        needToRecalculate: state.needToRecalculate,
-        setNeedToRecalculate: state.setNeedToRecalculate,
-        setProductQuantity: state.setProductQuantity,
-    }))
+        fetchSelectedProductsFullData: state.fetchSelectedProductsFullData,
+    }));
 
-    const userData = useUserStore((state) => state.user?.data)
-    const menus = useUserStore((state) => state.menus)
+    const userData = useUserStore((state) => state.user?.data);
+    const clearMainPageMenu = useUserStore((state) => state.clearMainPageMenu);
 
-    const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false)
+    const { menus, patchMainPageMenuProducts, mainPageMenu } = useUserStore(
+        (state) => ({
+            menus: state.menus,
+            patchMenuProducts: state.patchMenuProducts,
+            patchMainPageMenuProducts: state.patchMainPageMenuProducts,
+            mainPageMenu: state.mainPageMenu
+        })
+        // shallow
+    );
 
-    const getData = async () => {
-        const productIdsToFetch = findIdCrossings(
-            Object.keys(selectedProducts),
-            Object.keys(products)
-        )
+    const [showAddNewMenuWindow, setShowAddNewMenuWindow] = useState(false);
 
-        if (productIdsToFetch.length === 0) {
-            console.info('      No crossings, can use offline calculate')
-            const totalNutrients = calculateTotalNutrients(
-                selectedProducts,
-                products
-            )
-            setTotalNutrients(totalNutrients)
-            setNeedToRecalculate(false)
-            return
-        }
+    const productsCount = Object.keys(mainPageMenu.products).length;
 
-        const ids = Object.keys(selectedProducts).toString()
-        try {
-            const response = await fetchProductListById({ ids })
-            addProduct(response.result)
-        } catch (error) {
-            console.error(error)
-            return
-        }
-
-        try {
-            const calculations = await fetchNutrientCalculation(
-                createProductIdToQuantityMapping(selectedProducts)
-            )
-            const nutrients = calculations.result
-            setTotalNutrients(nutrients)
-            setNeedToRecalculate(false)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    useEffect(() => {
+        fetchSelectedProductsFullData(mainPageMenu.products);
+    }, [productsCount]);
 
     const clearDataHandler = () => {
-        clearSelectedProducts()
-        clearTotalNutrients()
-    }
-    const isAnyProductWithoutValue = Object.values(selectedProducts).some(
-        (product) => product.quantity === 0
-    )
-    const isAnyProductSelected = Object.keys(selectedProducts).length > 0
-    const isCalculateDisabled =
-        !isAnyProductSelected || isAnyProductWithoutValue
+        clearMainPageMenu(),
+        clearTotalNutrients();
+    };
 
-    const recalculateNeedMessage =
-        totalNutrients !== null &&
-        needToRecalculate === true &&
-        ' Product(s) need to be recalculated!'
+    const onProductAdd = (productId: number) =>
+        patchMainPageMenuProducts({
+            type: 'add',
+            productId,
+            value: 0
+        });
+    const onProductValueChange = (value: string, productId: string) =>
+        patchMainPageMenuProducts({
+            type: 'modify',
+            productId,
+            value
+        });
+
+    const onProductDelete = (productId: number) =>
+        patchMainPageMenuProducts({
+            type: 'delete',
+            productId
+        });
+
 
     useEffect(() => {
-        isAnyProductSelected && setNeedToRecalculate(true)
-    }, [selectedProducts])
+        setShowAddNewMenuWindow(false);
+    }, [menus]);
 
-    useEffect(() => {
-        setShowAddNewMenuWindow(false)
-    }, [menus])
 
+    const isAnyProductSelected = Object.keys(mainPageMenu.products).length > 0;
+
+    const idToQuantity = mainPageMenu?.products || {};
+
+    const totalNutrients = calculateTotalNutrients2(products, idToQuantity);
+    console.log('Object.values(totalNutrients)', Object.values(totalNutrients));
     return (
         <div className={styles.searchAndCalculate}>
-            <Search
-                selectedProducts={selectedProducts}
-                addProductToSelected={addProductToSelected}
-            />
-            {isAnyProductSelected ? (
-                <Button onClick={clearDataHandler} size="small" bordered>
-                    delete products
-                </Button>
-            ) : null}
+            <div className={styles.searchAndCalculate__searchBarContainer}>
+                <ProductSearch
+                    onProductAdd={onProductAdd}
+                    selectedProducts={mainPageMenu.products}
+                />
+            </div>
 
-            <SelectedProducts
-                editMode={true}
-                products={selectedProducts}
-                remove={removeProductFromSelected}
-                setQuantity={setProductQuantity}
-            />
+            <SplitSection>
+                <SelectedProducts
+                    products={mainPageMenu.products}
+                    onProductValueChange={onProductValueChange}
+                    onProductDelete={onProductDelete}
+                >
+                    <div className={styles.searchAndCalculate__actions}>
+                        {isAnyProductSelected ? (
+                            <Button
+                                onClick={clearDataHandler}
+                                size={ButtonSizes.small}
+                                variant={ButtonTypes.secondary}
+                            >
+                                Clear menu
+                            </Button>
+                        ) : null}
+
+                        <AddNewMenuWindow
+                            setShowAddNewMenuWindow={setShowAddNewMenuWindow}
+                            showAddNewMenuWindow={showAddNewMenuWindow}
+                        />
+
+                        {userData && isAnyProductSelected ? (
+                            <Popover 
+                                clickElement={
+                                    <Button>
+                                        Save
+                                    </Button>
+                                }
+                                contentElement={<AddMenuForm/>}
+                            />
+
+   
+                        ) : null}
+                    </div>
+                </SelectedProducts>
+                <Nutrients data={Object.values(totalNutrients)} />
+            </SplitSection>
 
             <div className={classNames(styles.loader, styles.no)}></div>
 
-            {isAnyProductSelected && (
-                <Button
-                    disabled={isCalculateDisabled}
-                    className={styles.calculateBtn}
-                    onClick={() => getData()}
-                    size="medium"
-                    bordered
-                >
-                    calculate
-                </Button>
-            )}
-            <span className={styles.text}>{recalculateNeedMessage}</span>
-
-            <div style={{ position: 'relative', margin: '10px 0' }}>
-                {userData && isAnyProductSelected && totalNutrients ? (
-                    <Button
-                        onClick={() => {
-                            setShowAddNewMenuWindow(true)
-                        }}
-                        bordered
-                    >
-                        save to my menu
-                    </Button>
-                ) : null}
-
-                <AddNewMenuWindow
-                    setShowAddNewMenuWindow={setShowAddNewMenuWindow}
-                    showAddNewMenuWindow={showAddNewMenuWindow}
-                ></AddNewMenuWindow>
-            </div>
-            <Table data={totalNutrients} />
         </div>
-    )
-}
+    );
+};
 
-export default SearchAndCalculate
+export default SearchAndCalculate;

@@ -1,0 +1,10 @@
+.tabPanel {
+  width: 100%;
+  padding: var(--padding-container-md);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  border-radius: 0 0 15px 15px;
+  box-shadow: var(--box-shadow-sm);
+}

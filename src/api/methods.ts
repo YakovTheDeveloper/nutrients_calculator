@@ -1,16 +1,24 @@
-import { addIdKeyPrefixToMapping } from '@helpers/normalizers'
-import { sendRequest } from './sendRequest'
+import { PatchMenuConfig } from "@data/user";
+import { addIdKeyPrefixToMapping } from "@helpers/normalizers";
+import { sendRequest } from "./sendRequest";
+import { Norm } from "../types/declaration";
 
 type ProductListParams = {
     name: string
 }
 type ProductListByIdParams = {
-    ids: string | number
+    food_id: number | number[]
 }
 
 type ProductByNutrient = {
-    id: Nutrients.Name
+    nutrient_id: number
 }
+
+//same
+type GetUserProductsResponse = Record<string, {
+    "name": string,
+    "description": string[]
+}>
 
 type LoginOptions = {
     email: string
@@ -34,15 +42,20 @@ export type IdToValueMapping = {
     [key: number]: number
 }
 
-type addMenuParams = {
+type AddMenuParams = {
     name: string
     description: string
     ids: IdToValueMapping
 }
 
-type patchMenuParams = IdToValueMapping
+type GetNutrientsParams = {
+    have_norms?: boolean
+}
 
-type ProductListResponse = Products.Item[]
+type PatchMenuParams = Partial<Products.Menu>
+// type PatchMenuParams = Omit<PatchMenuConfig, 'newProducts'>
+
+type ProductListResponse = Products.ItemWithNoNutrients[]
 
 type AuthResponse = {
     email: string
@@ -53,98 +66,168 @@ type MeResponse = {
 }
 type UserMenuResponse = Products.Menu[]
 
+type NutrientsResponse = Nutrients.Item[]
+
 type AddMenuResponse = {
     menuId: number
 }
 
 export function fetchProductList(options: ProductListParams) {
     return sendRequest<ProductListResponse>({
-        url: 'polls/get_product/',
-        method: 'GET',
-        query: options,
-    })
+        url: "products/minimal/",
+        method: "GET",
+        query: options
+    });
 }
 
 export function fetchLogin(options: LoginOptions) {
     return sendRequest<AuthResponse>({
-        url: 'login/',
-        method: 'POST',
-        payload: options,
-    })
+        url: "auth/login/",
+        method: "POST",
+        payload: options
+    });
 }
+
 export function fetchSignup(options: SignUpOptions) {
     return sendRequest<AuthResponse>({
-        url: 'signup/',
-        method: 'POST',
-        payload: options,
-    })
+        url: "auth/signup/",
+        method: "POST",
+        payload: options
+    });
 }
 
 export function fetchMe() {
     return sendRequest<MeResponse>({
-        url: 'me/',
-        method: 'GET',
-    })
-}
-export function fetchProductListById(options: ProductListByIdParams) {
-    return sendRequest<Products.IdToItemMapping>({
-        url: 'products/by_id/',
-        method: 'GET',
-        query: options,
-    })
+        url: "user/me/",
+        method: "GET"
+    });
 }
 
+export function fetchProductListById(options: ProductListByIdParams) {
+    // if(options.food_id instanceof Array)
+    options.food_id = options.food_id.toString();
+    return sendRequest<Products.IdToItemMapping>({
+        url: "products/with_nutrients/",
+        method: "GET",
+        query: options
+    });
+}
+
+
 export function fetchProductsByNutrient(options: ProductByNutrient) {
-    return sendRequest<Products.ItemWithSingleNutrient[]>({
-        url: `products/by_richness/${options.id}/`,
-        method: 'GET',
-    })
+    return sendRequest<(Products.ItemWithNoNutrients & { amount: number })[]>({
+        url: `products/rich`,
+        query: options,
+        method: "GET"
+    });
 }
 
 export function fetchNutrientCalculation(options: CalculationParams) {
     return sendRequest<Nutrients.NamesToItems>({
-        url: 'polls/calculate_nutrients/',
-        method: 'GET',
-        query: addIdKeyPrefixToMapping(options),
-    })
+        url: "polls/calculate_nutrients/",
+        method: "GET",
+        query: addIdKeyPrefixToMapping(options)
+    });
 }
 
 export function fetchMenuDelete(options: MenuDeleteOption) {
     return sendRequest<null>({
-        url: `products/menu/${options.id}/`,
-        method: 'DELETE',
-    })
+        url: `menu/${options.id}/`,
+        method: "DELETE"
+    });
 }
 
 export function fetchUserMenus() {
     return sendRequest<UserMenuResponse>({
-        url: 'products/menu/',
-        method: 'GET',
-    })
+        url: "menu/",
+        method: "GET"
+    });
 }
 
-export function fetchAddUserMenu(options: addMenuParams) {
-    const { description, name, ids } = options
+export function fetchAddUserMenu(options: AddMenuParams) {
+    const { description, name, ids: products } = options;
+    console.log("options", options);
     return sendRequest<AddMenuResponse>({
-        url: 'products/menu/',
-        method: 'POST',
-        query: {
-            description,
+        url: "menu/",
+        method: "POST",
+        payload: {
             name,
-            ...addIdKeyPrefixToMapping(ids),
-        },
-    })
+            description,
+            products
+        }
+        // query: {
+        //     description,
+        //     name,
+        //     ...addIdKeyPrefixToMapping(ids),
+        // },
+    });
 }
 
-export function fetchPatchUserMenu(id: number, options: patchMenuParams) {
-    console.log('options', options)
-
+export function fetchPatchUserMenu(menuId: number, options: PatchMenuParams) {
     return sendRequest<null>({
-        url: `products/menu/${id}/`,
-        method: 'PATCH',
-        query: addIdKeyPrefixToMapping(options),
-    })
+        url: `menu/${menuId}/`,
+        method: "PATCH",
+        payload: options
+    });
 }
+
+export function fetchNutrients(options: GetNutrientsParams) {
+    return sendRequest<NutrientsResponse>({
+        url: `nutrients`,
+        method: "GET",
+        query: options
+    });
+}
+
+export function fetchGetUserProducts() {
+    return sendRequest<GetUserProductsResponse>({
+        url: `user/products`
+    });
+}
+
+export function fetchCreateProduct(payload: Products.Api.Payload.Create) {
+    return sendRequest<Products.Api.Response.Create>({
+        url: `products`,
+        method: "POST",
+        payload: payload
+    });
+}
+
+export function fetchDeleteProduct(id: number) {
+    return sendRequest<Products.Api.Response.Create>({
+        url: `products/${id}`,
+        method: "DELETE"
+    });
+}
+
+export function fetchGetNorms() {
+    return sendRequest<Norm.Api.Get>({
+        url: `norms`
+    });
+}
+
+export function fetchAddNorm(payload: Norm.Api.Add) {
+    return sendRequest<Norm.Api.Get>({
+        url: `norms`,
+        method: "POST",
+        payload
+    });
+}
+
+// export function fetchPatchUserMenu(menuId: number, options: PatchMenuParams) {
+//     //todo: remove id from config
+//     const { idToQuantityMapping, id, ...rest } = options
+//     const ids = idToQuantityMapping
+//         ? addIdKeyPrefixToMapping(idToQuantityMapping)
+//         : {}
+//     console.log('config', { ...rest })
+
+//     return sendRequest<null>({
+//         url: `products/menu/${menuId}/`,
+//         method: 'PATCH',
+//         query: { ...ids, ...rest },
+//     })
+// }
 
 // const token = data.result?.token
 // token && setToken(token)

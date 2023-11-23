@@ -1,0 +1,5 @@
+export { ReactComponent as RawIcon } from './raw.svg'
+export { ReactComponent as DeleteIcon } from './delete_icon.svg'
+export { ReactComponent as EyeIcon } from './eye_icon.svg'
+export { ReactComponent as EyeIconCross } from './eye_icon_cross.svg'
+export { ReactComponent as ArrowIcon } from './arrow_icon.svg'

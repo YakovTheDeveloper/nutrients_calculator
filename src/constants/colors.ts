@@ -1,0 +1,1 @@
+export const colorFoodHighlight = 'rgb(240 255 225)'

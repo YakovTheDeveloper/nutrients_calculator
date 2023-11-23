@@ -2,4 +2,41 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  border: none;
+}
+
+.spinner {
+  display: inline-block;
+}
+
+.filterTab {
+  padding: 8px 4px;
+  border: 1px solid #000;
+}
+
+
+.productTiers {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+
+  &__nutrient {
+    cursor: pointer;
+    //color: #5742a7;
+    color: #7472e3;
+    border-bottom: 1px solid transparent;
+
+
+    &_active {
+      border-bottom: 1px solid #3d7bff;
+      opacity: 0.9;
+    }
+  }
+
+  &__product {
+    cursor: pointer;
+    color: #2c28d9;
+    border-bottom: 1px solid transparent;
+
+  }
+
 }
