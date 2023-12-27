@@ -19,6 +19,14 @@
   }
 }
 
+body[data-dark='true'] {
+  .test {
+    &:nth-child(2n + 1) .tableContentCell {
+      background: rgb(36, 36, 36);
+    }
+  }
+}
+
 .table {
   font-size: 1rem;
 

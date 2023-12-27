@@ -1,6 +1,6 @@
-import { Button, ButtonProps, ButtonTypes } from "@ui/Button";
-import React from "react";
-import { useUserStore } from "@data/user";
+import { Button, ButtonProps, ButtonTypes } from '@ui/Button';
+import React from 'react';
+import { useUserStore } from '@data/user';
 
 type ButtonToggleAddProduct = {
     productId: number
@@ -18,14 +18,14 @@ const ButtonToggleAddProduct = ({ productId, toggleBetween, ...rest }: ButtonTog
 
     const onProductAdd = (productId: number) =>
         patchMainPageMenuProducts({
-            type: "add",
+            type: 'add',
             productId,
             value: 0
         });
 
     const onProductDelete = (productId: number) =>
         patchMainPageMenuProducts({
-            type: "delete",
+            type: 'delete',
             productId
         });
 
@@ -34,8 +34,8 @@ const ButtonToggleAddProduct = ({ productId, toggleBetween, ...rest }: ButtonTog
         : onProductAdd(productId);
 
     const getHint = () => isProductInMainMenu(productId)
-        ? "Remove from main menu"
-        : "Add to main menu";
+        ? 'Remove from main menu'
+        : 'Add to main menu';
 
     return (
         <Button
@@ -44,13 +44,13 @@ const ButtonToggleAddProduct = ({ productId, toggleBetween, ...rest }: ButtonTog
             onClick={buttonHandler}
             variant={isProductInMainMenu(productId)
                 ? toggleBetween?.added || ButtonTypes.tertiary
-                : toggleBetween?.add || ButtonTypes.success}
+                : toggleBetween?.add || ButtonTypes.ghost}
 
             // variant={isProductInMainMenu(productId)
             //     ? toggleBetween?.added || ButtonTypes.success
             //     : toggleBetween?.add || ButtonTypes.primary}
         >
-            {isProductInMainMenu(productId) ? "Added" : "Add"}
+            {isProductInMainMenu(productId) ? 'Added' : 'Add'}
             {/*{isProductInMainMenu(productId) ? "Added" : "Add"}*/}
         </Button>
     );

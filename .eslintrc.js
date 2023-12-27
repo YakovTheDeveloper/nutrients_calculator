@@ -1,51 +1,153 @@
+const path = require('path');
+
 module.exports = {
-    'env': {
-        'browser': true,
-        'es2021': true
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+        ecmaFeatures: {
+            jsx: true,
+        },
+        ecmaVersion: 2018,
+        sourceType: 'module',
+        project: 'tsconfig.json',
+        createDefaultProgram: true,
     },
-    'extends': [
+    env: {
+        browser: true,
+        es6: true,
+        node: true,
+    },
+    extends: [
         'eslint:recommended',
+        'prettier',
+        'plugin:import/errors',
+        'plugin:import/warnings',
+        'plugin:react/recommended',
+        'plugin:import/typescript',
         'plugin:@typescript-eslint/recommended',
-        'plugin:react/recommended'
+        'plugin:react-hooks/recommended',
+        'plugin:lodash/recommended',
     ],
-    'overrides': [
-        {
-            'env': {
-                'node': true
-            },
-            'files': [
-                '.eslintrc.{js,cjs}'
-            ],
-            'parserOptions': {
-                'sourceType': 'script'
-            }
-        }
-    ],
-    'parser': '@typescript-eslint/parser',
-    'parserOptions': {
-        'ecmaVersion': 'latest',
-        'sourceType': 'module'
+    globals: {
+        Atomics: 'readonly',
+        SharedArrayBuffer: 'readonly',
     },
-    'plugins': [
+    ignorePatterns: ['.eslintrc.js', '*.config.*'],
+    plugins: [
         '@typescript-eslint',
-        'react'
+        'import',
+        'prettier',
+        'react',
+        'react-hooks',
+        'unused-imports',
+        'only-warn',
+        'lodash',
     ],
-    'rules': {
-        'indent': [
-            'error',
-            4
+    rules: {
+        // simple
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
         ],
-        'linebreak-style': [
+        semi: 'error',
+        curly: ['error', 'all'],
+        'no-alert': 'error',
+        'no-console': 'error',
+        'no-redeclare': 'error',
+        'no-var': 'error',
+        'no-param-reassign': 'error',
+        'no-multi-spaces': 'error',
+        'no-multiple-empty-lines': 'error',
+        'no-trailing-spaces': 'error',
+        'no-whitespace-before-property': 'error',
+        'eol-last': ['error', 'always'],
+        'line-comment-position': ['error', { position: 'above' }],
+        'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+        'padding-line-between-statements': [
             'error',
-            'windows'
+            {
+                blankLine: 'always',
+                prev: '*',
+                next: ['block', 'block-like', 'return', 'class', 'export', 'for', 'while', 'if'],
+            },
         ],
-        'quotes': [
-            'error',
-            'single'
+        'spaced-comment': ['error', 'always'],
+        'no-template-curly-in-string': 'error',
+        'prefer-destructuring': 'off',
+        'prefer-const': 'error',
+        'prefer-arrow-callback': 'error',
+        'prettier/prettier': 'error',
+
+        // react
+        'react/jsx-uses-react': 'error',
+        'react/jsx-uses-vars': 'error',
+        'react/jsx-no-target-blank': 'off',
+        'react/prefer-stateless-function': 'error',
+        'react/display-name': 'off',
+        'react/no-unused-prop-types': 'warn',
+        'react/prop-types': 'off',
+        'react/react-in-jsx-scope': 'off',
+
+        // typescript-eslint
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/no-unused-vars': 'error',
+        '@typescript-eslint/camelcase': 'off',
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/naming-convention': [
+            'warn',
+            {
+                selector: ['typeLike'],
+                format: ['PascalCase'],
+                leadingUnderscore: 'allow',
+            },
         ],
-        'semi': [
+        '@typescript-eslint/no-non-null-assertion': 'off',
+
+        // import
+        'import/no-cycle': ['error', { maxDepth: '∞' }],
+        'import/order': [
             'error',
-            'always'
-        ]
-    }
+            {
+                groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+                alphabetize: {
+                    order: 'asc',
+                },
+                'newlines-between': 'always',
+            },
+        ],
+        'import/default': 'off',
+        'import/no-named-as-default': 'off',
+
+        // https://www.npmjs.com/package/eslint-plugin-unused-imports
+        'unused-imports/no-unused-imports': 'error',
+        'unused-imports/no-unused-vars': [
+            'warn',
+            { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
+        ],
+
+        // lodash
+        'lodash/prefer-lodash-method': 'off',
+        'lodash/prefer-matches': 'off',
+    },
+    settings: {
+        'import/parsers': {
+            '@typescript-eslint/parser': ['.ts', '.tsx', '.scss', '.svg', '.png', '.jpg'],
+        },
+        react: {
+            version: 'detect',
+        },
+        'import/resolver': {
+            typescript: {
+                project: path.resolve(__dirname, 'tsconfig.json'),
+            },
+            node: {
+                extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            },
+        },
+        'import/external-module-folders': ['node_modules', 'node_modules/@types'],
+    },
 };

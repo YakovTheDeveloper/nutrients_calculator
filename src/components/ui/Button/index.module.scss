@@ -84,6 +84,43 @@
 
 }
 
+body[data-dark='true'] {
+  .button {
+    &_primary {
+      background-color: rgb(173, 78, 1);
+      color: #fff;
+
+      &:hover {
+        background-color: rgb(150, 40, 0);
+      }
+    }
+
+    &_secondary {
+      color: rgb(173, 78, 1);
+      background-color: transparent;
+      border-color: rgb(173, 78, 1);
+
+      &:hover {
+        color: rgb(150, 40, 0);
+        border-color: rgb(150, 40, 0);
+      }
+    }
+
+    &_tertiary {
+      background-color: #77696f;
+
+      &:hover {
+        background-color: #524d4f;
+      }
+    }
+
+    &_ghost {
+      background-color: transparent;
+      color: #d2ddf5;
+    }
+  }
+}
+
 //.button_ghost.button_danger {
 //  background-color: transparent;
 //}

@@ -5,11 +5,12 @@ import { nutrientDailyNormCode, NutrientsNorm,nutrientDailyNormSport } from '@co
 
 type VisibilityMapping = Record<string, boolean>
 
-export interface NutrientsState {
-    nutrientNorms: Norm.Item[];
-    setNutrientNorms: (norms: Norm.Item[]) => void;
-    addNutrientNorm: (norm: Norm.Item) => void;
+// parseInt using on uuid is always returns NaN 
+export const isJustCreatedNorm = (id: string) => {
+    return isNaN(parseInt(id));
+};
 
+export interface NutrientsState {
     totalNutrients: Nutrients.IdToItem;
     setTotalNutrients: (nutrients: Nutrients.IdToItem) => void;
     clearTotalNutrients: () => void;
@@ -47,19 +48,6 @@ export const useNutrientsStore = create<NutrientsState>()(
                 get().allDefaultNutrientsFromNorm.length > 0,
             totalNutrients: {},
             nutrientVisibilityMapping: {},
-            nutrientNorms: [
-                nutrientDailyNormCode,
-                nutrientDailyNormSport
-            ],
-            setNutrientNorms: (norms) =>
-                set(({ nutrientNorms }) => {
-                    nutrientNorms = [nutrientDailyNormCode, ...norms];
-                }),
-            addNutrientNorm: (norm) =>
-                set(({ nutrientNorms }) => {
-                    nutrientNorms.push(norm);
-                }
-                ),
             toggleNutrientVisibility: (nutrientId) =>
                 set(({ nutrientVisibilityMapping }) => {
                     const inMapping = nutrientId in nutrientVisibilityMapping;

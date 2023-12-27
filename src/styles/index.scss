@@ -14,6 +14,10 @@ html {
   font-weight: 400;
 }
 
+.root {
+  height: 100%;
+}
+
 body {
   height: 100%;
   font-size: 18px;
@@ -42,4 +46,8 @@ button {
 
 ul {
   list-style: none;
+}
+
+body[data-dark='true'] {
+  color: rgb(153, 153, 153);
 }

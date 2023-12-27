@@ -128,3 +128,11 @@ $item-padding-right: 40px;
     transform: translateX(100%);
   }
 }
+
+body[data-dark='true'] {
+  .selectedProduct {
+    &_card {
+      box-shadow: 0 0px 10px 1px rgba(255, 255, 255, 0.015);
+    }
+  }
+}

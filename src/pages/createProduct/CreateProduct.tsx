@@ -1,30 +1,30 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { fetchCreateProduct, fetchNutrients } from "@api/methods";
-import Table from "@ui/Nutrients2/Table";
-import Input from "@ui/Input/Input";
-import { getNutrientsByGroups, NutrientsState, useNutrientsStore } from "@data/nutrients";
-import { objectEntries } from "@helpers/objectEntries";
-import s from "./CreateProduct.module.scss";
-import NutrientNavigation from "../common/NutrientNavigation";
-import { useNutrientNavigation } from "@pages/common/useNutrientNavigation";
-import { Button, ButtonTypes } from "@ui/Button";
-import { useUserStore } from "@data/user";
-import { useCreateProductStore } from "@data/product/createProduct";
-import Nutrients from "@ui/Nutrients/Nutrients";
-import { useImmer } from "use-immer";
-import { useBaseProducts } from "@data/product/useBaseProducts";
-import { useProductStore } from "@data/products";
-import { fileFrom } from "node-fetch";
+import React, { useEffect, useMemo, useState } from 'react';
+import { fetchCreateProduct, fetchNutrients } from '@api/methods';
+import Table from '@ui/Nutrients2/Table';
+import Input from '@ui/Input/Input';
+import { getNutrientsByGroups, NutrientsState, useNutrientsStore } from '@data/nutrients';
+import { objectEntries } from '@helpers/objectEntries';
+import s from './CreateProduct.module.scss';
+import NutrientNavigation from '../common/NutrientNavigation';
+import { useNutrientNavigation } from '@pages/common/useNutrientNavigation';
+import { Button, ButtonTypes } from '@ui/Button';
+import { useUserStore } from '@data/user';
+import { useCreateProductStore } from '@data/product/createProduct';
+import Nutrients from '@ui/Nutrients/Nutrients';
+import { useImmer } from 'use-immer';
+import { useBaseProducts } from '@data/product/useBaseProducts';
+import { useProductStore } from '@data/products';
+import { fileFrom } from 'node-fetch';
 
 const columns = [{
-    key: "name",
-    label: "Name"
+    key: 'name',
+    label: 'Name'
 }, {
-    key: "amount",
-    label: "Value"
+    key: 'amount',
+    label: 'Value'
 }, {
-    key: "unit_name",
-    label: "Unit"
+    key: 'unit_name',
+    label: 'Unit'
 }];
 
 export const CreateProduct = () => {
@@ -74,7 +74,7 @@ export const CreateProduct = () => {
         try {
             const { result } = await fetchCreateProduct(payload);
             if (result) {
-                result.description = result.description.split(",");
+                result.description = result.description.split(',');
                 addToUserProductsMinimal(result);
                 // addProduct({
                 //     [result.id]: result
@@ -92,7 +92,8 @@ export const CreateProduct = () => {
 
     const groups = useMemo(() => getNutrientsByGroups(allDefaultNutrients), [allDefaultNutrients]);
 
-    const tabNames = Object.values(groups).map(({ tabName }) => tabName);
+    const tabNames = Object.values(groups).map(({ label }) => label);
+    console.log('tabNames',groups);
 
     // if (!hasDefaultNutrients()) return;
 
@@ -112,12 +113,12 @@ export const CreateProduct = () => {
         <div className={s.createProduct}>
             <div className={s.createProduct__header}>
                 <div className={s.createProduct__headerCol}>
-                    <Input label={"Name"} value={name}
-                           onChange={({ target: { value } }) => setDescription("name", value)} />
+                    <Input label={'Name'} value={name}
+                        onChange={({ target: { value } }) => setDescription('name', value)} />
                     <Input
-                        label={"Description"}
+                        label={'Description'}
                         value={description}
-                        onChange={({ target: { value } }) => setDescription("description", value)} />
+                        onChange={({ target: { value } }) => setDescription('description', value)} />
                 </div>
                 <div className={s.createProduct__headerRow}>
                     <NutrientNavigation
@@ -144,7 +145,7 @@ export const CreateProduct = () => {
                             heading={group.name}
                             columns={columns}
                             render={render}
-                            emptyPlaceholder={"N/A"}
+                            emptyPlaceholder={'N/A'}
                         />
                     );
                 })}

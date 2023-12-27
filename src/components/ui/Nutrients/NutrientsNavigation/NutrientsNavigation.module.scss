@@ -15,6 +15,17 @@
 
   }
 
+  &NutrientNormInfo {
+    font-size: 12px;
+    margin-right: auto;
+
+    a {
+      font-weight: 500;
+      padding-left: 5px;
+      color: var(--color-primary)
+    }
+  }
+
   &VisibilityButton {
     @include opacity-button;
     margin-left: auto;

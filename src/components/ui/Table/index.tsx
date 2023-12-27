@@ -1,22 +1,22 @@
 /* eslint-disable react/jsx-key */
 // import { initNutrients, nutrientDailyNorm } from '@constants/index'
 
-import { nutrientDailyNorm, initNutrients } from '@constants/nutrients'
-import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent'
-import { groupNutrientsByCategory } from '@helpers/mappers'
-import { getShortNutrientNameIfHas } from '@helpers/normalizers'
-import classNames from 'classnames'
-import React from 'react'
-import styles from './index.module.scss'
-import Indicator from './Indicator'
+import { nutrientDailyNorm, initNutrients } from '@constants/nutrients';
+import { getDailyNormPercent } from '@helpers/calculations/getDailyNormPercent';
+import { groupNutrientsByCategory } from '@helpers/mappers';
+import { getShortNutrientNameIfHas } from '@helpers/normalizers';
+import classNames from 'classnames';
+import React from 'react';
+import styles from './index.module.scss';
+import Indicator from './Indicator';
 
 type TableProps = {
     data: Nutrients.NamesToItems | null
 }
 
 const Table = ({ data }: TableProps) => {
-    console.log('data', data)
-    if (!data) return null
+    console.log('data', data);
+    if (!data) return null;
     return (
         <>
             <section className={classNames(styles.container)}>
@@ -28,23 +28,23 @@ const Table = ({ data }: TableProps) => {
                         >
                             <tbody>
                                 {nutrients.map((item) => (
-                                    <tr key={item.name}>
+                                    <tr key={item?.name}>
                                         <th>
                                             {getShortNutrientNameIfHas(
-                                                item.name
+                                                item?.name
                                             )}
                                         </th>
                                         <td>
                                             {getDailyNormPercent(
-                                                item.name,
-                                                item.value
+                                                item?.name,
+                                                item?.value
                                             )}
-                                            %, {item.value} {item.unit}
+                                            %, {item?.value} {item?.unit}
                                         </td>
                                         <Indicator
                                             percent={getDailyNormPercent(
-                                                item.name,
-                                                item.value
+                                                item?.name,
+                                                item?.value
                                             )}
                                         />
                                     </tr>
@@ -56,7 +56,7 @@ const Table = ({ data }: TableProps) => {
             </section>
             <p>Percentage of Daily Value</p>
         </>
-    )
-}
+    );
+};
 
-export default Table
+export default Table;

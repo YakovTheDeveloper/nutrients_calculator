@@ -16,6 +16,7 @@ import { objectEntries } from '@helpers/objectEntries';
 import { useNutrientNavigation } from '@pages/common/useNutrientNavigation';
 import { NormPercentBar } from './NormPercentBar';
 import { NutrientsNavigation } from './NutrientsNavigation';
+import { useNutrientNormsStore } from '@data/normsStore';
 
 const columns = [
     { key: 'name', label: 'Name' },
@@ -38,7 +39,7 @@ const Nutrients = ({ data }: NutrientsProps) => {
         currentNormId = useSettings(
             (state) => state.calcSettings.currentNormId
         ),
-        nutrientNorms = useNutrientsStore((state) => state.nutrientNorms),
+        nutrientNorms = useNutrientNormsStore((state) => state.nutrientNorms),
         toggleNutrientVisibility = useNutrientsStore(
             (state) => state.toggleNutrientVisibility
         ),
@@ -97,6 +98,7 @@ const Nutrients = ({ data }: NutrientsProps) => {
             }),
             [currentNorm]
         );
+    console.log('FUCK',nutrientNorms);
 
     if (emptyGroups) return null;
 

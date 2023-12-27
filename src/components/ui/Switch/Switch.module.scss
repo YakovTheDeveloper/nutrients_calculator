@@ -1,0 +1,43 @@
+$switch-width: 50px;
+$switch-height: 20px;
+
+.switch {
+  display: flex;
+  align-items: center;
+  height: $switch-height;
+  width: $switch-width;
+  background-color: lightgray;
+  border-radius: 25px;
+  cursor: pointer;
+
+  &_on {
+    background-color: #3d7bff;
+  }
+
+  &__circle {
+    display: flex;
+    background-color: #fff;
+    border-radius: 50%;
+    height: $switch-height;
+    width: $switch-height;
+    position: absolute;
+
+    &_right {
+      transform: translateX(calc($switch-width - $switch-height));
+    }
+  }
+
+  &__value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+    height: 100%;
+    font-size: 14px;
+    pointer-events: none;
+
+    &_left {
+      transform: translateX(calc($switch-width - $switch-height));
+    }
+  }
+}

@@ -1,24 +1,29 @@
-import styles from "./NutrientNavigation.module.scss";
-import { Tab, TabTypes } from "@ui";
-import React from "react";
+import styles from './NutrientNavigation.module.scss';
+import { Tab, TabTypes } from '@ui';
+import React from 'react';
 
 type NavigationProps = {
-    show: boolean
-    onTabClick: (index: number) => void
-    tabNames: string[]
-}
-const NutrientNavigation = ({ show, onTabClick,tabNames }: NavigationProps) => (
+    show: boolean;
+    onTabClick: (index: number) => void;
+    tabNames: string[];
+};
+const NutrientNavigation = ({
+    show,
+    onTabClick,
+    tabNames,
+}: NavigationProps) => (
     <div className={styles.nutrients__groupNav}>
         <button
             className={styles.nutrients__groupNavToggleButton}
             // onClick={() => toggleNutrientsSettings("showNav")}
         >
-            {show ? "v" : "^"}
+            {show ? 'v' : '^'}
         </button>
         {show && (
             <Tab.Panel>
                 {tabNames.map((name, index) => (
                     <Tab
+                        key={name}
                         variant={TabTypes.primary}
                         onClick={() => onTabClick(index)}
                         className={styles.nutrients__groupNavTabsButton}
@@ -28,13 +33,13 @@ const NutrientNavigation = ({ show, onTabClick,tabNames }: NavigationProps) => (
                     </Tab>
                 ))}
                 <button
-                    // onClick={() => toggleNutrientsSettings("showHidden")}
+                // onClick={() => toggleNutrientsSettings("showHidden")}
                 >
-                    {"<o>"}
+                    {'<o>'}
                 </button>
             </Tab.Panel>
         )}
     </div>
 );
 
-export default NutrientNavigation
+export default NutrientNavigation;

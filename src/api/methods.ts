@@ -1,7 +1,6 @@
-import { PatchMenuConfig } from "@data/user";
-import { addIdKeyPrefixToMapping } from "@helpers/normalizers";
-import { sendRequest } from "./sendRequest";
-import { Norm } from "../types/declaration";
+import { PatchMenuConfig } from '@data/user';
+import { addIdKeyPrefixToMapping } from '@helpers/normalizers';
+import { sendRequest } from './sendRequest';
 
 type ProductListParams = {
     name: string
@@ -16,8 +15,8 @@ type ProductByNutrient = {
 
 //same
 type GetUserProductsResponse = Record<string, {
-    "name": string,
-    "description": string[]
+    'name': string,
+    'description': string[]
 }>
 
 type LoginOptions = {
@@ -74,32 +73,32 @@ type AddMenuResponse = {
 
 export function fetchProductList(options: ProductListParams) {
     return sendRequest<ProductListResponse>({
-        url: "products/minimal/",
-        method: "GET",
+        url: 'products/minimal/',
+        method: 'GET',
         query: options
     });
 }
 
 export function fetchLogin(options: LoginOptions) {
     return sendRequest<AuthResponse>({
-        url: "auth/login/",
-        method: "POST",
+        url: 'auth/login/',
+        method: 'POST',
         payload: options
     });
 }
 
 export function fetchSignup(options: SignUpOptions) {
     return sendRequest<AuthResponse>({
-        url: "auth/signup/",
-        method: "POST",
+        url: 'auth/signup/',
+        method: 'POST',
         payload: options
     });
 }
 
 export function fetchMe() {
     return sendRequest<MeResponse>({
-        url: "user/me/",
-        method: "GET"
+        url: 'user/me/',
+        method: 'GET'
     });
 }
 
@@ -107,8 +106,8 @@ export function fetchProductListById(options: ProductListByIdParams) {
     // if(options.food_id instanceof Array)
     options.food_id = options.food_id.toString();
     return sendRequest<Products.IdToItemMapping>({
-        url: "products/with_nutrients/",
-        method: "GET",
+        url: 'products/with_nutrients/',
+        method: 'GET',
         query: options
     });
 }
@@ -116,16 +115,16 @@ export function fetchProductListById(options: ProductListByIdParams) {
 
 export function fetchProductsByNutrient(options: ProductByNutrient) {
     return sendRequest<(Products.ItemWithNoNutrients & { amount: number })[]>({
-        url: `products/rich`,
+        url: 'products/rich',
         query: options,
-        method: "GET"
+        method: 'GET'
     });
 }
 
 export function fetchNutrientCalculation(options: CalculationParams) {
     return sendRequest<Nutrients.NamesToItems>({
-        url: "polls/calculate_nutrients/",
-        method: "GET",
+        url: 'polls/calculate_nutrients/',
+        method: 'GET',
         query: addIdKeyPrefixToMapping(options)
     });
 }
@@ -133,23 +132,23 @@ export function fetchNutrientCalculation(options: CalculationParams) {
 export function fetchMenuDelete(options: MenuDeleteOption) {
     return sendRequest<null>({
         url: `menu/${options.id}/`,
-        method: "DELETE"
+        method: 'DELETE'
     });
 }
 
 export function fetchUserMenus() {
     return sendRequest<UserMenuResponse>({
-        url: "menu/",
-        method: "GET"
+        url: 'menu/',
+        method: 'GET'
     });
 }
 
 export function fetchAddUserMenu(options: AddMenuParams) {
     const { description, name, ids: products } = options;
-    console.log("options", options);
+    console.log('options', options);
     return sendRequest<AddMenuResponse>({
-        url: "menu/",
-        method: "POST",
+        url: 'menu/',
+        method: 'POST',
         payload: {
             name,
             description,
@@ -166,29 +165,29 @@ export function fetchAddUserMenu(options: AddMenuParams) {
 export function fetchPatchUserMenu(menuId: number, options: PatchMenuParams) {
     return sendRequest<null>({
         url: `menu/${menuId}/`,
-        method: "PATCH",
+        method: 'PATCH',
         payload: options
     });
 }
 
 export function fetchNutrients(options: GetNutrientsParams) {
     return sendRequest<NutrientsResponse>({
-        url: `nutrients`,
-        method: "GET",
+        url: 'nutrients',
+        method: 'GET',
         query: options
     });
 }
 
 export function fetchGetUserProducts() {
     return sendRequest<GetUserProductsResponse>({
-        url: `user/products`
+        url: 'user/products'
     });
 }
 
 export function fetchCreateProduct(payload: Products.Api.Payload.Create) {
     return sendRequest<Products.Api.Response.Create>({
-        url: `products`,
-        method: "POST",
+        url: 'products',
+        method: 'POST',
         payload: payload
     });
 }
@@ -196,21 +195,36 @@ export function fetchCreateProduct(payload: Products.Api.Payload.Create) {
 export function fetchDeleteProduct(id: number) {
     return sendRequest<Products.Api.Response.Create>({
         url: `products/${id}`,
-        method: "DELETE"
+        method: 'DELETE'
     });
 }
 
 export function fetchGetNorms() {
     return sendRequest<Norm.Api.Get>({
-        url: `norms`
+        url: 'norms'
     });
 }
 
 export function fetchAddNorm(payload: Norm.Api.Add) {
-    return sendRequest<Norm.Api.Get>({
-        url: `norms`,
-        method: "POST",
+    return sendRequest<Norm.Api.Response.Add>({
+        url: 'norms',
+        method: 'POST',
         payload
+    });
+}
+
+export function fetchPatchNorm(payload: Norm.Api.Add) {
+    return sendRequest<Norm.Api.Get>({
+        url: 'norms',
+        method: 'PATCH',
+        payload
+    });
+}
+
+export function fetchDeleteNorm(id: number) {
+    return sendRequest<Norm.Api.Get>({
+        url: `norms/${id}`,
+        method: 'DELETE',
     });
 }
 

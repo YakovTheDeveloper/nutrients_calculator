@@ -61,3 +61,9 @@
     background-color: rgba(200, 199, 255, 0.075);
   }
 }
+
+body[data-dark='true'] {
+  .list {
+    background-color: #575757;
+  }
+}

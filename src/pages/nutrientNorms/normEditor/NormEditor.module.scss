@@ -1,31 +1,37 @@
-.settings {
-  width: 100%;
-  display: flex;
-  // flex-direction: column;
-}
-
-.norms {
+.normsEditor {
+  max-height: 800px;
+  padding-top: 20px;
   overflow: auto;
   display: flex;
-  max-height: 800px;
+  flex-direction: column;
+  gap: 20px;
 
-  &__actions {
+  &__groupActions {
     display: flex;
-    justify-content: space-between;
+    align-items: flex-end;
+    gap: 40px;
+
+    &NameInput {
+      width: 200px;
+    }
   }
 
-  &Norm {
-    width: 200px;
-
-    &__table {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-
-    }
-
-    &_selected &__table {
-      background: #ebebeb;
-    }
-
+  &__group {
+    display: flex;
   }
+
+  // &Norm {
+  //   width: 200px;
+
+  //   &__table {
+  //     display: grid;
+  //     grid-template-columns: 1fr 1fr;
+
+  //   }
+
+  //   &_selected &__table {
+  //     background: #ebebeb;
+  //   }
+
+  // }
 }

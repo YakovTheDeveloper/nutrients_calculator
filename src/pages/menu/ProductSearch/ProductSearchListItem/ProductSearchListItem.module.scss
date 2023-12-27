@@ -30,3 +30,11 @@
     background-color: rgb(228, 228, 228);
   }
 }
+
+body[data-dark='true'] {
+  .listItem {
+    &:hover {
+      background-color: #616161;
+    }
+  }
+}

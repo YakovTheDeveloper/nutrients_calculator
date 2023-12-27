@@ -3,6 +3,9 @@ import { useSettings } from '@data/settings';
 import { Tab, TabTypes } from '@ui/Tab';
 import React from 'react';
 import s from './NutrientsNavigation.module.scss';
+import { NavLink } from 'react-router-dom';
+import { useNutrientsStore } from '@data/nutrients';
+import { useNutrientNormsStore } from '@data/normsStore';
 
 type Props = {
     groups: Nutrients.Groups<Nutrients.GroupData>;
@@ -13,7 +16,10 @@ const NutrientsNavigation = ({ groups, navigate }: Props) => {
     const nutrientsSettings = useSettings((state) => state.nutrientsSettings),
         toggleNutrientsSettings = useSettings(
             (state) => state.toggleNutrientsSettings
-        );
+        ),
+        { currentNormId } = useSettings((state) => state.calcSettings),
+        nutrientNorms = useNutrientNormsStore((state) => state.nutrientNorms),
+        currentNorm = nutrientNorms.find((norm) => norm.id === currentNormId);
 
     return (
         <div className={s.nutrientsNavigation}>
@@ -34,13 +40,15 @@ const NutrientsNavigation = ({ groups, navigate }: Props) => {
                             key={group.name}
                             variant={TabTypes.primary}
                             onClick={() => navigate(index)}
-                            // no class tabs button
                             className={s.nutrientsNavigationTabsButton}
                         >
                             {group.label}
-                            {/* {groupName.slice(0, 5).toUpperCase()} */}
                         </Tab>
                     ))}
+                    <p className={s.nutrientsNavigationNutrientNormInfo}>
+                        Current norm:
+                        <NavLink to={'/norms'}>{currentNorm?.name}</NavLink>
+                    </p>
                     <button
                         className={s.nutrientsNavigationVisibilityButton}
                         onClick={() => toggleNutrientsSettings('showHidden')}

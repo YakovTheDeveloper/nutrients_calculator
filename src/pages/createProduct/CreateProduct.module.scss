@@ -6,7 +6,7 @@
   &__header {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    // align-items: center;
 
     &Row {
       display: flex;
@@ -15,7 +15,7 @@
       gap: 15px;
     }
 
-    &Col{
+    &Col {
       width: 300px;
       display: flex;
       flex-direction: column;

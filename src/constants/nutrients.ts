@@ -83,10 +83,15 @@ export type NutrientsNorm = {
     norm: Record<NutrientCodes, number>
 }
 
+export enum DefaultNormsId {
+    Standard ='-1000',
+    Sport ='-1001'
+}
+
 //norm => NutrientCodeToNormValue
 //todo need deep freeze util
 export const nutrientDailyNormCode: Norm.Item = {
-    id: '-1000',
+    id: DefaultNormsId.Standard,
     name: 'Standard',
     norm: Object.freeze({
         [NutrientCodes.Protein]: 75,
@@ -128,8 +133,10 @@ export const nutrientDailyNormCode: Norm.Item = {
     )
 };
 
+
+
 export const nutrientDailyNormSport: Norm.Item = {
-    id: '-1001',
+    id: DefaultNormsId.Sport,
     name: 'Sport',
     norm: Object.freeze({
         [NutrientCodes.Protein]: 120,

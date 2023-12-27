@@ -1,7 +1,7 @@
 .spinner {
   transform: translate(-50%, -50%);
-  border: 1px solid #fff;
-  border-left-color: inherit;
+  border: 1px solid lightblue;
+  border-left-color: var(--color-primary);
   border-left-style: solid;
 
   border-radius: 50%;

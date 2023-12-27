@@ -1,1 +1,1 @@
-export { default as NutrientNorms } from "./NutrientNorms";
+export { default as NutrientNorms } from './NutrientNorms';

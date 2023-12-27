@@ -1,16 +1,16 @@
-import classNames from "classnames";
-import React from "react";
-import styles from "./Loader.module.scss";
+import classNames from 'classnames';
+import React from 'react';
+import styles from './Loader.module.scss';
 
 export enum LoaderSize {
-    small = "small",
-    medium = "medium",
-    large = "large"
-};
+    small = 'small',
+    medium = 'medium',
+    large = 'large'
+}
 
 type LoaderProps = {
     className?: string
-    size: LoaderSize
+    size?: LoaderSize
 }
 
 const Loader = ({ className, size = LoaderSize.small }: LoaderProps) => {

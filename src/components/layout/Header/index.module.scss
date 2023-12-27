@@ -1,10 +1,11 @@
 .header {
   display: flex;
+  align-items: center;
   //justify-content: space-between;
   gap: 50px;
   padding: var(--padding-container-lg);
 
-  &Auth{
+  &Auth {
     display: flex;
     margin-left: auto;
     gap: 10px;
@@ -29,5 +30,10 @@
     border-bottom: solid 1px var(--black);
 
   }
+}
 
+body[data-dark='true'] {
+  .header {
+    background-color: rgb(32, 32, 32);
+  }
 }
